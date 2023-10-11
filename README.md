@@ -1,4 +1,4 @@
-# Insomnia API Client
+# Insomnia API Client (fork)
 
 [![Slack Channel](https://chat.insomnia.rest/badge.svg)](https://chat.insomnia.rest/)
 [![license](https://img.shields.io/github/license/Kong/insomnia.svg)](LICENSE)
@@ -104,6 +104,14 @@ You can use any editor you'd like, but make sure to have support/plugins for the
 - [JSX Syntax](https://facebook.github.io/react/docs/jsx-in-depth.html) - For React components
 
 </details>
+
+### MacOs
+
+```shell
+npm run clean
+npm install
+npm run app-package
+```
 
 ## Develop Inso CLI
 

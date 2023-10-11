@@ -1,0 +1,3 @@
+[submodule "insomnia local"]
+	path = insomnia local
+	url = http://178.140.10.58:8082/tools/insomnia/insomnia.git
