@@ -7,9 +7,9 @@ import {
   Button,
   Item,
   Link,
-  Menu,
-  MenuTrigger,
-  Popover,
+  //Menu,
+  //MenuTrigger,
+  //Popover,
   Tooltip,
   TooltipTrigger,
 } from 'react-aria-components';
@@ -25,15 +25,15 @@ import {
 } from 'react-router-dom';
 
 import {
-  getFirstName,
-  getLastName,
-  isLoggedIn,
-  logout,
+  //getFirstName,
+  //getLastName,
+  //isLoggedIn,
+  //logout,
   onLoginLogout,
 } from '../../account/session';
 import { isDevelopment } from '../../common/constants';
 import * as models from '../../models';
-import { isDefaultOrganization } from '../../models/organization';
+//import { isDefaultOrganization } from '../../models/organization';
 import { Settings } from '../../models/settings';
 import { isDesign } from '../../models/workspace';
 import { reloadPlugins } from '../../plugins';
@@ -43,7 +43,7 @@ import { exchangeCodeForToken } from '../../sync/git/github-oauth-provider';
 import { exchangeCodeForGitLabToken } from '../../sync/git/gitlab-oauth-provider';
 import { submitAuthCode } from '../auth-session-provider';
 import { WorkspaceDropdown } from '../components/dropdowns/workspace-dropdown';
-import { GitHubStarsButton } from '../components/github-stars-button';
+//import { GitHubStarsButton } from '../components/github-stars-button';
 import { Hotkey } from '../components/hotkey';
 import { Icon } from '../components/icon';
 import { InsomniaAILogo } from '../components/insomnia-icon';
@@ -51,7 +51,7 @@ import { showError, showModal } from '../components/modals';
 import { AlertModal } from '../components/modals/alert-modal';
 import { AskModal } from '../components/modals/ask-modal';
 import { ImportModal } from '../components/modals/import-modal';
-import { LoginModal, showLoginModal } from '../components/modals/login-modal';
+import { LoginModal } from '../components/modals/login-modal';
 import {
   SettingsModal,
   showSettingsModal,
@@ -63,7 +63,7 @@ import { AIProvider } from '../context/app/ai-context';
 import { NunjucksEnabledProvider } from '../context/nunjucks/nunjucks-enabled-context';
 import { useSettingsPatcher } from '../hooks/use-request';
 import Modals from './modals';
-import { useOrganizationLoaderData } from './organization';
+//import { useOrganizationLoaderData } from './organization';
 import { WorkspaceLoaderData } from './workspace';
 
 export interface RootLoaderData {
@@ -76,7 +76,7 @@ export const loader: LoaderFunction = async (): Promise<RootLoaderData> => {
   };
 };
 
-const getNameInitials = (name: string) => {
+/*const getNameInitials = (name: string) => {
   // Split on whitespace and take first letter of each word
   const words = name.toUpperCase().split(' ');
   const firstWord = words[0];
@@ -94,13 +94,13 @@ const getNameInitials = (name: string) => {
   }
 
   return `${firstWord.charAt(0)}${lastWord ? lastWord.charAt(0) : ''}`;
-};
+};*/
 
 const Root = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { settings } = useLoaderData() as RootLoaderData;
-  const { organizations } = useOrganizationLoaderData();
+  //const { organizations } = useOrganizationLoaderData();
   const workspaceData = useRouteLoaderData(
     ':workspaceId'
   ) as WorkspaceLoaderData | null;
