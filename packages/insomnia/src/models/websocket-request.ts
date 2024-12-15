@@ -1,6 +1,6 @@
 import { database } from '../common/database';
 import type { BaseModel } from '.';
-import { RequestAuthentication, RequestHeader, RequestParameter } from './request';
+import type { RequestAuthentication, RequestHeader, RequestParameter } from './request';
 
 export const name = 'WebSocket Request';
 

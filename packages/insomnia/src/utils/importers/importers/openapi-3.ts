@@ -1,17 +1,18 @@
 import SwaggerParser from '@apidevtools/swagger-parser';
-import { camelCase } from 'change-case';
 import crypto from 'crypto';
 import { OpenAPIV2, OpenAPIV3 } from 'openapi-types';
 import { parse as urlParse } from 'url';
 import YAML from 'yaml';
 
-import { Authentication, Converter, ImportRequest } from '../entities';
+import type { Authentication, Converter, ImportRequest } from '../entities';
 import { unthrowableParseJson } from '../utils';
 
 export const id = 'openapi3';
 export const name = 'OpenAPI 3.0';
 export const description = 'Importer for OpenAPI 3.0 specification (json/yaml)';
-
+const toCamelCase = (a: string) => a.replace(/`|'/g, '')
+  .replace(/[a-z](?=[A-Z][a-z])/g, '$& ')
+  .replace(/[\W_]*([a-z0-9]+)[\W_]*/gi, (_, b, i) => (i ? b[0].toUpperCase() : '') + b.slice(i > 0).toLowerCase());
 function isPlainObject(value: any) {
   if (typeof value !== 'object' || value === null) {
     return false;
@@ -287,7 +288,7 @@ const importRequest = (
 ): ImportRequest => {
   const name = endpointSchema.summary || endpointSchema.path;
   const id = generateUniqueRequestId(endpointSchema as OpenAPIV3.OperationObject);
-  const body = prepareBody(endpointSchema);
+  const body = prepareBody(endpointSchema as OpenAPIV3.OperationObject);
   const paramHeaders = prepareHeaders(endpointSchema, body);
   const {
     authentication,
@@ -302,6 +303,7 @@ const importRequest = (
     method: endpointSchema.method?.toUpperCase(),
     url: `{{ _.base_url }}${pathWithParamsAsVariables(endpointSchema.path)}`,
     body: body,
+    description: endpointSchema.description || '',
     headers: [...paramHeaders, ...securityHeaders],
     authentication: authentication as Authentication,
     parameters: [...prepareQueryParams(endpointSchema), ...securityParams],
@@ -379,7 +381,7 @@ const parseSecurity = (
   const apiKeyHeaders = apiKeySchemes
     .filter(scheme => scheme.schemeDetails.in === 'header')
     .map(scheme => {
-      const variableName = camelCase(scheme.schemeDetails.name);
+      const variableName = toCamelCase(scheme.schemeDetails.name);
       return {
         name: scheme.schemeDetails.name,
         disabled: false,
@@ -389,7 +391,7 @@ const parseSecurity = (
   const apiKeyCookies = apiKeySchemes
     .filter(scheme => scheme.schemeDetails.in === 'cookie')
     .map(scheme => {
-      const variableName = camelCase(scheme.schemeDetails.name);
+      const variableName = toCamelCase(scheme.schemeDetails.name);
       return `${scheme.schemeDetails.name}={{ _.${variableName} }}`;
     });
   const apiKeyCookieHeader = {
@@ -400,7 +402,7 @@ const parseSecurity = (
   const apiKeyParams = apiKeySchemes
     .filter(scheme => scheme.schemeDetails.in === 'query')
     .map(scheme => {
-      const variableName = camelCase(scheme.schemeDetails.name);
+      const variableName = toCamelCase(scheme.schemeDetails.name);
       return {
         name: scheme.schemeDetails.name,
         disabled: false,
@@ -466,7 +468,7 @@ const getSecurityEnvVariables = (securitySchemeObject?: OpenAPIV3.SecurityScheme
 
   const apiKeyVariableNames = securitySchemes
     .filter(scheme => scheme.type === SECURITY_TYPE.API_KEY)
-    .map(scheme => camelCase(scheme.name));
+    .map(scheme => toCamelCase(scheme.name));
   const variables: Record<string, string> = {};
   Array.from(new Set(apiKeyVariableNames)).forEach(name => {
     variables[name] = name;
@@ -701,7 +703,7 @@ const parseHttpAuth = (scheme: string) => {
 };
 
 const parseApiKeyAuth = (schemeDetails: OpenAPIV3.ApiKeySecurityScheme) => {
-  const variableName = camelCase(schemeDetails.name);
+  const variableName = toCamelCase(schemeDetails.name);
   return {
     type: SECURITY_TYPE.API_KEY.toLowerCase(),
     key: schemeDetails.name,

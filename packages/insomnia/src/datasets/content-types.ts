@@ -119,6 +119,7 @@ export default [
   'application/x-x509-ca-cert',
   'application/xop+xml',
   'application/xslt+xml',
+  'application/yaml',
   'application/zip',
   'audio/3gpp',
   'audio/adpcm',
@@ -186,7 +187,7 @@ export default [
   'text/x-scss',
   'text/x-vcalendar',
   'text/xml',
-  'text/yaml',
+  'text/yaml', // deprecated https://www.rfc-editor.org/rfc/rfc9512.html#section-2.1-2.22.2.2
   'video/3gpp',
   'video/3gpp2',
   'video/h261',

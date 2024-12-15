@@ -1,30 +1,30 @@
 import classnames from 'classnames';
-import React, { FC, Fragment, useCallback, useEffect, useState } from 'react';
+import React, { type FC, Fragment, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
 import { useInterval, useMount } from 'react-use';
 
 import * as session from '../../../account/session';
 import { DEFAULT_BRANCH_NAME } from '../../../common/constants';
-import { database as db, Operation } from '../../../common/database';
+import { database as db, type Operation } from '../../../common/database';
 import { docsVersionControl } from '../../../common/documentation';
 import { strings } from '../../../common/strings';
 import * as models from '../../../models';
-import { isRemoteProject, Project } from '../../../models/project';
+import { isRemoteProject, type Project } from '../../../models/project';
 import type { Workspace } from '../../../models/workspace';
-import { Snapshot, Status } from '../../../sync/types';
+import type { Snapshot, Status } from '../../../sync/types';
 import { pushSnapshotOnInitialize } from '../../../sync/vcs/initialize-backend-project';
 import { logCollectionMovedToProject } from '../../../sync/vcs/migrate-collections';
-import { BackendProjectWithTeam } from '../../../sync/vcs/normalize-backend-project-team';
+import type { BackendProjectWithTeam } from '../../../sync/vcs/normalize-backend-project-team';
 import { pullBackendProject } from '../../../sync/vcs/pull-backend-project';
 import { interceptAccessError } from '../../../sync/vcs/util';
 import { VCS } from '../../../sync/vcs/vcs';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import type { WorkspaceLoaderData } from '../../routes/workspace';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { Link } from '../base/link';
 import { HelpTooltip } from '../help-tooltip';
 import { showError, showModal } from '../modals';
 import { GitRepositorySettingsModal } from '../modals/git-repository-settings-modal';
-import { LoginModal } from '../modals/login-modal';
+
 import { SyncBranchesModal } from '../modals/sync-branches-modal';
 import { SyncDeleteModal } from '../modals/sync-delete-modal';
 import { SyncHistoryModal } from '../modals/sync-history-modal';
@@ -570,16 +570,6 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
           aria-label='Sync Branches List'
           title={syncMenuHeader}
         >
-
-          <DropdownItem aria-label='Login'>
-            {!session.isLoggedIn() && (
-              <ItemContent
-                icon="sign-in"
-                label="Log In"
-                onClick={() => showModal(LoginModal)}
-              />
-            )}
-          </DropdownItem>
 
           <DropdownItem aria-label='Branches'>
             <ItemContent

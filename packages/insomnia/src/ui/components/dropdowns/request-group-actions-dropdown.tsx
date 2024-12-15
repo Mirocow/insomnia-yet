@@ -1,20 +1,20 @@
-import { IconName } from '@fortawesome/fontawesome-svg-core';
+import type { IconName } from '@fortawesome/fontawesome-svg-core';
 import React, { Fragment, useRef, useState } from 'react';
 import { Button, Item, Menu, MenuTrigger, Popover } from 'react-aria-components';
 import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 
 import { toKebabCase } from '../../../common/misc';
 import { RENDER_PURPOSE_NO_RENDER } from '../../../common/render';
-import { PlatformKeyCombinations } from '../../../common/settings';
+import type { PlatformKeyCombinations } from '../../../common/settings';
 import * as models from '../../../models';
-import { Request } from '../../../models/request';
+import type { Request } from '../../../models/request';
 import type { RequestGroup } from '../../../models/request-group';
 import type { RequestGroupAction } from '../../../plugins';
 import { getRequestGroupActions } from '../../../plugins';
 import * as pluginContexts from '../../../plugins/context/index';
-import { CreateRequestType, useRequestGroupPatcher } from '../../hooks/use-request';
-import { RootLoaderData } from '../../routes/root';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import { type CreateRequestType, useRequestGroupPatcher } from '../../hooks/use-request';
+import type { RootLoaderData } from '../../routes/root';
+import type { WorkspaceLoaderData } from '../../routes/workspace';
 import { type DropdownHandle, type DropdownProps } from '../base/dropdown';
 import { Icon } from '../icon';
 import { showError, showModal, showPrompt } from '../modals';

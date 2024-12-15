@@ -2427,7 +2427,7 @@ input.editable {
   z-index: -1;
 }
 .modal .modal__content__wrapper {
-  width: var(--modal-width);
+  width: var(--modal-width) wide;
   height: 100%;
   max-width: 100%;
   max-height: 100%;

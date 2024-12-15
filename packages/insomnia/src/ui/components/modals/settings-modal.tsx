@@ -1,13 +1,10 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
-import * as session from '../../../account/session';
 import { getAppVersion, getProductName } from '../../../common/constants';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalHeader } from '../base/modal-header';
 import { PanelContainer, TabItem, Tabs } from '../base/tabs';
-import { Account } from '../settings/account';
-import { AI } from '../settings/ai';
 import { General } from '../settings/general';
 import { ImportExport } from '../settings/import-export';
 import { Plugins } from '../settings/plugins';
@@ -24,12 +21,10 @@ export const TAB_INDEX_EXPORT = 'data';
 export const TAB_INDEX_SHORTCUTS = 'keyboard';
 export const TAB_INDEX_THEMES = 'themes';
 export const TAB_INDEX_PLUGINS = 'plugins';
-export const TAB_INDEX_AI = 'ai';
 
 export const SettingsModal = forwardRef<SettingsModalHandle, ModalProps>((props, ref) => {
   const [defaultTabKey, setDefaultTabKey] = useState('general');
   const modalRef = useRef<ModalHandle>(null);
-  const email = session.isLoggedIn() ? session.getFullName() : null;
 
   useImperativeHandle(ref, () => ({
     hide: () => {
@@ -47,7 +42,6 @@ export const SettingsModal = forwardRef<SettingsModalHandle, ModalProps>((props,
         {getProductName()} Preferences
         <span className="faint txt-sm">
           &nbsp;&nbsp;–&nbsp; v{getAppVersion()}
-          {email ? ` – ${email}` : null}
         </span>
       </ModalHeader>
       <ModalBody noScroll>
@@ -72,19 +66,9 @@ export const SettingsModal = forwardRef<SettingsModalHandle, ModalProps>((props,
               <Shortcuts />
             </PanelContainer>
           </TabItem>
-          <TabItem key="account" title="Account">
-            <PanelContainer className="pad">
-              <Account />
-            </PanelContainer>
-          </TabItem>
           <TabItem key="plugins" title="Plugins">
             <PanelContainer className="pad">
               <Plugins />
-            </PanelContainer>
-          </TabItem>
-          <TabItem key="ai" title="AI">
-            <PanelContainer className="pad">
-              <AI />
             </PanelContainer>
           </TabItem>
         </Tabs>

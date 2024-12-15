@@ -47,20 +47,25 @@ export function registerMainHandlers() {
   ipcMain.handle('insomniaFetch', async (_, options: Parameters<typeof insomniaFetch>[0]) => {
     return insomniaFetch(options);
   });
+
   ipcMain.handle('axiosRequest', async (_, options: Parameters<typeof axiosRequest>[0]) => {
     return axiosRequest(options);
   });
+
   ipcMain.on('loginStateChange', async () => {
     BrowserWindow.getAllWindows().forEach(w => {
       w.webContents.send('loggedIn');
     });
   });
+
   ipcMain.handle('backup', async () => {
     return backup();
   });
+
   ipcMain.handle('restoreBackup', async (_, options: string) => {
     return restoreBackup(options);
   });
+
   ipcMain.handle('authorizeUserInWindow', (_, options: Parameters<typeof authorizeUserInWindow>[0]) => {
     const { url, urlSuccessRegex, urlFailureRegex, sessionId } = options;
     return authorizeUserInWindow({ url, urlSuccessRegex, urlFailureRegex, sessionId });

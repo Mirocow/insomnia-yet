@@ -1,5 +1,5 @@
-import { IconName } from '@fortawesome/fontawesome-svg-core';
-import React, { FC, Fragment, useState } from 'react';
+import type { IconName } from '@fortawesome/fontawesome-svg-core';
+import React, { type FC, Fragment, useState } from 'react';
 import {
   Button,
   GridList,
@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from 'react-aria-components';
 import {
-  LoaderFunction,
+  type LoaderFunction,
   matchPath,
   redirect,
   useFetcher,
@@ -25,10 +25,10 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { parseApiSpec, ParsedApiSpec } from '../../common/api-specs';
+import { parseApiSpec, type ParsedApiSpec } from '../../common/api-specs';
 import {
   DASHBOARD_SORT_ORDERS,
-  DashboardSortOrder,
+  type DashboardSortOrder,
   dashboardSortOrderName,
   getProductName,
 } from '../../common/constants';
@@ -36,22 +36,22 @@ import { fuzzyMatchAll, isNotNullOrUndefined } from '../../common/misc';
 import { descendingNumberSort, sortMethodMap } from '../../common/sorting';
 import { strings } from '../../common/strings';
 import * as models from '../../models';
-import { ApiSpec } from '../../models/api-spec';
-import { CaCertificate } from '../../models/ca-certificate';
-import { ClientCertificate } from '../../models/client-certificate';
+import type { ApiSpec } from '../../models/api-spec';
+import type { CaCertificate } from '../../models/ca-certificate';
+import type { ClientCertificate } from '../../models/client-certificate';
 import { sortProjects } from '../../models/helpers/project';
 import {
   DEFAULT_ORGANIZATION_ID,
   defaultOrganization,
-  Organization,
+  type Organization,
 } from '../../models/organization';
 import {
   DEFAULT_PROJECT_ID,
   isRemoteProject,
-  Project,
+  type Project,
 } from '../../models/project';
-import { isDesign, Workspace } from '../../models/workspace';
-import { WorkspaceMeta } from '../../models/workspace-meta';
+import { isDesign, type Workspace } from '../../models/workspace';
+import type { WorkspaceMeta } from '../../models/workspace-meta';
 import { invariant } from '../../utils/invariant';
 import { ProjectDropdown } from '../components/dropdowns/project-dropdown';
 import { RemoteWorkspacesDropdown } from '../components/dropdowns/remote-workspaces-dropdown';
@@ -424,7 +424,6 @@ const ProjectRoute: FC = () => {
     id: string;
     label: string;
     icon: IconName;
-    level: number;
     action?: {
       icon: IconName;
       label: string;
@@ -434,8 +433,7 @@ const ProjectRoute: FC = () => {
     {
       id: 'all',
       label: `All files (${allFilesCount})`,
-      icon: 'folder',
-      level: 0,
+      icon: 'border-all',
     },
     {
       id: 'design',
@@ -464,9 +462,12 @@ const ProjectRoute: FC = () => {
   return (
     <ErrorBoundary>
       <Fragment>
+
         <SidebarLayout
           className="new-sidebar"
+
           renderPageSidebar={
+
             <div className="flex flex-1 flex-col overflow-hidden divide-solid divide-y divide-[--hl-md]">
               <div className="p-[--padding-sm]">
                 <Select
@@ -477,13 +478,14 @@ const ProjectRoute: FC = () => {
                   selectedKey={organizationId}
                   items={organizations}
                 >
-                  <Button className="px-4 py-1 flex flex-1 items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm">
+                  <Button className="px-4 py-1 font-bold flex flex-1 items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm">
                     <SelectValue<Organization> className="flex truncate items-center justify-center gap-2">
                       {({ selectedItem }) => {
                         return selectedItem?.name;
                       }}
                     </SelectValue>
                     <Icon icon="caret-down" />
+                    ({projectsCount})
                   </Button>
                   <Popover className="min-w-max">
                     <ListBox<Organization> className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none">
@@ -513,10 +515,6 @@ const ProjectRoute: FC = () => {
                   </Popover>
                 </Select>
               </div>
-              <div className="flex flex-col flex-1">
-                <Heading className="p-[--padding-sm] uppercase text-xs">
-                  Projects ({projectsCount})
-                </Heading>
                 {organizationId === DEFAULT_ORGANIZATION_ID && (
                   <div className="flex justify-between gap-1 p-[--padding-sm]">
                     <SearchField
@@ -626,11 +624,12 @@ const ProjectRoute: FC = () => {
                     );
                   }}
                 </GridList>
-              </div>
+
+              <div className="flex flex-col" style={{ height: '150px' }}>
               <GridList
                 aria-label="Scope filter"
                 items={scopeActionList}
-                className="overflow-y-auto flex-1 data-[empty]:py-0 py-[--padding-sm]"
+                className="overflow-y-auto"
                 disallowEmptySelection
                 selectedKeys={[searchParams.get('scope') || 'all']}
                 selectionMode="single"
@@ -673,6 +672,7 @@ const ProjectRoute: FC = () => {
                   );
                 }}
               </GridList>
+            </div>
             </div>
           }
           renderPaneOne={

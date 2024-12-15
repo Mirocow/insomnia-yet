@@ -1,8 +1,11 @@
 import appConfig from '../../config/config.json';
 import { version } from '../../package.json';
-import { KeyCombination } from './settings';
+import type { KeyCombination } from './settings';
 
-const env = process['env'];
+// Vite is filtering out process.env variables that are not prefixed with VITE_.
+const ENV = 'env';
+
+const env = process[ENV];
 
 // App Stuff
 export const getAppVersion = () => version;
@@ -41,20 +44,6 @@ export const getBrowserUserAgent = () => encodeURIComponent(
     .replace(/Electron\/\d+\.\d+\.\d+ /, ''),
 ).replace('%2C', ',');
 
-export function updatesSupported() {
-  // Updates are not supported on Linux
-  if (isLinux()) {
-    return false;
-  }
-
-  // Updates are not supported for Windows portable binaries
-  if (isWindows() && process.env['PORTABLE_EXECUTABLE_DIR']) {
-    return false;
-  }
-
-  return true;
-}
-
 export const getClientString = () => `${getAppEnvironment()}::${getAppPlatform()}::${getAppVersion()}`;
 export const changelogUrl = () => appConfig.changelogUrl + '#' + version;
 
@@ -77,7 +66,7 @@ export const STATUS_CODE_PLUGIN_ERROR = -222;
 export const LARGE_RESPONSE_MB = 5;
 export const HUGE_RESPONSE_MB = 100;
 export const FLEXIBLE_URL_REGEX = /^(http|https):\/\/[\wàâäèéêëîïôóœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ\-_.]+[/\wàâäèéêëîïôóœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ.\-+=:\][@%^*&!#?;$~'(),]*/;
-export const CHECK_FOR_UPDATES_INTERVAL = 1000 * 60 * 60 * 3; // 3 hours
+export const CHECK_FOR_UPDATES_INTERVAL = 1000 * 60 * 60 * 24;
 
 // Available editor key map
 export enum EditorKeyMap {
@@ -109,7 +98,7 @@ export const displayModifierKey = (key: keyof Omit<KeyCombination, 'keyCode'>) =
       }
 
       if (isWindows()) {
-        // Note: Although this unicode character for the Windows doesn't exist, the the Unicode character U+229E ⊞ SQUARED PLUS is very commonly used for this purpose. For example, Wikipedia uses it as a simulation of the windows logo.  Though, Windows itself uses `Windows` or `Win`, so we'll go with `Win` here.
+        // Note: Although this unicode character for the Windows doesn't exist, the Unicode character U+229E ⊞ SQUARED PLUS is very commonly used for this purpose. For example, Wikipedia uses it as a simulation of the windows logo.  Though, Windows itself uses `Windows` or `Win`, so we'll go with `Win` here.
         // see: https://en.wikipedia.org/wiki/Windows_key
         return 'Win';
       }
@@ -168,10 +157,14 @@ export const MAX_EDITOR_FONT_SIZE = 24;
 export type GlobalActivity =
   | 'spec'
   | 'debug'
+  | 'collection'
+  | 'test'
   | 'unittest'
   | 'home';
 export const ACTIVITY_SPEC: GlobalActivity = 'spec';
 export const ACTIVITY_DEBUG: GlobalActivity = 'debug';
+export const ACTIVITY_COLLECTION: GlobalActivity = 'collection';
+export const ACTIVITY_TEST: GlobalActivity = 'test';
 export const ACTIVITY_UNIT_TEST: GlobalActivity = 'unittest';
 export const ACTIVITY_HOME: GlobalActivity = 'home';
 
@@ -182,6 +175,8 @@ export const isDesignActivity = (activity?: string): activity is GlobalActivity 
   switch (activity) {
     case ACTIVITY_SPEC:
     case ACTIVITY_DEBUG:
+    case ACTIVITY_COLLECTION:
+    case ACTIVITY_TEST:
     case ACTIVITY_UNIT_TEST:
       return true;
 
@@ -197,6 +192,7 @@ export const isCollectionActivity = (activity?: string): activity is GlobalActiv
       return true;
 
     case ACTIVITY_SPEC:
+    case ACTIVITY_TEST:
     case ACTIVITY_UNIT_TEST:
     case ACTIVITY_HOME:
     default:
@@ -208,6 +204,7 @@ export const isValidActivity = (activity: string): activity is GlobalActivity =>
   switch (activity) {
     case ACTIVITY_SPEC:
     case ACTIVITY_DEBUG:
+    case ACTIVITY_TEST:
     case ACTIVITY_UNIT_TEST:
     case ACTIVITY_HOME:
       return true;
@@ -253,7 +250,7 @@ export const PREVIEW_MODES = Object.keys(previewModeMap) as (keyof typeof previe
 export const CONTENT_TYPE_JSON = 'application/json';
 export const CONTENT_TYPE_PLAINTEXT = 'text/plain';
 export const CONTENT_TYPE_XML = 'application/xml';
-export const CONTENT_TYPE_YAML = 'text/yaml';
+export const CONTENT_TYPE_YAML = 'application/yaml';
 export const CONTENT_TYPE_EVENT_STREAM = 'text/event-stream';
 export const CONTENT_TYPE_EDN = 'application/edn';
 export const CONTENT_TYPE_FORM_URLENCODED = 'application/x-www-form-urlencoded';
@@ -261,7 +258,7 @@ export const CONTENT_TYPE_FORM_DATA = 'multipart/form-data';
 export const CONTENT_TYPE_FILE = 'application/octet-stream';
 export const CONTENT_TYPE_GRAPHQL = 'application/graphql';
 export const CONTENT_TYPE_OTHER = '';
-const contentTypesMap: Record<string, string[]> = {
+export const contentTypesMap: Record<string, string[]> = {
   [CONTENT_TYPE_EDN]: ['EDN', 'EDN'],
   [CONTENT_TYPE_FILE]: ['File', 'Binary File'],
   [CONTENT_TYPE_FORM_DATA]: ['Multipart', 'Multipart Form'],
@@ -395,8 +392,8 @@ export function getContentTypeName(contentType?: string | null, useLong = false)
   return useLong ? contentTypesMap[CONTENT_TYPE_OTHER][1] : contentTypesMap[CONTENT_TYPE_OTHER][0];
 }
 
-export function getAuthTypeName(authType: string, useLong = false) {
-  if (authTypesMap.hasOwnProperty(authType)) {
+export function getAuthTypeName(authType?: string, useLong = false) {
+  if (authType && authTypesMap.hasOwnProperty(authType)) {
     return useLong ? authTypesMap[authType][1] : authTypesMap[authType][0];
   } else {
     return '';

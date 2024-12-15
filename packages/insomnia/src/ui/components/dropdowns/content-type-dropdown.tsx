@@ -15,11 +15,11 @@ import {
   getContentTypeName,
   METHOD_POST,
 } from '../../../common/constants';
-import { Request, RequestBody, RequestHeader, RequestParameter } from '../../../models/request';
+import type { Request, RequestBody, RequestHeader, RequestParameter } from '../../../models/request';
 import { deconstructQueryStringToParams } from '../../../utils/url/querystring';
-import { SegmentEvent } from '../../analytics';
+
 import { useRequestPatcher } from '../../hooks/use-request';
-import { RequestLoaderData } from '../../routes/request';
+import type { RequestLoaderData } from '../../routes/request';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { AlertModal } from '../modals/alert-modal';
 import { showModal } from '../modals/index';
@@ -61,7 +61,7 @@ export const ContentTypeDropdown: FC = () => {
       });
     }
     patchRequest(requestId, { body: { mimeType } });
-    window.main.trackSegmentEvent({ event: SegmentEvent.requestBodyTypeSelect, properties: { type: mimeType } });
+
   };
 
   const { body } = activeRequest;

@@ -1,17 +1,16 @@
 /* eslint-disable prefer-rest-params -- don't want to change ...arguments usage for these sensitive functions without more testing */
+import NeDB from '@seald-io/nedb';
 import electron from 'electron';
-import NeDB from 'nedb';
 import fsPath from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 import { mustGetModel } from '../models';
-import { CookieJar } from '../models/cookie-jar';
-import { Environment } from '../models/environment';
-import { GitRepository } from '../models/git-repository';
+import type { CookieJar } from '../models/cookie-jar';
+import { type Environment } from '../models/environment';
+import type { GitRepository } from '../models/git-repository';
 import type { BaseModel } from '../models/index';
 import * as models from '../models/index';
 import type { Workspace } from '../models/workspace';
-import { DB_PERSIST_INTERVAL } from './constants';
 import { generateId } from './misc';
 
 export interface Query {
@@ -40,10 +39,12 @@ export interface SpecificQuery {
 export type ModelQuery<T extends BaseModel> = Partial<Record<keyof T, SpecificQuery>>;
 export type ChangeType = 'insert' | 'update' | 'remove';
 export const database = {
-  all: async function<T extends BaseModel>(type: string) {
+  // Get all documents of a certain type
+  all: async function <T extends BaseModel>(type: string) {
     if (db._empty) {
       return _send<T[]>('all', ...arguments);
     }
+
     return database.find<T>(type);
   },
 
@@ -51,6 +52,7 @@ export const database = {
     if (db._empty) {
       return _send<void>('batchModifyDocs', ...arguments);
     }
+
     const flushId = await database.bufferChanges();
 
     // Perform from least to most dangerous
@@ -60,11 +62,13 @@ export const database = {
     await database.flushChanges(flushId);
   },
 
-  /** buffers database changes and returns a buffer id */
+  /** buffers database changes and returns a buffer id, automatically call flushChanges in millis,
+   * bufferChanges and flushChanges should be called in pair every time documents changes are made to trigger change listeners */
   bufferChanges: async function(millis = 1000) {
     if (db._empty) {
       return _send<number>('bufferChanges', ...arguments);
     }
+
     bufferingChanges = true;
     setTimeout(database.flushChanges, millis);
     return ++bufferChangesId;
@@ -75,14 +79,17 @@ export const database = {
     if (db._empty) {
       return _send<number>('bufferChangesIndefinitely', ...arguments);
     }
+
     bufferingChanges = true;
     return ++bufferChangesId;
   },
 
-  count: async function<T extends BaseModel>(type: string, query: Query = {}) {
+  /** return count num of documents matching query */
+  count: async function <T extends BaseModel>(type: string, query: Query<T> = {}) {
     if (db._empty) {
       return _send<number>('count', ...arguments);
     }
+
     return new Promise<number>((resolve, reject) => {
       (db[type] as NeDB<T>).count(query, (err, count) => {
         if (err) {
@@ -121,10 +128,12 @@ export const database = {
     return database.update<T>(doc);
   },
 
-  duplicate: async function<T extends BaseModel>(originalDoc: T, patch: Patch<T> = {}) {
+  /** duplicate doc and its decendents recursively */
+  duplicate: async function <T extends BaseModel>(originalDoc: T, patch: Patch<T> = {}) {
     if (db._empty) {
       return _send<T>('duplicate', ...arguments);
     }
+
     const flushId = await database.bufferChanges();
 
     async function next<T extends BaseModel>(docToCopy: T, patch: Patch<T>) {
@@ -165,14 +174,16 @@ export const database = {
     return createdDoc;
   },
 
-  find: async function<T extends BaseModel>(
+  /** find documents matching query */
+  find: async function <T extends BaseModel>(
     type: string,
-    query: Query | string = {},
+    query: Query<T> | string = {},
     sort: Sort = { created: 1 },
   ) {
     if (db._empty) {
       return _send<T[]>('find', ...arguments);
     }
+
     return new Promise<T[]>((resolve, reject) => {
       (db[type] as NeDB<T>)
         .find(query)
@@ -194,14 +205,15 @@ export const database = {
     });
   },
 
-  findMostRecentlyModified: async function<T extends BaseModel>(
+  findMostRecentlyModified: async function <T extends BaseModel>(
     type: string,
-    query: Query = {},
+    query: Query<T> = {},
     limit: number | null = null,
   ) {
     if (db._empty) {
       return _send<T[]>('findMostRecentlyModified', ...arguments);
     }
+
     return new Promise<T[]>(resolve => {
       (db[type] as NeDB<T>)
         .find(query)
@@ -228,6 +240,7 @@ export const database = {
     });
   },
 
+  /** trigger all changeListeners */
   flushChanges: async function(id = 0, fake = false) {
     if (db._empty) {
       return _send<void>('flushChanges', ...arguments);
@@ -266,7 +279,8 @@ export const database = {
     }
   },
 
-  get: async function<T extends BaseModel>(type: string, id?: string) {
+  /** get the exact document by id */
+  get: async function <T extends BaseModel>(type: string, id?: string) {
     if (db._empty) {
       return _send<T>('get', ...arguments);
     }
@@ -279,22 +293,26 @@ export const database = {
     }
   },
 
-  getMostRecentlyModified: async function<T extends BaseModel>(type: string, query: Query = {}) {
+  getMostRecentlyModified: async function <T extends BaseModel>(type: string, query: Query<T> = {}) {
     if (db._empty) {
       return _send<T>('getMostRecentlyModified', ...arguments);
     }
+
     const docs = await database.findMostRecentlyModified<T>(type, query, 1);
     return docs.length ? docs[0] : null;
   },
 
-  getWhere: async function<T extends BaseModel>(type: string, query: ModelQuery<T> | Query) {
+  /** get the first document matching query */
+  getWhere: async function <T extends BaseModel>(type: string, query: ModelQuery<T> | Query) {
     if (db._empty) {
       return _send<T>('getWhere', ...arguments);
     }
+
     const docs = await database.find<T>(type, query);
     return docs.length ? docs[0] : null;
   },
 
+  /** init in main process */
   init: async (
     types: string[],
     config: NeDB.DataStoreOptions = {},
@@ -331,13 +349,14 @@ export const database = {
           config,
         ),
       );
-      if (!config.inMemoryOnly) {
+      /* if (!config.inMemoryOnly) {
         collection.persistence.setAutocompactionInterval(DB_PERSIST_INTERVAL);
-      }
+      }*/
       db[modelType] = collection;
     }
 
     delete db._empty;
+
     electron.ipcMain.on('db.fn', async (e, fnName, replyChannel, ...args) => {
       try {
         // @ts-expect-error -- mapping unsoundness
@@ -405,6 +424,7 @@ export const database = {
     }
   },
 
+  /** init in renderer process */
   initClient: async () => {
     electron.ipcRenderer.on('db.changes', async (_e, changes) => {
       for (const fn of changeListeners) {
@@ -414,10 +434,11 @@ export const database = {
     console.log('[db] Initialized DB client');
   },
 
-  insert: async function<T extends BaseModel>(doc: T, fromSync = false, initializeModel = true) {
+  insert: async function <T extends BaseModel>(doc: T, fromSync = false, initializeModel = true) {
     if (db._empty) {
       return _send<T>('insert', ...arguments);
     }
+
     return new Promise<T>(async (resolve, reject) => {
       let docWithDefaults: T | null = null;
 
@@ -451,7 +472,8 @@ export const database = {
     changeListeners = changeListeners.filter(l => l !== callback);
   },
 
-  remove: async function<T extends BaseModel>(doc: T, fromSync = false) {
+  /** remove doc and its descendants */
+  remove: async function <T extends BaseModel>(doc: T, fromSync = false) {
     if (db._empty) {
       return _send<void>('remove', ...arguments);
     }
@@ -480,10 +502,11 @@ export const database = {
     await database.flushChanges(flushId);
   },
 
-  removeWhere: async function<T extends BaseModel>(type: string, query: Query) {
+  removeWhere: async function <T extends BaseModel>(type: string, query: Query<T>) {
     if (db._empty) {
       return _send<void>('removeWhere', ...arguments);
     }
+
     const flushId = await database.bufferChanges();
 
     for (const doc of await database.find<T>(type, query)) {
@@ -504,6 +527,7 @@ export const database = {
           },
         ),
       );
+
       docs.map(d => notifyOfChange('remove', d, false));
     }
 
@@ -511,7 +535,7 @@ export const database = {
   },
 
   /** Removes entries without removing their children */
-  unsafeRemove: async function<T extends BaseModel>(doc: T, fromSync = false) {
+  unsafeRemove: async function <T extends BaseModel>(doc: T, fromSync = false) {
     if (db._empty) {
       return _send<void>('unsafeRemove', ...arguments);
     }
@@ -520,7 +544,7 @@ export const database = {
     notifyOfChange('remove', doc, fromSync);
   },
 
-  update: async function<T extends BaseModel>(doc: T, fromSync = false) {
+  update: async function <T extends BaseModel>(doc: T, fromSync = false) {
     if (db._empty) {
       return _send<T>('update', ...arguments);
     }
@@ -553,10 +577,11 @@ export const database = {
   },
 
   // TODO(TSCONVERSION) the update method above can now take an upsert property
-  upsert: async function<T extends BaseModel>(doc: T, fromSync = false) {
+  upsert: async function <T extends BaseModel>(doc: T, fromSync = false) {
     if (db._empty) {
       return _send<T>('upsert', ...arguments);
     }
+
     const existingDoc = await database.get<T>(doc.type, doc._id);
 
     if (existingDoc) {
@@ -566,7 +591,8 @@ export const database = {
     }
   },
 
-  withAncestors: async function<T extends BaseModel>(doc: T | null, types: string[] = allTypes()) {
+  /** get all ancestors of specified types of a document */
+  withAncestors: async function <T extends BaseModel>(doc: T | null, types: string[] = allTypes()) {
     if (db._empty) {
       return _send<T[]>('withAncestors', ...arguments);
     }
@@ -604,10 +630,24 @@ export const database = {
     return next([doc]);
   },
 
-  withDescendants: async function<T extends BaseModel>(doc: T | null, stopType: string | null = null): Promise<BaseModel[]> {
+  /**
+   * Get all descendants of a document.
+   *
+   * This function retrieves all descendant documents of a given document from the database.
+   * It performs a recursive search, starting from the provided document and continuing
+   * through all child documents, until no more descendants are found or a document of the
+   * specified stop type is encountered.
+   *
+   * @param doc - The document to start the search from. If null, the search starts from the root.
+   * @param stopType - An optional type of document to stop the search at. If a document of this type is encountered, its descendants are not included.
+   * @param queryTypes - An optional array of document types to query. If not provided, all types are queried.
+   * @returns A promise that resolves to an array of all descendant documents.
+   */
+  withDescendants: async function <T extends BaseModel>(doc: T | null, stopType: string | null = null, queryTypes: string[] = []): Promise<BaseModel[]> {
     if (db._empty) {
       return _send<BaseModel[]>('withDescendants', ...arguments);
     }
+
     let docsToReturn: BaseModel[] = doc ? [doc] : [];
 
     async function next(docs: (BaseModel | null)[]): Promise<BaseModel[]> {
@@ -620,7 +660,9 @@ export const database = {
 
         const promises: Promise<BaseModel[]>[] = [];
 
-        for (const type of allTypes()) {
+        const types = queryTypes?.length ? queryTypes : allTypes();
+
+        for (const type of types) {
           // If the doc is null, we want to search for parentId === null
           const parentId = doc ? doc._id : null;
           const promise = database.find(type, { parentId });
@@ -655,6 +697,7 @@ interface DB {
 
 // @ts-expect-error -- TSCONVERSION _empty doesn't match the index signature, use something other than _empty in future
 const db: DB = {
+  // _empty is true if it's in the renderer process
   _empty: true,
 } as DB;
 
@@ -686,6 +729,10 @@ type ChangeListener = (changes: ChangeBufferEvent[]) => void;
 
 let changeListeners: ChangeListener[] = [];
 
+/**
+ * push changes into the buffer, so that changeListeners can get change contents when database.flushChanges is called,
+ * this method should be called whenever a document change happens
+ */
 async function notifyOfChange<T extends BaseModel>(event: ChangeType, doc: T, fromSync: boolean) {
   const updatedDoc = doc;
 
@@ -706,6 +753,11 @@ type Patch<T> = Partial<T>;
 // ~~~~~~~ //
 // Helpers //
 // ~~~~~~~ //
+
+/**
+* If you call database.x methods within the render process, you can obtain results by this helper function.
+* In renderer process, db._empty is true.
+*/
 async function _send<T>(fnName: string, ...args: any[]) {
   return new Promise<T>((resolve, reject) => {
     const replyChannel = `db.fn.reply:${uuidv4()}`;

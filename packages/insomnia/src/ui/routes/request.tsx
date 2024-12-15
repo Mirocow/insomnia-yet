@@ -3,31 +3,31 @@ import path from 'node:path';
 
 import * as contentDisposition from 'content-disposition';
 import { extension as mimeExtension } from 'mime-types';
-import { ActionFunction, LoaderFunction, redirect } from 'react-router-dom';
+import { type ActionFunction, type LoaderFunction, redirect } from 'react-router-dom';
 
 import { version } from '../../../package.json';
 import { CONTENT_TYPE_EVENT_STREAM, CONTENT_TYPE_GRAPHQL, CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '../../common/constants';
-import { ChangeBufferEvent, database } from '../../common/database';
+import { type ChangeBufferEvent, database } from '../../common/database';
 import { getContentDispositionHeader } from '../../common/misc';
-import { RENDER_PURPOSE_SEND, RenderedRequest } from '../../common/render';
-import { ResponsePatch } from '../../main/network/libcurl-promise';
+import { RENDER_PURPOSE_SEND, type RenderedRequest } from '../../common/render';
+import type { ResponsePatch } from '../../main/network/libcurl-promise';
+import type { BaseModel } from '../../models';
 import * as models from '../../models';
-import { BaseModel } from '../../models';
-import { CookieJar } from '../../models/cookie-jar';
-import { GrpcRequest, isGrpcRequestId } from '../../models/grpc-request';
-import { GrpcRequestMeta } from '../../models/grpc-request-meta';
+import type { CookieJar } from '../../models/cookie-jar';
+import { type GrpcRequest, isGrpcRequestId } from '../../models/grpc-request';
+import type { GrpcRequestMeta } from '../../models/grpc-request-meta';
 import * as requestOperations from '../../models/helpers/request-operations';
-import { isEventStreamRequest, isRequest, Request, RequestAuthentication, RequestBody, RequestHeader, RequestParameter } from '../../models/request';
-import { isRequestMeta, RequestMeta } from '../../models/request-meta';
-import { RequestVersion } from '../../models/request-version';
-import { Response } from '../../models/response';
-import { isWebSocketRequestId, WebSocketRequest } from '../../models/websocket-request';
-import { WebSocketResponse } from '../../models/websocket-response';
+import { isEventStreamRequest, isRequest, type Request, type RequestAuthentication, type RequestBody, type RequestHeader, type RequestParameter } from '../../models/request';
+import { isRequestMeta, type RequestMeta } from '../../models/request-meta';
+import type { RequestVersion } from '../../models/request-version';
+import type { Response } from '../../models/response';
+import { isWebSocketRequestId, type WebSocketRequest } from '../../models/websocket-request';
+import type { WebSocketResponse } from '../../models/websocket-response';
 import { fetchRequestData, responseTransform, sendCurlAndWriteTimeline, tryToInterpolateRequest } from '../../network/network';
 import { invariant } from '../../utils/invariant';
-import { SegmentEvent } from '../analytics';
+import { SegmentEvent } from '../analytics.ts';
 import { updateMimeType } from '../components/dropdowns/content-type-dropdown';
-import { CreateRequestType } from '../hooks/use-request';
+import type { CreateRequestType } from '../hooks/use-request';
 
 export interface WebSocketRequestLoaderData {
   activeRequest: WebSocketRequest;
@@ -62,7 +62,7 @@ export const loader: LoaderFunction = async ({ params }): Promise<RequestLoaderD
   const activeWorkspaceMeta = await models.workspaceMeta.getByParentId(workspaceId);
   invariant(activeWorkspaceMeta, 'Active workspace meta not found');
   // NOTE: loaders shouldnt mutate data, this should be moved somewhere else
-  await models.workspaceMeta.update(activeWorkspaceMeta, { activeRequestId: requestId });
+  await models.workspaceMeta.updateByParentId(workspaceId, { activeRequestId: requestId });
   if (isGrpcRequestId(requestId)) {
     return {
       activeRequest,

@@ -2,9 +2,9 @@ import type { IRuleResult } from '@stoplight/spectral-core';
 import CodeMirror from 'codemirror';
 import { stat } from 'fs/promises';
 import path from 'path';
-import React, { createRef, FC, Fragment, useCallback, useEffect, useMemo } from 'react';
+import React, { createRef, type FC, Fragment, useCallback, useEffect, useMemo } from 'react';
 import {
-  LoaderFunction,
+  type LoaderFunction,
   useFetcher,
   useLoaderData,
   useParams,
@@ -16,17 +16,16 @@ import { SwaggerUIBundle } from 'swagger-ui-dist';
 import { parseApiSpec } from '../../common/api-specs';
 import { ACTIVITY_SPEC } from '../../common/constants';
 import { debounce } from '../../common/misc';
-import { ApiSpec } from '../../models/api-spec';
+import type { ApiSpec } from '../../models/api-spec';
 import * as models from '../../models/index';
 import { invariant } from '../../utils/invariant';
 import {
   CodeEditor,
-  CodeEditorHandle,
+  type CodeEditorHandle,
 } from '../components/codemirror/code-editor';
 import { DesignEmptyState } from '../components/design-empty-state';
-import { WorkspaceSyncDropdown } from '../components/dropdowns/workspace-sync-dropdown';
 import { ErrorBoundary } from '../components/error-boundary';
-import { Notice, NoticeTable } from '../components/notice-table';
+import { type Notice, NoticeTable } from '../components/notice-table';
 import { SidebarLayout } from '../components/sidebar-layout';
 import { SpecEditorSidebar } from '../components/spec-editor/spec-editor-sidebar';
 import { Tooltip } from '../components/tooltip';
@@ -138,16 +137,18 @@ const SwaggerUIDiv = ({ text }: { text: string }) => {
     try {
       spec = parseApiSpec(text).contents || {};
     } catch (err) { }
-    SwaggerUIBundle({ spec, dom_id: '#swagger-ui' });
+    SwaggerUIBundle({ spec: spec, dom_id: '#swagger-ui' });
   }, [text]);
-  return <div
-    id="swagger-ui"
-    style={{
-      overflowY: 'auto',
-      height: '100%',
-      background: '#FFF',
-    }}
-  />;
+  return (
+    <div
+      id="swagger-ui"
+      style={{
+        overflowY: 'auto',
+        height: '100%',
+        background: '#FFF',
+      }}
+    />
+  );
 };
 
 interface LintMessage extends Notice {
@@ -260,7 +261,7 @@ const Design: FC = () => {
                 gridRowStart: 6,
               }}
             >
-              <WorkspaceSyncDropdown />
+
             </div>
           </ErrorBoundary>
         ) : (
@@ -271,7 +272,7 @@ const Design: FC = () => {
                 gridRowStart: 6,
               }}
             >
-              <WorkspaceSyncDropdown />
+
             </div>
           </Fragment>
         )

@@ -17,8 +17,8 @@ import {
 } from '../common/render';
 import type { HeaderResult, ResponsePatch, ResponseTimelineEntry } from '../main/network/libcurl-promise';
 import * as models from '../models';
-import { CaCertificate } from '../models/ca-certificate';
-import { ClientCertificate } from '../models/client-certificate';
+import type { CaCertificate } from '../models/ca-certificate';
+import type { ClientCertificate } from '../models/client-certificate';
 import type { Request, RequestAuthentication, RequestParameter } from '../models/request';
 import type { Settings } from '../models/settings';
 import { isWorkspace } from '../models/workspace';

@@ -1,9 +1,9 @@
 import Color from 'color';
 
 import { getAppDefaultTheme } from '../common/constants';
-import { ThemeSettings } from '../models/settings';
+import type { ThemeSettings } from '../models/settings';
 import type { Theme } from './index';
-import { ColorScheme, getThemes } from './index';
+import { type ColorScheme, getThemes } from './index';
 
 export type HexColor = `#${string}`;
 export type RGBColor = `rgb(${string})`;
@@ -221,7 +221,7 @@ function getThemeBlockCSS(block?: ThemeBlock) {
       addVar(variable, rgb.string());
       addVar(`${variable}-rgb`, rgb.array().join(', '));
     } catch (err) {
-      console.log('Failed to parse theme color', value);
+      console.log('[theme] Failed to parse theme color', value);
     }
   };
 

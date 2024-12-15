@@ -1,7 +1,7 @@
 import type { IRuleResult } from '@stoplight/spectral-core';
 import { generate, runTests, type Test } from 'insomnia-testing';
 import path from 'path';
-import { ActionFunction, redirect } from 'react-router-dom';
+import { type ActionFunction, redirect } from 'react-router-dom';
 
 import * as session from '../../account/session';
 import { parseApiSpec, resolveComponentSchemaRefs } from '../../common/api-specs';
@@ -14,16 +14,16 @@ import * as models from '../../models';
 import { getById, update } from '../../models/helpers/request-operations';
 import { DEFAULT_ORGANIZATION_ID } from '../../models/organization';
 import { DEFAULT_PROJECT_ID, isRemoteProject } from '../../models/project';
-import { isRequest, Request } from '../../models/request';
+import { isRequest, type Request } from '../../models/request';
 import { isRequestGroup, isRequestGroupId } from '../../models/request-group';
-import { UnitTest } from '../../models/unit-test';
-import { isCollection, Workspace } from '../../models/workspace';
-import { WorkspaceMeta } from '../../models/workspace-meta';
+import type { UnitTest } from '../../models/unit-test';
+import { isCollection, type Workspace } from '../../models/workspace';
+import type { WorkspaceMeta } from '../../models/workspace-meta';
 import { getSendRequestCallback } from '../../network/unit-test-feature';
 import { initializeLocalBackendProjectAndMarkForSync } from '../../sync/vcs/initialize-backend-project';
 import { getVCS } from '../../sync/vcs/vcs';
 import { invariant } from '../../utils/invariant';
-import { SegmentEvent } from '../analytics';
+import { SegmentEvent } from '../analytics.ts';
 
 // Project
 export const createNewProjectAction: ActionFunction = async ({ request, params }) => {

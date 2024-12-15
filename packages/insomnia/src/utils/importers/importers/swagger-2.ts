@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { OpenAPIV2 } from 'openapi-types';
 import YAML from 'yaml';
 
-import { Converter, Header, ImportRequest } from '../entities';
+import type { Converter, Header, ImportRequest } from '../entities';
 import { unthrowableParseJson } from '../utils';
 
 const SUPPORTED_SWAGGER_VERSION = '2.0';
@@ -341,7 +341,7 @@ const prepareHeaders = (
 const resolve$ref = (document: OpenAPIV2.Document, $ref: string) => {
   const [, ...parts] = $ref.split('/') as (keyof OpenAPIV2.Document)[];
   return parts.reduce(
-    (accumulator, path) => accumulator[path] as OpenAPIV2.Document,
+    (accumulator, path) => accumulator[path] as unknown as OpenAPIV2.Document,
     document,
   );
 };

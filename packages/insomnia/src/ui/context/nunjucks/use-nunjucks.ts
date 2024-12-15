@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
-import { getRenderContext, getRenderContextAncestors, HandleGetRenderContext, HandleRender, render } from '../../../common/render';
+import { getRenderContext, getRenderContextAncestors, type HandleGetRenderContext, type HandleRender, render } from '../../../common/render';
 import { NUNJUCKS_TEMPLATE_GLOBAL_PROPERTY_NAME } from '../../../templating';
 import { getKeys } from '../../../templating/utils';
-import { RequestLoaderData } from '../../routes/request';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import type { RequestLoaderData } from '../../routes/request';
+import type { WorkspaceLoaderData } from '../../routes/workspace';
 let getRenderContextPromiseCache: any = {};
 
 export const initializeNunjucksRenderPromiseCache = () => {
@@ -23,15 +23,18 @@ export const useNunjucks = () => {
 
   const fetchRenderContext = useCallback(async () => {
     const ancestors = await getRenderContextAncestors(requestData?.activeRequest || workspaceData?.activeWorkspace);
+    const environmentId = workspaceData?.activeEnvironment._id;
     return getRenderContext({
       request: requestData?.activeRequest || undefined,
-      environmentId: workspaceData?.activeEnvironment._id,
+      environmentId: environmentId,
+      environment: environmentId,
       ancestors,
     });
   }, [requestData?.activeRequest, workspaceData?.activeWorkspace, workspaceData?.activeEnvironment._id]);
 
-  const handleGetRenderContext: HandleGetRenderContext = useCallback(async () => {
-    const context = await fetchRenderContext();
+  const handleGetRenderContext: HandleGetRenderContext = useCallback(async (contextCacheKey?: string) => {
+    const context = contextCacheKey && getRenderContextPromiseCache[contextCacheKey] ?
+      await getRenderContextPromiseCache[contextCacheKey] : await fetchRenderContext();
     const keys = getKeys(context, NUNJUCKS_TEMPLATE_GLOBAL_PROPERTY_NAME);
     return { context, keys };
   }, [fetchRenderContext]);

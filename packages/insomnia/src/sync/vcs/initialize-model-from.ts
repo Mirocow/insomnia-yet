@@ -1,9 +1,9 @@
 import * as models from '../../models';
-import { RemoteProject } from '../../models/project';
-import { Project } from '../../models/project';
-import { Workspace, WorkspaceScopeKeys } from '../../models/workspace';
-import { Team } from '../types';
-import { BackendProject } from '../types';
+import type { RemoteProject } from '../../models/project';
+import type { Project } from '../../models/project';
+import { type Workspace, WorkspaceScopeKeys } from '../../models/workspace';
+import type { Team } from '../types';
+import type { BackendProject } from '../types';
 
 export const initializeProjectFromTeam = (team: Team) => models.initModel<RemoteProject>(
   models.project.type,

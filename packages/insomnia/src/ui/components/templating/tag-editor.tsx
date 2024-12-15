@@ -45,6 +45,7 @@ interface State {
     value: string;
   }[];
 }
+
 const sortRequests = (_models: (Request | RequestGroup)[], parentId: string) => {
   let sortedModels: (Request | RequestGroup)[] = [];
   _models
@@ -60,6 +61,7 @@ const sortRequests = (_models: (Request | RequestGroup)[], parentId: string) => 
     });
   return sortedModels;
 };
+
 export const TagEditor: FC<Props> = props => {
   const [state, setState] = useState<State>({
     activeTagData: null,
@@ -260,17 +262,19 @@ export const TagEditor: FC<Props> = props => {
   if (!activeTagData) {
     return null;
   }
+
   let finalPreview = preview;
   if (activeTagDefinition?.disablePreview && activeTagDefinition.disablePreview(activeTagData.args)) {
     finalPreview = preview.replace(/./g, '*');
   }
+  
   let previewElement;
   if (error) {
-    previewElement = <textarea className="danger" value={error || 'Error'} readOnly rows={5} />;
+    previewElement = <textarea className="danger" value={error || 'Error'} readOnly rows={10} />;
   } else if (rendering) {
-    previewElement = <textarea value="rendering..." readOnly rows={5} />;
+    previewElement = <textarea value="rendering..." readOnly rows={10} />;
   } else {
-    previewElement = <textarea value={finalPreview || 'error'} readOnly rows={5} />;
+    previewElement = <textarea value={finalPreview || 'error'} readOnly rows={10} />;
   }
 
   return (
@@ -289,7 +293,7 @@ export const TagEditor: FC<Props> = props => {
           >
             {state.tagDefinitions.map((tagDefinition, i) => (
               <option key={`${i}::${tagDefinition.name}`} value={tagDefinition.name}>
-                {tagDefinition.displayName} – {tagDefinition.description}
+                {tagDefinition.displayName}({tagDefinition.name}) – {tagDefinition.description}
               </option>
             ))}
             <option value="custom">-- Custom --</option>
@@ -313,6 +317,7 @@ export const TagEditor: FC<Props> = props => {
         } else {
           return null;
         }
+
         if (!argData) {
           console.error('Failed to find argument to set default', {
             argDefinition,
@@ -321,6 +326,7 @@ export const TagEditor: FC<Props> = props => {
           });
           return null;
         }
+
         const strValue = templateUtils.decodeEncoding(argData.value?.toString() || '');
         const isVariable = argData.type === 'variable';
 
@@ -338,6 +344,19 @@ export const TagEditor: FC<Props> = props => {
               onChange={handleChange}
               data-encoding={encoding}
             />);
+
+          } else if (argDefinition.type === 'text') {
+            const placeholder =
+              typeof argDefinition.placeholder === 'string' ? argDefinition.placeholder : '';
+            const encoding = argDefinition.encoding || 'utf8';
+            argInput = (<textarea
+              defaultValue={strValue.replace(/\\\\/g, '\\') || ''}
+              placeholder={placeholder}
+              onChange={handleChange}
+              data-encoding={encoding}
+              rows={1}
+            />);
+
           } else if (argDefinition.type === 'enum') {
             argInput = (
               <select value={strValue} onChange={handleChange}>
@@ -350,6 +369,7 @@ export const TagEditor: FC<Props> = props => {
                 ))}
               </select>
             );
+
           } else if (argDefinition.type === 'file') {
             argInput = (<FileInputButton
               showFileIcon
@@ -360,6 +380,7 @@ export const TagEditor: FC<Props> = props => {
               itemtypes={argDefinition.itemTypes}
               extensions={argDefinition.extensions}
             />);
+
           } else if (argDefinition.type === 'model') {
             argInput = state.loadingDocs ? (
               <select disabled={state.loadingDocs}>
@@ -389,8 +410,10 @@ export const TagEditor: FC<Props> = props => {
                 })}
               </select>
             );
+
           } else if (argDefinition.type === 'boolean') {
             argInput = <input type="checkbox" checked={strValue.toLowerCase() === 'true'} onChange={handleChange} />;
+
           } else if (argDefinition.type === 'number') {
             argInput = (<input
               type="number"
@@ -398,29 +421,35 @@ export const TagEditor: FC<Props> = props => {
               placeholder={typeof argDefinition.placeholder === 'string' ? argDefinition.placeholder : ''}
               onChange={handleChange}
             />);
+
           } else {
             return null;
           }
         }
+
         const help =
           typeof argDefinition.help === 'string' || typeof argDefinition.help === 'function'
             ? fnOrString(argDefinition.help, activeTagData.args)
             : '';
+
         const displayName =
           typeof argDefinition.displayName === 'string' ||
             typeof argDefinition.displayName === 'function'
             ? fnOrString(argDefinition.displayName, activeTagData.args)
             : '';
+
         let validationError = '';
-        const canValidate = argDefinition.type === 'string' || argDefinition.type === 'number';
+        const canValidate = argDefinition.type === 'string' || argDefinition.type === 'text' || argDefinition.type === 'number';
         if (canValidate && typeof argDefinition.validate === 'function') {
           validationError = argDefinition.validate(strValue) || '';
         }
+
         const formControlClasses = classnames({
           'form-control': true,
           'form-control--thin': argDefinition.type === 'boolean',
           'form-control--outlined': argDefinition.type !== 'boolean',
         });
+
         return (
           <div key={index} className="form-row">
             <div className={formControlClasses}>

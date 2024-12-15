@@ -6,7 +6,7 @@ import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-insta
 import path from 'path';
 
 import { userDataFolder } from '../config/config.json';
-import { changelogUrl, getAppVersion, isDevelopment, isMac } from './common/constants';
+import { getAppVersion, isDevelopment, isMac } from './common/constants';
 import { database } from './common/database';
 import log, { initializeLogging } from './common/log';
 import { backupIfNewerVersionAvailable } from './main/backup';
@@ -20,7 +20,6 @@ import * as updates from './main/updates';
 import * as windowUtils from './main/window-utils';
 import * as models from './models/index';
 import type { Stats } from './models/stats';
-import type { ToastNotification } from './ui/components/toast';
 
 // Handle potential auto-update
 if (checkIfRestartNeeded()) {
@@ -236,19 +235,6 @@ async function _trackStats() {
       return;
     }
     console.log('[main] App update detected', currentVersion, lastVersion);
-    const notification: ToastNotification = {
-      key: `updated-${currentVersion}`,
-      url: changelogUrl(),
-      cta: "See What's New",
-      message: `Updated to ${currentVersion}`,
-    };
-    // Wait a bit before showing the user because the app just launched.
-    setTimeout(async () => {
-      for (const window of BrowserWindow.getAllWindows()) {
-        // @ts-expect-error -- TSCONVERSION likely needs to be window.webContents.send instead
-        window.send('show-notification', notification);
-      }
-    }, 5000);
   });
   return stats;
 }

@@ -1,4 +1,4 @@
-import { IconName } from '@fortawesome/fontawesome-svg-core';
+import type { IconName } from '@fortawesome/fontawesome-svg-core';
 import React, { Fragment, useCallback, useState } from 'react';
 import { Button, Item, Menu, MenuTrigger, Popover } from 'react-aria-components';
 import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
@@ -6,20 +6,21 @@ import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 import { exportHarRequest } from '../../../common/har';
 import { toKebabCase } from '../../../common/misc';
 import { RENDER_PURPOSE_NO_RENDER } from '../../../common/render';
-import { PlatformKeyCombinations } from '../../../common/settings';
+import type { PlatformKeyCombinations } from '../../../common/settings';
 import type { Environment } from '../../../models/environment';
-import { GrpcRequest } from '../../../models/grpc-request';
-import { Project } from '../../../models/project';
-import { isRequest, Request } from '../../../models/request';
+import type { GrpcRequest } from '../../../models/grpc-request';
+import type { Project } from '../../../models/project';
+import { isRequest, type Request } from '../../../models/request';
 import type { RequestGroup } from '../../../models/request-group';
 import { incrementDeletedRequests } from '../../../models/stats';
 // Plugin action related imports
-import { WebSocketRequest } from '../../../models/websocket-request';
+// Plugin action related imports
+import type { WebSocketRequest } from '../../../models/websocket-request';
 import type { RequestAction } from '../../../plugins';
 import { getRequestActions } from '../../../plugins';
 import * as pluginContexts from '../../../plugins/context/index';
 import { useRequestMetaPatcher, useRequestPatcher } from '../../hooks/use-request';
-import { RootLoaderData } from '../../routes/root';
+import type { RootLoaderData } from '../../routes/root';
 import { type DropdownProps } from '../base/dropdown';
 import { Icon } from '../icon';
 import { showError, showModal, showPrompt } from '../modals';

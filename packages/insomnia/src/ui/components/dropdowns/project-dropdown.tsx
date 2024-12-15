@@ -1,5 +1,5 @@
-import { IconName } from '@fortawesome/fontawesome-svg-core';
-import React, { FC, Fragment, useState } from 'react';
+import type { IconName } from '@fortawesome/fontawesome-svg-core';
+import React, { type FC, Fragment, useState } from 'react';
 import {
   Button,
   Item,
@@ -9,7 +9,7 @@ import {
 } from 'react-aria-components';
 import { useFetcher } from 'react-router-dom';
 
-import {
+import type {
   Project,
 } from '../../../models/project';
 import { Icon } from '../icon';

@@ -1,10 +1,10 @@
 import { AxiosResponse } from 'axios';
 import type { GraphQLError } from 'graphql';
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { type MouseEvent, useEffect, useState } from 'react';
 import { useInterval, useLocalStorage } from 'react-use';
 import styled from 'styled-components';
 
-import { GitRepository } from '../../../../models/git-repository';
+import type { GitRepository } from '../../../../models/git-repository';
 import {
   exchangeCodeForToken,
   generateAuthorizationUrl,

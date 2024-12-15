@@ -6,7 +6,7 @@ import * as crypt from '../../account/crypt';
 import * as session from '../../account/session';
 import { generateId } from '../../common/misc';
 import { strings } from '../../common/strings';
-import { BaseModel } from '../../models';
+import type { BaseModel } from '../../models';
 import Store from '../store';
 import type { BaseDriver } from '../store/drivers/base';
 import type FileSystemDriver from '../store/drivers/file-system-driver';

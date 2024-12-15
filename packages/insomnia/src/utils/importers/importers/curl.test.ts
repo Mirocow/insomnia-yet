@@ -123,7 +123,7 @@ describe('curl', () => {
       { flag: '--data-urlencode', inputs: ['=value'], expected: [{ name: '', value: 'value' }] },
 
       // --data-urlencode URI encoding
-      { flag: '--data-urlencode', inputs: ['a='], expected: [{ name: '', value: 'a=' }] },
+      { flag: '--data-urlencode', inputs: ['a='], expected: [{ name: 'a', value: '' }] },
       { flag: '--data-urlencode', inputs: [' '], expected: [{ name: '', value: ' ' }] },
       { flag: '--data-urlencode', inputs: ['<'], expected: [{ name: '', value: '<' }] },
       { flag: '--data-urlencode', inputs: ['>'], expected: [{ name: '', value: '>' }] },
@@ -133,7 +133,7 @@ describe('curl', () => {
       { flag: '--data-urlencode', inputs: ['|'], expected: [{ name: '', value: '|' }] },
       { flag: '--data-urlencode', inputs: ['^'], expected: [{ name: '', value: '^' }] },
       { flag: '--data-urlencode', inputs: ['"'], expected: [{ name: '', value: '"' }] },
-      { flag: '--data-urlencode', inputs: ['='], expected: [{ name: '', value: '=' }] },
+      { flag: '--data-urlencode', inputs: ['='], expected: [{ name: '', value: '' }] },
       { flag: '--data-urlencode', inputs: ['%3D'], expected: [{ name: '', value: '%3D' }] },
     ])('handles %p correctly', async ({
       flag,
@@ -150,6 +150,25 @@ describe('curl', () => {
         body: {
           params: expected,
         },
+      }]);
+    });
+  });
+  describe('cURL -H flags', () => {
+    it.each([
+      { flag: '-H', inputs: ['X-Host: example.com'], expected: [{ name: 'X-Host', value: 'example.com' }] },
+      { flag: '-H', inputs: ['X-Host:example.com'], expected: [{ name: 'X-Host', value: 'example.com' }] },
+      { flag: '-H', inputs: ['Content-Type:application/x-www-form-urlencoded'], expected: [{ name: 'Content-Type', value: 'application/x-www-form-urlencoded' }] },
+      { flag: '   -H', inputs: ['Content-Type:application/x-www-form-urlencoded'], expected: [{ name: 'Content-Type', value: 'application/x-www-form-urlencoded' }] },
+      { flag: ' -H', inputs: ['Content-Type:application/x-www-form-urlencoded'], expected: [{ name: 'Content-Type', value: 'application/x-www-form-urlencoded' }] },
+    ])('handles %p correctly', async ({
+      flag,
+      inputs,
+      expected,
+    }: { flag: string; inputs: string[]; expected: Parameter[] }) => {
+      const flaggedInputs = inputs.map(input => `${flag} ${quote([input])}`).join(' ');
+      const rawData = `curl https://example.com ${flaggedInputs}`;
+      expect(convert(rawData)).toMatchObject([{
+        headers: expected,
       }]);
     });
   });

@@ -1,7 +1,7 @@
-import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { ServiceError, StatusObject } from '@grpc/grpc-js';
+import type { IconName } from '@fortawesome/fontawesome-svg-core';
+import type { ServiceError, StatusObject } from '@grpc/grpc-js';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import React, { FC, Fragment, useEffect, useRef, useState } from 'react';
+import React, { type FC, Fragment, useEffect, useRef, useState } from 'react';
 import {
   Button,
   DropIndicator,
@@ -18,7 +18,7 @@ import {
   useDragAndDrop,
 } from 'react-aria-components';
 import {
-  LoaderFunction,
+  type LoaderFunction,
   redirect,
   useFetcher,
   useNavigate,
@@ -27,20 +27,20 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { SORT_ORDERS, SortOrder, sortOrderName } from '../../common/constants';
-import { ChangeBufferEvent, database as db } from '../../common/database';
+import { SORT_ORDERS, type SortOrder, sortOrderName } from '../../common/constants';
+import { type ChangeBufferEvent, database as db } from '../../common/database';
 import { generateId } from '../../common/misc';
-import { PlatformKeyCombinations } from '../../common/settings';
+import type { PlatformKeyCombinations } from '../../common/settings';
 import type { GrpcMethodInfo } from '../../main/ipc/grpc';
 import * as models from '../../models';
-import { Environment } from '../../models/environment';
+import type { Environment } from '../../models/environment';
 import { isGrpcRequest, isGrpcRequestId } from '../../models/grpc-request';
 import { getByParentId as getGrpcRequestMetaByParentId } from '../../models/grpc-request-meta';
 import {
   isEventStreamRequest,
   isRequest,
   isRequestId,
-  Request,
+  type Request,
 } from '../../models/request';
 import { isRequestGroup } from '../../models/request-group';
 import { getByParentId as getRequestMetaByParentId } from '../../models/request-meta';
@@ -51,7 +51,7 @@ import {
 import { invariant } from '../../utils/invariant';
 import { RequestActionsDropdown } from '../components/dropdowns/request-actions-dropdown';
 import { RequestGroupActionsDropdown } from '../components/dropdowns/request-group-actions-dropdown';
-import { WorkspaceSyncDropdown } from '../components/dropdowns/workspace-sync-dropdown';
+
 import { ErrorBoundary } from '../components/error-boundary';
 import { Icon } from '../components/icon';
 import { useDocBodyKeyboardShortcuts } from '../components/keydown-binder';
@@ -75,17 +75,17 @@ import { RealtimeResponsePane } from '../components/websockets/realtime-response
 import { WebSocketRequestPane } from '../components/websockets/websocket-request-pane';
 import { useReadyState } from '../hooks/use-ready-state';
 import {
-  CreateRequestType,
+  type CreateRequestType,
   useRequestGroupMetaPatcher,
   useRequestMetaPatcher,
 } from '../hooks/use-request';
-import {
+import type {
   GrpcRequestLoaderData,
   RequestLoaderData,
   WebSocketRequestLoaderData,
 } from './request';
-import { RootLoaderData } from './root';
-import { Child, WorkspaceLoaderData } from './workspace';
+import type { RootLoaderData } from './root';
+import type { Child, WorkspaceLoaderData } from './workspace';
 
 export interface GrpcMessage {
   id: string;
@@ -998,7 +998,7 @@ export const Debug: FC = () => {
             </div>
           </div>
 
-          <WorkspaceSyncDropdown />
+
 
           {isEnvironmentModalOpen && (
             <WorkspaceEnvironmentsEditModal

@@ -1,12 +1,12 @@
 import { DEFAULT_BRANCH_NAME } from '../../common/constants';
 import { database } from '../../common/database';
-import { RemoteProject } from '../../models/project';
+import type { RemoteProject } from '../../models/project';
 import { isWorkspace } from '../../models/workspace';
 import {
   initializeProjectFromTeam,
   initializeWorkspaceFromBackendProject,
 } from './initialize-model-from';
-import { BackendProjectWithTeam } from './normalize-backend-project-team';
+import type { BackendProjectWithTeam } from './normalize-backend-project-team';
 import { interceptAccessError } from './util';
 import { VCS } from './vcs';
 

@@ -1,9 +1,11 @@
-import objectPath from 'objectpath';
+import type { EditorFromTextArea, MarkerRange } from 'codemirror';
+import _ from 'lodash';
 
 import type { DisplayName, PluginArgumentEnumOption, PluginTemplateTagActionContext } from './extensions';
+import objectPath from './third_party/objectPath';
 
 export interface NunjucksParsedTagArg {
-  type: 'string' | 'number' | 'boolean' | 'variable' | 'expression' | 'enum' | 'file' | 'model';
+  type: 'string' | 'text' | 'number' | 'boolean' | 'variable' | 'expression' | 'enum' | 'file' | 'model';
   encoding?: 'base64';
   value?: string | number | boolean;
   defaultValue?: string | number | boolean;
@@ -29,6 +31,7 @@ export interface NunjucksActionTag {
 
 export interface NunjucksParsedTag {
   name: string;
+  author: string;
   args: NunjucksParsedTagArg[];
   actions?: NunjucksActionTag[];
   rawValue?: string;
@@ -36,6 +39,8 @@ export interface NunjucksParsedTag {
   description?: string;
   disablePreview?: (arg0: NunjucksParsedTagArg[]) => boolean;
 }
+
+export type NunjucksTagContextMenuAction = 'edit' | 'delete';
 
 interface Key {
   name: string;
@@ -276,3 +281,50 @@ export function decodeEncoding<T>(value: T) {
 
   return value;
 }
+
+// because nunjucks only report the first error, we need to extract all missing variables that are not present in the context
+// for example, if the text is `{{ a }} {{ b }}`, nunjucks only report `a` is missing, but we need to report both `a` and `b`
+export function extractUndefinedVariableKey(text: string = '', templatingContext: Record<string, any>): string[] {
+  const regexVariable = /{{\s*([^ }]+)\s*}}/g;
+  const missingVariables: string[] = [];
+  let match;
+
+  while ((match = regexVariable.exec(text)) !== null) {
+    let variable = match[1];
+    if (variable.includes('_.')) {
+      variable = variable.split('_.')[1];
+    }
+    // Check if the variable is not present in the context
+    if (_.get(templatingContext, variable) === undefined) {
+      missingVariables.push(variable);
+    }
+  }
+  return missingVariables;
+}
+
+export function extractNunjucksTagFromCoords(
+  coordinates: { left: number; top: number },
+  cm: React.MutableRefObject<EditorFromTextArea | null>
+): { range: MarkerRange; template: string } | void {
+  if (cm && cm.current) {
+    const { left, top } = coordinates;
+    // get position from left and right position
+    const textMarkerPos = cm.current.coordsChar({ left, top });
+    // get textMarker from position
+    const textMarker = cm.current?.getDoc().findMarksAt(textMarkerPos)[0];
+    if (textMarker) {
+      const range = textMarker.find() as MarkerRange;
+      return {
+        range,
+        // @ts-expect-error __template shoule be property of nunjucks tag markText
+        template: textMarker.__template || '',
+      };
+    }
+  }
+}
+
+export interface nunjucksTagContextMenuOptions extends Exclude<ReturnType<typeof extractNunjucksTagFromCoords>, void> {
+  type: NunjucksTagContextMenuAction;
+}
+
+export const responseTagRegex = new RegExp('{% *response *.* %}');

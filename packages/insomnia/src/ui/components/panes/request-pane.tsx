@@ -136,21 +136,8 @@ export const RequestPane: FC<Props> = ({
         </ErrorBoundary>
       </PaneHeader>
       <Tabs aria-label="Request pane tabs">
-        <TabItem key="content-type" title={<ContentTypeDropdown />}>
-          <BodyEditor
-            key={uniqueKey}
-            request={activeRequest}
-            environmentId={environmentId}
-          />
-        </TabItem>
-        <TabItem key="auth" title={<AuthDropdown />}>
-          <ErrorBoundary
-            key={uniqueKey}
-            errorClassName="font-error pad text-center"
-          >
-            <AuthWrapper />
-          </ErrorBoundary>
-        </TabItem>
+
+        {/* Query */}
         <TabItem
           key="query"
           title={
@@ -212,6 +199,27 @@ export const RequestPane: FC<Props> = ({
             </TabPanelFooter>
           </QueryEditorContainer>
         </TabItem>
+
+        {/* Body */}
+        <TabItem key="content-type" title={<ContentTypeDropdown />}>
+          <BodyEditor
+            key={uniqueKey}
+            request={activeRequest}
+            environmentId={environmentId}
+          />
+        </TabItem>
+
+        {/* Auth */}
+        <TabItem key="auth" title={<AuthDropdown />}>
+          <ErrorBoundary
+            key={uniqueKey}
+            errorClassName="font-error pad text-center"
+          >
+            <AuthWrapper />
+          </ErrorBoundary>
+        </TabItem>
+
+        {/* Headers */}
         <TabItem
           key="headers"
           title={
@@ -247,11 +255,13 @@ export const RequestPane: FC<Props> = ({
             </TabPanelFooter>
           </HeaderContainer>
         </TabItem>
+
+        {/* Description */}
         <TabItem
           key="docs"
           title={
             <>
-              Docs
+              Description
               {activeRequest.description && (
                 <span className="bubble space-left">
                   <i className="fa fa--skinny fa-check txt-xxs" />
@@ -305,6 +315,7 @@ export const RequestPane: FC<Props> = ({
             )}
           </PanelContainer>
         </TabItem>
+
       </Tabs>
       {isRequestSettingsModalOpen && (
         <RequestSettingsModal

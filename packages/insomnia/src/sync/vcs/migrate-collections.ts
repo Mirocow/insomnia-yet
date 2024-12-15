@@ -2,9 +2,9 @@ import { isLoggedIn } from '../../account/session';
 import { database } from '../../common/database';
 import { isNotNullOrUndefined } from '../../common/misc';
 import * as models from '../../models';
-import { isRemoteProject, RemoteProject } from '../../models/project';
-import {  isCollection, Workspace } from '../../models/workspace';
-import { Team } from '../types';
+import { isRemoteProject, type RemoteProject } from '../../models/project';
+import {  isCollection, type Workspace } from '../../models/workspace';
+import type { Team } from '../types';
 import { initializeProjectFromTeam } from './initialize-model-from';
 import { VCS } from './vcs';
 

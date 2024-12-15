@@ -1,7 +1,7 @@
-import React, { FC, ReactElement, useCallback, useRef, useState } from 'react';
+import React, { type FC, type ReactElement, useCallback, useRef, useState } from 'react';
 
 import { createKeybindingsHandler } from '../keydown-binder';
-import { HighlightProps } from './highlight';
+import type { HighlightProps } from './highlight';
 
 export const shouldSave = (oldValue: string, newValue: string | undefined, preventBlank = false) => {
   // Should not save if length = 0 and we want to prevent blank

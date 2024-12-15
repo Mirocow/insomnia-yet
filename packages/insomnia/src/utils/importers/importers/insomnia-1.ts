@@ -1,10 +1,8 @@
-import {
+import type {
   Converter,
   Header,
   ImportRequest,
   Parameter,
-  UNKNOWN,
-  UNKNOWN_OBJ,
 } from '../entities';
 
 export const id = 'insomnia-1';
@@ -14,10 +12,10 @@ export const description = 'Legacy Insomnia format';
 type Format = 'form' | 'json' | 'text' | 'xml';
 
 interface Item {
-  requests: UNKNOWN[];
+  requests: any[];
   name?: string;
   environments?: {
-    base: UNKNOWN_OBJ;
+    base: {};
   };
   __insomnia?: {
     format: Format;

@@ -1,19 +1,15 @@
 import { Analytics } from '@segment/analytics-node';
+import crypto from 'crypto';
+import { net } from 'electron';
 import { v4 as uuidv4 } from 'uuid';
 
-import * as session from '../account/session';
-import { getAccountId } from '../account/session';
 import {
-  getApiBaseURL,
   getAppPlatform,
   getAppVersion,
   getProductName,
   getSegmentWriteKey,
 } from '../common/constants';
 import * as models from '../models/index';
-import { axiosRequest } from './network/axios-request';
-
-const analytics = new Analytics({ writeKey: getSegmentWriteKey() });
 
 const getDeviceId = async () => {
   const settings = await models.settings.getOrCreate();
@@ -31,6 +27,7 @@ export enum SegmentEvent {
   requestBodyTypeSelect = 'Request Body Type Selected',
   requestCreate = 'Request Created',
   requestExecute = 'Request Executed',
+  collectionRunExecute = 'Collection Run Executed',
   projectLocalCreate = 'Local Project Created',
   projectLocalDelete = 'Local Project Deleted',
   testSuiteCreate = 'Test Suite Created',
@@ -45,85 +42,17 @@ export enum SegmentEvent {
   buttonClick = 'Button Clicked',
 }
 
+function hashString(input: string) {
+  return crypto.createHash('sha256').update(input).digest('hex');
+}
+
 export async function trackSegmentEvent(
   event: SegmentEvent,
   properties?: Record<string, any>,
 ) {
-  const settings = await models.settings.getOrCreate();
-  const allowAnalytics = settings.enableAnalytics || session.isLoggedIn();
-  if (allowAnalytics) {
-    try {
-      const anonymousId = await getDeviceId() ?? '';
-      const userId = getAccountId();
-      const context = {
-        app: { name: getProductName(), version: getAppVersion() },
-        os: { name: _getOsName(), version: process.getSystemVersion() },
-      };
-      analytics.track({
-        event,
-        properties,
-        context,
-        anonymousId,
-        userId,
-      }, error => {
-        if (error) {
-          console.warn('[analytics] Error sending segment event', error);
-        }
-      });
-    } catch (error: unknown) {
-      console.warn('[analytics] Unexpected error while sending segment event', error);
-    }
-  }
+  console.log(event, properties);
 }
 
 export async function trackPageView(name: string) {
-  const settings = await models.settings.getOrCreate();
-  const allowAnalytics = settings.enableAnalytics || session.isLoggedIn();
-  if (allowAnalytics) {
-    try {
-      const anonymousId = await getDeviceId() ?? '';
-      const userId = getAccountId();
-      const context = {
-        app: { name: getProductName(), version: getAppVersion() },
-        os: { name: _getOsName(), version: process.getSystemVersion() },
-      };
-      analytics.page({ name, context, anonymousId, userId }, error => {
-        if (error) {
-          console.warn('[analytics] Error sending segment event', error);
-        }
-      });
-      sendTelemetry();
-    } catch (error: unknown) {
-      console.warn('[analytics] Unexpected error while sending segment event', error);
-    }
-  }
-}
-
-export async function sendTelemetry() {
-  if (session.isLoggedIn()) {
-    axiosRequest({
-      method: 'POST',
-      url: `${getApiBaseURL()}/v1/telemetry/`,
-      headers: {
-        'X-Session-Id': session.getCurrentSessionId(),
-      },
-    }).catch((error: unknown) => {
-      console.warn('[analytics] Unexpected error while sending telemetry', error);
-    });
-  }
-}
-
-// ~~~~~~~~~~~~~~~~~ //
-// Private Functions //
-// ~~~~~~~~~~~~~~~~~ //
-function _getOsName() {
-  const platform = getAppPlatform();
-  switch (platform) {
-    case 'darwin':
-      return 'mac';
-    case 'win32':
-      return 'windows';
-    default:
-      return platform;
-  }
+  console.log(name);
 }

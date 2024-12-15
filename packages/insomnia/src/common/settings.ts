@@ -1,4 +1,4 @@
-import { ValueOf } from 'type-fest';
+import type { ValueOf } from 'type-fest';
 
 /**
  * The readable definition of a hotkey.
@@ -139,8 +139,6 @@ export interface Settings {
   showPasswords: boolean;
   theme: string;
   timeout: number;
-  updateAutomatically: boolean;
-  updateChannel: UpdateChannel;
   useBulkHeaderEditor: boolean;
   useBulkParametersEditor: boolean;
   validateAuthSSL: boolean;

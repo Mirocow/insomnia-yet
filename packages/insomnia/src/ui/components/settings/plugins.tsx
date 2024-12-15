@@ -75,6 +75,7 @@ export const Plugins: FC = () => {
             <tr>
               <th>Enable?</th>
               <th>Name</th>
+              <th>Author</th>
               <th>Version</th>
               <th>Folder</th>
             </tr>
@@ -104,6 +105,9 @@ export const Plugins: FC = () => {
                         {plugin.description}
                       </HelpTooltip>
                     )}
+                  </td>
+                  <td>
+                    {plugin.author}
                   </td>
                   <td>
                     {plugin.version}

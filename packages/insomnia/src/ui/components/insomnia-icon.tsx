@@ -85,14 +85,6 @@ const LoadingBarIndicator = styled.div`
   transform: translateX(-100%);
 `;
 
-export const InsomniaAILogo = ({
-  ...props
-}: React.SVGProps<SVGSVGElement>) => {
-  const {
-    generating: loading,
-    progress,
-  } = useAIContext();
-
   const loadingProgress = 100 - (progress.progress / progress.total) * 100;
 
   return (
@@ -162,11 +154,6 @@ export const InsomniaAILogo = ({
           />
         </LoadingBoundary>
         }
-        {loading && (
-          <AILoadingText>
-            <span>{'AI is thinking...'}</span>
-          </AILoadingText>
-        )}
       </RelativeFrame>
     </Layout>
   );

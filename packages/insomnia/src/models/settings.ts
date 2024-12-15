@@ -5,7 +5,7 @@ import {
 } from '../common/constants';
 import { database as db } from '../common/database';
 import * as hotkeys from '../common/hotkeys';
-import { HttpVersions, KeyboardShortcut, Settings as BaseSettings, UpdateChannel } from '../common/settings';
+import { HttpVersions, type KeyboardShortcut, type Settings as BaseSettings, UpdateChannel } from '../common/settings';
 import type { BaseModel } from './index';
 
 export type Settings = BaseModel & BaseSettings;
@@ -63,8 +63,6 @@ export function init(): BaseSettings {
     theme: getAppDefaultTheme(),
     // milliseconds
     timeout: 30_000,
-    updateAutomatically: true,
-    updateChannel: UpdateChannel.stable,
     useBulkHeaderEditor: false,
     useBulkParametersEditor: false,
     validateAuthSSL: true,
@@ -114,6 +112,12 @@ export async function getOrCreate() {
   if (results.length === 0) {
     return await create();
   }
+  return results[0];
+}
+
+export async function get() {
+  const results = await db.all<Settings>(type) || [];
+
   return results[0];
 }
 

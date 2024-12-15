@@ -1,10 +1,10 @@
-import { ActionFunction, LoaderFunction, redirect } from 'react-router-dom';
+import { type ActionFunction, type LoaderFunction, redirect } from 'react-router-dom';
 
 import { database } from '../../common/database';
 import { isNotNullOrUndefined } from '../../common/misc';
 import * as models from '../../models';
-import { RemoteProject } from '../../models/project';
-import { BackendProject } from '../../sync/types';
+import type { RemoteProject } from '../../models/project';
+import type { BackendProject } from '../../sync/types';
 import { pullBackendProject } from '../../sync/vcs/pull-backend-project';
 import { getVCS } from '../../sync/vcs/vcs';
 import { invariant } from '../../utils/invariant';

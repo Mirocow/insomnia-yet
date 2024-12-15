@@ -1,4 +1,4 @@
-import { isDefaultProject, isLocalProject, isRemoteProject, Project } from '../project';
+import { isDefaultProject, isLocalProject, isRemoteProject, type Project } from '../project';
 export const sortProjects = (projects: Project[]) => [
   ...projects.filter(isDefaultProject),
   ...projects.filter(p => isLocalProject(p) && !isDefaultProject(p))

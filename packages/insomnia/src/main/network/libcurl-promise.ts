@@ -3,21 +3,21 @@
 import { invariant } from '../../utils/invariant';
 invariant(process.type !== 'renderer', 'Native abstractions for Nodejs module unavailable in renderer');
 
-import { Curl, CurlAuth, CurlCode, CurlFeature, CurlHttpVersion, CurlInfoDebug, CurlNetrc } from '@getinsomnia/node-libcurl';
+import { Curl, CurlAuth, CurlCode, CurlFeature, CurlHttpVersion, CurlInfoDebug, CurlNetrc, CurlSslOpt } from '@getinsomnia/node-libcurl';
+import { isValid } from 'date-fns';
 import electron from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { Readable, Writable } from 'stream';
-import tls from 'tls';
 import { parse as urlParse } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 
 import { version } from '../../../package.json';
 import { AUTH_AWS_IAM, AUTH_DIGEST, AUTH_NETRC, AUTH_NTLM, CONTENT_TYPE_FORM_DATA, CONTENT_TYPE_FORM_URLENCODED } from '../../common/constants';
 import { describeByteSize, hasAuthHeader } from '../../common/misc';
-import { ClientCertificate } from '../../models/client-certificate';
-import { RequestHeader } from '../../models/request';
-import { ResponseHeader } from '../../models/response';
+import type { ClientCertificate } from '../../models/client-certificate';
+import type { RequestHeader } from '../../models/request';
+import type { ResponseHeader } from '../../models/response';
 import { buildMultipart } from './multipart';
 import { parseHeaderStrings } from './parse-header-strings';
 export interface CurlRequestOptions {
@@ -77,6 +77,7 @@ export interface ResponsePatch {
   contentType?: string;
   elapsedTime: number;
   environmentId?: string | null;
+  globalEnvironmentId?: string | null;
   error?: string;
   headers?: ResponseHeader[];
   httpVersion?: string;
@@ -97,12 +98,12 @@ export const cancelCurlRequest = (id: string) => cancelCurlRequestHandlers[id]()
 export const curlRequest = (options: CurlRequestOptions) => new Promise<CurlRequestOutput>(async resolve => {
   try {
     const responsesDir = path.join(getDataDirectory(), 'responses');
-    fs.mkdirSync(responsesDir, { recursive: true });
-
+    // TODO: remove this check, its only used for network.test.ts
+    await fs.promises.mkdir(responsesDir, { recursive: true });
     const responseBodyPath = path.join(responsesDir, uuidv4() + '.response');
 
     const { requestId, req, finalUrl, settings, certificates, caCertficatePath, socketPath, authHeader } = options;
-    const caCert = (caCertficatePath && (await fs.promises.readFile(caCertficatePath)).toString()) || tls.rootCertificates.join('\n');
+    const caCert = (caCertficatePath && (await fs.promises.readFile(caCertficatePath)).toString());
 
     const { curl, debugTimeline } = createConfiguredCurlInstance({
       req,
@@ -146,6 +147,11 @@ export const curlRequest = (options: CurlRequestOptions) => new Promise<CurlRequ
       curl.setOpt(Curl.option.POSTFIELDS, requestBody);
     }
 
+    // NOTE: temporary workaround for testing mockbin api
+    if (process.env.PLAYWRIGHT) {
+      req.headers = [...req.headers, { name: 'X-Mockbin-Test', value: 'true' }];
+    }
+
     const headerStrings = parseHeaderStrings({ req, requestBody, requestBodyPath, finalUrl, authHeader });
     curl.setOpt(Curl.option.HTTPHEADER, headerStrings);
 
@@ -156,7 +162,7 @@ export const curlRequest = (options: CurlRequestOptions) => new Promise<CurlRequ
       if (requestFileDescriptor && responseBodyPath) {
         closeReadFunction(isMultipart, requestFileDescriptor, requestBodyPath);
       }
-      curl.close();
+      curl.isOpen && curl.close();
     };
 
     // set up response writer
@@ -206,7 +212,7 @@ export const curlRequest = (options: CurlRequestOptions) => new Promise<CurlRequ
         elapsedTime: curl.getInfo(Curl.info.TOTAL_TIME) as number * 1000,
         url: curl.getInfo(Curl.info.EFFECTIVE_URL) as string,
       };
-      curl.close();
+      curl.isOpen && curl.close();
       await waitForStreamToFinish(responseBodyWriteStream);
 
       const headerResults = _parseHeaders(rawHeaders);
@@ -216,7 +222,7 @@ export const curlRequest = (options: CurlRequestOptions) => new Promise<CurlRequ
     curl.on('error', () => responseBodyWriteStream.end());
     curl.on('error', async (err, code) => {
       const elapsedTime = curl.getInfo(Curl.info.TOTAL_TIME) as number * 1000;
-      curl.close();
+      curl.isOpen && curl.close();
       await waitForStreamToFinish(responseBodyWriteStream);
 
       let error = err + '';
@@ -259,7 +265,7 @@ export const createConfiguredCurlInstance = ({
   finalUrl: string;
   settings: SettingsUsedHere;
   certificates: ClientCertificate[];
-  caCert: string;
+  caCert: string | null;
   socketPath?: string;
 }) => {
   const debugTimeline: ResponseTimelineEntry[] = [];
@@ -270,8 +276,11 @@ export const createConfiguredCurlInstance = ({
   curl.setOpt(Curl.option.VERBOSE, true); // Set all the basic options
   curl.setOpt(Curl.option.NOPROGRESS, true); // True so debug function works
   curl.setOpt(Curl.option.ACCEPT_ENCODING, ''); // True so curl doesn't print progress
-  // attempt to read CA Certificate PEM from disk, fallback to root certificates
-  curl.setOpt(Curl.option.CAINFO_BLOB, caCert);
+  // fallback to root certificates or leave unset to use keychain on macOS
+  if (caCert) {
+    curl.setOpt(Curl.option.CAINFO_BLOB, caCert);
+  }
+  curl.setOpt(Curl.option.SSL_OPTIONS, CurlSslOpt.NativeCa);
   certificates.forEach(validCert => {
     const { passphrase, cert, key, pfx } = validCert;
     if (cert) {
@@ -364,7 +373,7 @@ export const createConfiguredCurlInstance = ({
           cookie.hostOnly ? 'FALSE' : 'TRUE',
           cookie.path,
           cookie.secure ? 'TRUE' : 'FALSE',
-          cookie.expires ? Math.round(new Date(cookie.expires).getTime() / 1000) : 0,
+          cookie.expires && isValid(new Date(cookie.expires)) ? Math.round(new Date(cookie.expires).getTime() / 1000) : 0,
           cookie.key,
           cookie.value,
         ].join('\t');

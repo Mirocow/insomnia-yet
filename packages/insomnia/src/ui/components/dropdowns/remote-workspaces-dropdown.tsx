@@ -1,11 +1,11 @@
-import React, { FC, useEffect } from 'react';
+import React, { type FC, useEffect } from 'react';
 import { useFetcher, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { isLoggedIn } from '../../../account/session';
 import { strings } from '../../../common/strings';
-import { RemoteProject } from '../../../models/project';
-import { RemoteCollectionsLoaderData } from '../../routes/remote-collections';
+import type { RemoteProject } from '../../../models/project';
+import type { RemoteCollectionsLoaderData } from '../../routes/remote-collections';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { HelpTooltip } from '../help-tooltip';
 import { Tooltip } from '../tooltip';

@@ -1,7 +1,6 @@
 import React, { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
-import { useFetcher, useRevalidator } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useFetcher, useNavigate, useParams, useRevalidator } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { database as db } from '../../../common/database';
@@ -95,8 +94,10 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
     modalRef.current?.show();
   }, []);
 
-  const { organizationId, projectId } = useParams<{ organizationId: string; projectId: string }>();
+  const navigate = useNavigate();
   const workspaceFetcher = useFetcher();
+  const { organizationId, projectId } = useParams<{ organizationId: string; projectId: string }>();
+
   const workspacePatcher = (workspaceId: string, patch: Partial<Workspace>) => {
     workspaceFetcher.submit({ ...patch, workspaceId }, {
       action: `/organization/${organizationId}/project/${projectId}/workspace/update`,
@@ -114,6 +115,20 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
     for (const req of requests) {
       await models.response.removeForRequest(req._id);
     }
+    modalRef.current?.hide();
+  };
+
+  const _handleClearAllRequests = async () => {
+    if (!workspace) {
+      return;
+    }
+    const docs = await db.withDescendants(workspace, models.request.type);
+    const requests = docs.filter(isRequest);
+    for (const req of requests) {
+      await models.request.remove(req);
+    }
+    const workspaceId = workspace._id;
+    navigate(`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/debug`);
     modalRef.current?.hide();
   };
 
@@ -303,13 +318,19 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                       onClick={_handleRemoveWorkspace}
                       className="width-auto btn btn--clicky inline-block"
                     >
-                      <i className="fa fa-trash-o" /> Delete
+                      <i className="fa fa-trash-o" /> Delete Collection
                     </PromptButton>
                     <PromptButton
                       onClick={_handleClearAllResponses}
-                      className="width-auto btn btn--clicky inline-block space-left"
+                      className="width-auto btn btn--clicky inline-block"
                     >
                       <i className="fa fa-trash-o" /> Clear All Responses
+                    </PromptButton>
+                    <PromptButton
+                      onClick={_handleClearAllRequests}
+                      className="width-auto btn btn--clicky inline-block"
+                    >
+                      <i className="fa fa-trash-o" /> Clear All Requests
                     </PromptButton>
                   </div>
                 </PanelContainer>

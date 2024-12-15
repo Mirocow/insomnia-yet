@@ -7,34 +7,21 @@ import {
   Button,
   Item,
   Link,
-  //Menu,
-  //MenuTrigger,
-  //Popover,
   Tooltip,
   TooltipTrigger,
 } from 'react-aria-components';
 import {
-  LoaderFunction,
+  type LoaderFunction,
   NavLink,
   Outlet,
   useLoaderData,
-  useLocation,
-  useNavigate,
   useParams,
   useRouteLoaderData,
 } from 'react-router-dom';
 
-import {
-  //getFirstName,
-  //getLastName,
-  //isLoggedIn,
-  //logout,
-  onLoginLogout,
-} from '../../account/session';
-import { isDevelopment } from '../../common/constants';
+import { ACTIVITY_COLLECTION, ACTIVITY_SPEC, ACTIVITY_TEST, isDevelopment } from '../../common/constants';
 import * as models from '../../models';
-//import { isDefaultOrganization } from '../../models/organization';
-import { Settings } from '../../models/settings';
+import type { Settings } from '../../models/settings';
 import { isDesign } from '../../models/workspace';
 import { reloadPlugins } from '../../plugins';
 import { createPlugin } from '../../plugins/create';
@@ -43,28 +30,23 @@ import { exchangeCodeForToken } from '../../sync/git/github-oauth-provider';
 import { exchangeCodeForGitLabToken } from '../../sync/git/gitlab-oauth-provider';
 import { submitAuthCode } from '../auth-session-provider';
 import { WorkspaceDropdown } from '../components/dropdowns/workspace-dropdown';
-//import { GitHubStarsButton } from '../components/github-stars-button';
 import { Hotkey } from '../components/hotkey';
 import { Icon } from '../components/icon';
-import { InsomniaAILogo } from '../components/insomnia-icon';
 import { showError, showModal } from '../components/modals';
 import { AlertModal } from '../components/modals/alert-modal';
 import { AskModal } from '../components/modals/ask-modal';
 import { ImportModal } from '../components/modals/import-modal';
-import { LoginModal } from '../components/modals/login-modal';
 import {
   SettingsModal,
   showSettingsModal,
   TAB_INDEX_PLUGINS,
   TAB_INDEX_THEMES } from '../components/modals/settings-modal';
-import { Toast } from '../components/toast';
 import { AppHooks } from '../containers/app-hooks';
 import { AIProvider } from '../context/app/ai-context';
 import { NunjucksEnabledProvider } from '../context/nunjucks/nunjucks-enabled-context';
 import { useSettingsPatcher } from '../hooks/use-request';
 import Modals from './modals';
-//import { useOrganizationLoaderData } from './organization';
-import { WorkspaceLoaderData } from './workspace';
+import type { WorkspaceLoaderData } from './workspace';
 
 export interface RootLoaderData {
   settings: Settings;
@@ -76,46 +58,13 @@ export const loader: LoaderFunction = async (): Promise<RootLoaderData> => {
   };
 };
 
-/*const getNameInitials = (name: string) => {
-  // Split on whitespace and take first letter of each word
-  const words = name.toUpperCase().split(' ');
-  const firstWord = words[0];
-  const lastWord = words[words.length - 1];
-
-  // If there is only one word, just take the first letter
-  if (words.length === 1) {
-    return firstWord.charAt(0);
-  }
-
-  // If the first word is an emoji or an icon then just use that
-  const iconMatch = firstWord.match(/\p{Extended_Pictographic}/u);
-  if (iconMatch) {
-    return iconMatch[0];
-  }
-
-  return `${firstWord.charAt(0)}${lastWord ? lastWord.charAt(0) : ''}`;
-};*/
-
 const Root = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const { settings } = useLoaderData() as RootLoaderData;
-  //const { organizations } = useOrganizationLoaderData();
   const workspaceData = useRouteLoaderData(
     ':workspaceId'
   ) as WorkspaceLoaderData | null;
   const [importUri, setImportUri] = useState('');
   const patchSettings = useSettingsPatcher();
-
-  useEffect(() => {
-    onLoginLogout(() => {
-      // Update the hash of the current route to force revalidation of data
-      navigate({
-        pathname: location.pathname,
-        hash: 'revalidate=true',
-      });
-    });
-  }, [location.pathname, navigate]);
 
   useEffect(() => {
     return window.main.on(
@@ -126,7 +75,7 @@ const Root = () => {
         try {
           parsedUrl = new URL(url);
         } catch (err) {
-          console.log('Invalid args, expected insomnia://x/y/z', url);
+          console.log('[deep-link] Invalid args, expected insomnia://x/y/z', url);
           return;
         }
         let urlWithoutParams = url.substring(0, url.indexOf('?')) || url;
@@ -143,14 +92,6 @@ const Root = () => {
             showModal(AlertModal, {
               title: params.title,
               message: params.message,
-            });
-            break;
-
-          case 'insomnia://app/auth/login':
-            showModal(LoginModal, {
-              title: params.title,
-              message: params.message,
-              reauth: true,
             });
             break;
 
@@ -226,7 +167,7 @@ const Root = () => {
                   title: 'Error authorizing GitHub',
                   message: error.message,
                 });
-              }
+              },
             );
             break;
           }
@@ -240,7 +181,7 @@ const Root = () => {
                   title: 'Error authorizing GitLab',
                   message: error.message,
                 });
-              }
+              },
             );
             break;
           }
@@ -270,7 +211,7 @@ const Root = () => {
           id: workspaceData.activeProject._id,
           label: workspaceData.activeProject.name,
           node: (
-            <Link data-testid="project">
+            <Link>
               <NavLink
                 to={`/organization/${organizationId}/project/${workspaceData.activeProject._id}`}
               >
@@ -286,6 +227,26 @@ const Root = () => {
         },
       ]
     : [];
+
+    if (workspaceData && isDesign(workspaceData?.activeWorkspace)) {
+      crumbs.push({
+        id: '',
+        label: '',
+        node: (
+          [{ 'id':ACTIVITY_SPEC, 'name':'spec' }, { 'id':'debug', 'name':ACTIVITY_COLLECTION }, { 'id':ACTIVITY_TEST, 'name':'test' }].map(item => (
+            <NavLink
+              key={item.id}
+              to={`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/${item.id}`}
+              className={({ isActive }) => `uppercase ${isActive
+                ? 'underline'
+                : ''}`}
+            >
+              {item.name}
+            </NavLink>)
+          )
+        ),
+      });
+    }
 
   return (
     <AIProvider>
@@ -303,14 +264,10 @@ const Root = () => {
             />
           )}
           <div className="w-full h-full divide-x divide-solid divide-y divide-[--hl-md] grid-template-app-layout grid relative bg-[--color-bg]">
-            <header className="[grid-area:Header] grid grid-cols-3 items-center">
-              <div className="flex items-center">
-                <div className="flex w-[50px] py-2">
-                  <InsomniaAILogo />
-                </div>
-              </div>
-              <div className="flex gap-2 flex-nowrap items-center justify-center">
-                {workspaceData && (
+            <Outlet />
+            <div className="relative [grid-area:Statusbar] flex items-center justify-between overflow-hidden" style={{ height: '32px' }}>
+            <div className="p-[--padding-sm]">
+            {workspaceData && (
                   <Fragment>
                     <Breadcrumbs items={crumbs}>
                       {item => (
@@ -319,31 +276,9 @@ const Root = () => {
                         </Item>
                       )}
                     </Breadcrumbs>
-                    {isDesign(workspaceData?.activeWorkspace) && (
-                      <nav className="flex rounded-full justify-between content-evenly font-semibold bg-[--hl-xs] p-[--padding-xxs]">
-                        {['spec', 'debug', 'test'].map(item => (
-                          <NavLink
-                            key={item}
-                            to={`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/${item}`}
-                            className={({ isActive }) =>
-                              `${
-                                isActive
-                                  ? 'text-[--color-font] bg-[--color-bg]'
-                                  : ''
-                              } no-underline transition-colors text-center outline-none min-w-[4rem] uppercase text-[--color-font] text-xs px-[--padding-xs] py-[--padding-xxs] rounded-full`
-                            }
-                          >
-                            {item}
-                          </NavLink>
-                        ))}
-                      </nav>
-                    )}
                   </Fragment>
                 )}
               </div>
-            </header>
-            <Outlet />
-            <div className="relative [grid-area:Statusbar] flex items-center justify-between overflow-hidden">
               <TooltipTrigger>
                 <Button
                   data-testid="settings-button"
@@ -365,20 +300,8 @@ const Root = () => {
                   />
                 </Tooltip>
               </TooltipTrigger>
-              <Link>
-                <a
-                  className="flex focus:outline-none focus:underline gap-1 items-center text-xs text-[--color-font] px-[--padding-md]"
-                  href="https://konghq.com/"
-                >
-                  Made with
-                  <Icon className="text-[--color-surprise]" icon="heart" /> by
-                  Kong
-                </a>
-              </Link>
             </div>
           </div>
-
-          <Toast />
         </div>
       </NunjucksEnabledProvider>
     </AIProvider>

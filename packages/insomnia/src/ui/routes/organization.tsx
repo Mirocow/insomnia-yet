@@ -1,9 +1,9 @@
-import { LoaderFunction, ShouldRevalidateFunction, useRouteLoaderData } from 'react-router-dom';
+import { type LoaderFunction, type ShouldRevalidateFunction, useRouteLoaderData } from 'react-router-dom';
 
 import { isLoggedIn } from '../../account/session';
 import { database } from '../../common/database';
 import { project } from '../../models';
-import { defaultOrganization, Organization } from '../../models/organization';
+import { defaultOrganization, type Organization } from '../../models/organization';
 import { isRemoteProject } from '../../models/project';
 import { initializeProjectFromTeam } from '../../sync/vcs/initialize-model-from';
 import { getVCS } from '../../sync/vcs/vcs';

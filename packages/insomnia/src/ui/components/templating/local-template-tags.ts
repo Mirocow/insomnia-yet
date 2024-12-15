@@ -15,7 +15,7 @@ import { PluginTemplateTag } from '../../../templating/extensions';
 import { invariant } from '../../../utils/invariant';
 import { buildQueryStringFromParams, joinUrlAndQueryString, smartEncodeUrl } from '../../../utils/url/querystring';
 
-const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
+/*const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
   {
     templateTag: {
       name: 'base64',
@@ -801,7 +801,7 @@ const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
               /*
                 This value is left as is and not renamed to 'oauth2-access' so as to not
                 break the current release's usage of `oauth2`.
-              */
+              *
             },
             {
               displayName: 'OAuth 2.0 Identity Token',
@@ -995,11 +995,14 @@ const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
       },
     },
   },
-];
+];*/
+
+const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [];
 
 export const localTemplateTags: TemplateTag[] = localTemplatePlugins.map(t => ({
   plugin: {
     name: t.templateTag.name,
+    author: t.templateTag.author,
     description: 'Built-in plugin',
     version: '0.0.0',
     directory: '',

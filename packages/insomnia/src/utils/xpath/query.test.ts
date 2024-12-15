@@ -38,6 +38,6 @@ describe('queryXPath()', () => {
   it('handles invalid query', () => {
     expect(() => {
       queryXPath('<hi>there</hi>', '//[]');
-    }).toThrowError('Invalid XPath query: //[]');
+    }).toThrowError('XPath parse error');
   });
 });

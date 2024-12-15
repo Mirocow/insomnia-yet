@@ -2,13 +2,13 @@ import electron from 'electron';
 import fs from 'fs';
 import path from 'path';
 
-import { ParsedApiSpec } from '../common/api-specs';
+import type { ParsedApiSpec } from '../common/api-specs';
 import type { PluginConfig, PluginConfigMap } from '../common/settings';
 import * as models from '../models';
-import { GrpcRequest } from '../models/grpc-request';
+import type { GrpcRequest } from '../models/grpc-request';
 import type { Request } from '../models/request';
 import type { RequestGroup } from '../models/request-group';
-import { WebSocketRequest } from '../models/websocket-request';
+import type { WebSocketRequest } from '../models/websocket-request';
 import type { Workspace } from '../models/workspace';
 import type { PluginTemplateTag } from '../templating/extensions/index';
 import { showError } from '../ui/components/modals/index';
@@ -28,6 +28,7 @@ export interface Module {
 
 export interface Plugin {
   name: string;
+  author: string;
   description: string;
   version: string;
   directory: string;
@@ -118,7 +119,8 @@ async function _traversePluginPath(
     if (!fs.existsSync(p)) {
       continue;
     }
-
+    const folders = (await fs.promises.readdir(p)).filter(f => f.startsWith('insomnia-plugin-'));
+    folders.length && console.log('[plugin] Loading', folders.map(f => f.replace('insomnia-plugin-', '')).join(', '));
     for (const filename of fs.readdirSync(p)) {
       try {
         const modulePath = path.join(p, filename);
@@ -158,6 +160,7 @@ async function _traversePluginPath(
 
         pluginMap[pluginJson.name] = {
           name: pluginJson.name,
+          author: pluginJson.author,
           description: pluginJson.description || pluginJson.insomnia.description || '',
           version: pluginJson.version || 'unknown',
           directory: modulePath || '',
@@ -170,7 +173,7 @@ async function _traversePluginPath(
       } catch (err) {
         showError({
           title: 'Plugin Error',
-          message: 'Failed to load plugin ' + filename,
+          message: 'Failed to load plugin ' + filename + '. Please contact the plugin author sharing the below stack trace to help them to ensure compatibility with the latest Insomnia.',
           error: err,
         });
       }
