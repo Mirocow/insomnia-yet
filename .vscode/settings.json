@@ -6,7 +6,6 @@
         ".history": true,
         "var/log": true,
         "ansible": true,
-        ".vscode": true,
         "**/__schemas__": true,
         "**/__jest__": true,
         "**/__mocks__": true,

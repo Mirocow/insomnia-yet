@@ -577,13 +577,6 @@ const router = createMemoryRouter(
                                     },
                                   ],
                                 },
-                                {
-                                  path: 'access',
-                                  action: async (...args) =>
-                                    (
-                                      await import('./routes/actions')
-                                    ).accessAIApiAction(...args),
-                                },
                               ],
                             },
                             {

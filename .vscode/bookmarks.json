@@ -304,6 +304,16 @@
 					"label": ""
 				}
 			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/routes/actions.tsx",
+			"bookmarks": [
+				{
+					"line": 1,
+					"column": 0,
+					"label": ""
+				}
+			]
 		}
 	]
 }
