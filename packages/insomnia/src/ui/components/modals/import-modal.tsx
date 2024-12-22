@@ -15,9 +15,9 @@ import {
   ImportResourcesActionResult,
   ScanForResourcesActionResult,
 } from '../../routes/import';
+import { Button } from '../base/button';
 import { Modal, ModalHandle, ModalProps } from '../base/modal';
 import { ModalHeader } from '../base/modal-header';
-import { Button } from '../themed-button';
 
 const Pill = styled.div({
   display: 'flex',

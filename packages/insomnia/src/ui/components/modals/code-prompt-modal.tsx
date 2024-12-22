@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 import { NunjucksEnabledProvider } from '../../context/nunjucks/nunjucks-enabled-context';
-import { CopyButton } from '../base/copy-button';
+import { CopyButton } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';

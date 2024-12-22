@@ -11,7 +11,7 @@ import {
   GITHUB_GRAPHQL_API_URL,
   signOut,
 } from '../../../../sync/git/github-oauth-provider';
-import { Button } from '../../themed-button';
+import { Button } from '../../base/button';
 import { showAlert, showError } from '..';
 
 interface Props {
@@ -300,7 +300,7 @@ const GitHubRepositoryForm = ({
             </span>
           </Details>
         </AccountDetails>
-        <Button type="button" onClick={handleSignOut}>
+        <Button type="button" onPress={handleSignOut}>
           Sign out
         </Button>
       </AccountViewContainer>

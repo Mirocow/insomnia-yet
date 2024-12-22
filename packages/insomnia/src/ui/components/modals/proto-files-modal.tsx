@@ -11,12 +11,12 @@ import { isProtoDirectory, ProtoDirectory } from '../../../models/proto-director
 import { isProtoFile, type ProtoFile } from '../../../models/proto-file';
 import { ProtoDirectoryLoader } from '../../../network/grpc/proto-directory-loader';
 import { writeProtoFile } from '../../../network/grpc/write-proto-file';
+import { AsyncButton } from '../base/button';
 import { Modal, type ModalHandle } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
 import { ModalHeader } from '../base/modal-header';
 import { ExpandedProtoDirectory, ProtoFileList } from '../proto-file/proto-file-list';
-import { AsyncButton } from '../themed-button';
 import { showAlert, showError } from '.';
 const tryToSelectFilePath = async () => {
   try {

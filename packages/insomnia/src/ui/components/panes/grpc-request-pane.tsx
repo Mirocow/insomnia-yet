@@ -17,8 +17,8 @@ import { useActiveRequestSyncVCSVersion, useGitVCSVersion } from '../../hooks/us
 import { GrpcRequestState } from '../../routes/debug';
 import { GrpcRequestLoaderData } from '../../routes/request';
 import { WorkspaceLoaderData } from '../../routes/workspace';
+import { Button, GrpcSendButton } from '../base/button';
 import { PanelContainer, TabItem, Tabs } from '../base/tabs';
-import { GrpcSendButton } from '../buttons/grpc-send-button';
 import { CodeEditor, CodeEditorHandle } from '../codemirror/code-editor';
 import { OneLineEditor } from '../codemirror/one-line-editor';
 import { GrpcMethodDropdown } from '../dropdowns/grpc-method-dropdown/grpc-method-dropdown';
@@ -30,10 +30,10 @@ import { ErrorModal } from '../modals/error-modal';
 import { ProtoFilesModal } from '../modals/proto-files-modal';
 import { RequestRenderErrorModal } from '../modals/request-render-error-modal';
 import { SvgIcon } from '../svg-icon';
-import { Button } from '../themed-button';
 import { Tooltip } from '../tooltip';
 import { EmptyStatePane } from './empty-state-pane';
 import { Pane, PaneBody, PaneHeader } from './pane';
+
 interface Props {
   grpcState: GrpcRequestState;
   setGrpcState: (states: GrpcRequestState) => void;

@@ -1,8 +1,8 @@
 import React, { FC, Fragment, useCallback, useState } from 'react';
 
 import * as session from '../../../account/session';
+import { PromptButton } from '../base/button';
 import { Link } from '../base/link';
-import { PromptButton } from '../base/prompt-button';
 import { HelpTooltip } from '../help-tooltip';
 import { hideAllModals, showModal } from '../modals/index';
 import { LoginModal } from '../modals/login-modal';

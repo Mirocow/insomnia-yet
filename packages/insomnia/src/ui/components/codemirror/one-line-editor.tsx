@@ -170,8 +170,8 @@ export const OneLineEditor = forwardRef<OneLineEditorHandle, OneLineEditorProps>
     codeMirror.current.on('dragstart', preventDefault);
     codeMirror.current.setCursor({ line: -1, ch: -1 });
 
-    // Actually set the value
-    codeMirror.current?.setValue(defaultValue || '');
+    // Actually set only a string value
+    codeMirror.current?.setValue(String(defaultValue) || '');
     // Clear history so we can't undo the initial set
     codeMirror.current?.clearHistory();
     // Setup nunjucks listeners

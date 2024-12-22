@@ -11,7 +11,7 @@ import {
   refreshToken,
   signOut,
 } from '../../../../sync/git/gitlab-oauth-provider';
-import { Button } from '../../themed-button';
+import { Button } from '../../base/button';
 import { showAlert, showError } from '..';
 
 interface Props {

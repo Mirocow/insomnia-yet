@@ -1,11 +1,10 @@
 import classnames from 'classnames';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { describeByteSize } from '../../../common/misc';
 import { useNunjucksEnabled } from '../../context/nunjucks/nunjucks-enabled-context';
+import { FileInputButton, PromptButton } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../base/dropdown';
-import { FileInputButton } from '../base/file-input-button';
-import { PromptButton } from '../base/prompt-button';
 import { OneLineEditor } from '../codemirror/one-line-editor';
 import { CodePromptModal } from '../modals/code-prompt-modal';
 import { showModal } from '../modals/index';
@@ -41,6 +40,7 @@ interface Props {
   onClick?: () => void;
   onKeydown?: (e: React.KeyboardEvent) => void;
   showDescription: boolean;
+  onBlur?: (e: FocusEvent) => void;
 }
 
 export const Row: FC<Props> = ({
@@ -60,6 +60,7 @@ export const Row: FC<Props> = ({
   onKeydown,
   valuePlaceholder,
   showDescription,
+  onBlur,
 }) => {
   const { enabled } = useNunjucksEnabled();
 
@@ -92,6 +93,7 @@ export const Row: FC<Props> = ({
             getAutocompleteConstants={() => handleGetAutocompleteNameConstants?.(pair) || []}
             readOnly={readOnly}
             onChange={name => onChange({ ...pair, name })}
+            onBlur={onBlur}
           />
         </div>
         <div
@@ -103,13 +105,13 @@ export const Row: FC<Props> = ({
             <FileInputButton
               showFileName
               showFileIcon
-              className="btn btn--outlined btn--super-duper-compact wide ellipsis"
+              className="btn btn--outlined btn--super-super-compact wide ellipsis"
               path={pair.fileName || ''}
               onChange={fileName => onChange({ ...pair, fileName })}
             />
           ) : isMultiline ? (
             <button
-              className="btn btn--outlined btn--super-duper-compact wide ellipsis"
+              className="btn btn--outlined btn--super-super-compact wide ellipsis"
               onClick={() => showModal(CodePromptModal, {
                 submitName: 'Done',
                 title: `Edit ${pair.name}`,
@@ -126,6 +128,7 @@ export const Row: FC<Props> = ({
           ) : (
             <OneLineEditor
               id={'key-value-editor__value' + pair.id}
+              onBlur={onBlur}
               type="text"
               readOnly={readOnly}
               placeholder={valuePlaceholder || 'Value'}

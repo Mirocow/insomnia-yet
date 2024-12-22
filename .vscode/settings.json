@@ -1,0 +1,30 @@
+{
+    "files.exclude": {
+        "**/.history": true,
+        "dumps": true,
+        ".idea": true,
+        ".history": true,
+        "var/log": true,
+        "ansible": true,
+        ".vscode": true,
+        "**/__schemas__": true,
+        "**/__jest__": true,
+        "**/__mocks__": true,
+        "**/__tests__": true,
+        "**/__fixtures__": true,
+        "**/__snapshots__": true,
+        "screenshots": true,
+        "packages/insomnia/bin": true,
+        "packages/insomnia/build": true,
+        "packages/insomnia/dist": true,
+        "packages/insomnia/coverage": true,
+        "packages/openapi-2-kong": true,
+        "packages/insomnia-testing": true,
+        "packages/insomnia-sdk": true,
+        "packages/insomnia/.eslintcache": true,
+        "packages/insomnia/src/main.min.js.map": true
+    },
+    "cSpell.words": [
+        "tinykeys"
+    ]
+}

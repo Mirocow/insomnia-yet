@@ -21,6 +21,7 @@ import { jsonPrettify } from '../../../utils/prettify/json';
 import { queryXPath } from '../../../utils/xpath/query';
 import { useGatedNunjucks } from '../../context/nunjucks/use-gated-nunjucks';
 import type { RootLoaderData } from '../../routes/root';
+import { Button } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../base/dropdown';
 import { createKeybindingsHandler, useDocBodyKeyboardShortcuts } from '../keydown-binder';
 import { FilterHelpModal } from '../modals/filter-help-modal';
@@ -608,11 +609,11 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
                 </Dropdown>
               )) : null}
             {showFilter ?
-              (<button key="help" className="btn btn--compact" onClick={() => showModal(FilterHelpModal, { isJSON: Boolean(mode?.includes('json')) })}>
+              (<Button key="help" className="btn btn--compact" onClick={() => showModal(FilterHelpModal, { isJSON: Boolean(mode?.includes('json')) })}>
                 <i className="fa fa-question-circle" />
-              </button>) : null}
+              </Button>) : null}
             {showPrettify ?
-              (<button
+              (<Button
                 key="prettify"
                 className="btn btn--compact"
                 title="Auto-format request body whitespace"
@@ -623,7 +624,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
                 }}
               >
                 Beautify {mode?.includes('json') ? 'JSON' : mode?.includes('xml') ? 'XML' : ''}
-              </button>) : null}
+              </Button>) : null}
           </div>
         ) : null
       }

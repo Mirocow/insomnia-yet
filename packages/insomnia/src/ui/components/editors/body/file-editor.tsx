@@ -2,8 +2,7 @@ import fs from 'fs';
 import React, { FC, useCallback } from 'react';
 
 import * as misc from '../../../../common/misc';
-import { FileInputButton } from '../../base/file-input-button';
-import { PromptButton } from '../../base/prompt-button';
+import { FileInputButton, PromptButton } from '../../base/button';
 
 interface Props {
   onChange: (path: string) => void;

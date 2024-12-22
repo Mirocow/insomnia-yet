@@ -3,7 +3,7 @@ import YAML from 'yaml';
 
 import { parseApiSpec } from '../../../common/api-specs';
 import type { ApiSpec } from '../../../models/api-spec';
-import { CopyButton } from '../base/copy-button';
+import { CopyButton } from '../base/button';
 import { Link } from '../base/link';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';

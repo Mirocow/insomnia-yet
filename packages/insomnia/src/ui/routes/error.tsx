@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components';
 
 import { DEFAULT_ORGANIZATION_ID } from '../../models/organization';
-import { Button } from '../components/themed-button';
+import { Button } from '../components/base/button';
 
 const Container = styled.div({
   display: 'flex',

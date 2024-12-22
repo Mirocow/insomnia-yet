@@ -49,7 +49,7 @@ interface Key {
 
 /**
  * Get list of paths to all primitive types in nested object
- * @param {object} obj - object to analyse
+ * @param {object} obj - object to analyze
  * @param {String} [prefix] - base path to prefix to all paths
  * @returns {Array} - list of paths
  */
@@ -196,6 +196,7 @@ export function tokenizeTag(tagStr: string) {
   const parsedTag: NunjucksParsedTag = {
     name,
     args,
+    author: '',
   };
   return parsedTag;
 }
@@ -328,3 +329,7 @@ export interface nunjucksTagContextMenuOptions extends Exclude<ReturnType<typeof
 }
 
 export const responseTagRegex = new RegExp('{% *response *.* %}');
+
+export function sanitizeStrForWin32(str: string) {
+  return str.replace(/\\/g, '\\\\\\\\');
+}

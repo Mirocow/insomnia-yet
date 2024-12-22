@@ -1,9 +1,10 @@
 import classnames from 'classnames';
-import React, { FC, Fragment } from 'react';
+import React, { type FC, Fragment, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { generateId } from '../../../common/misc';
-import { PromptButton } from '../base/prompt-button';
+import { Button, PromptButton, ToggleButton } from '../base/button';
+import { Icon } from '../icon';
 import { AutocompleteHandler, Pair, Row } from './row';
 
 export const Toolbar = styled.div({
@@ -41,6 +42,8 @@ interface Props {
   }[]) => void;
   pairs: Pair[];
   valuePlaceholder?: string;
+  onBlur?: (e: FocusEvent) => void;
+  readOnlyPairs?: Pair[];
 }
 
 export const KeyValueEditor: FC<Props> = ({
@@ -69,11 +72,26 @@ export const KeyValueEditor: FC<Props> = ({
   ];
 
   const [showDescription, setShowDescription] = React.useState(false);
+  function createEmptyPair() {
+    return {
+      id: generateId('pair'),
+      name: '',
+      value: '',
+      description: '',
+      disabled: false,
+    };
+  }
+  const pairsListItems = useMemo(
+    () => pairs.length > 0 ? pairs.map(pair => ({ ...pair, id: pair.id || generateId('pair') })) : [createEmptyPair()],
+    // Ensure same array data will not generate different kvPairs to avoid flash issue
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(pairs)]
+  );
 
   return (
     <Fragment>
       <Toolbar>
-        <button
+        <Button
           className="btn btn--compact"
           onClick={() =>
             onChange([
@@ -87,17 +105,29 @@ export const KeyValueEditor: FC<Props> = ({
             ])
           }
         >
-          Add
-        </button>
-        <PromptButton className="btn btn--compact" onClick={() => onChange([])}>
-          Delete All
-        </PromptButton>
-        <button
+          <Icon icon="plus" />
+          <span> Add</span>
+        </Button>
+        <PromptButton
+          disabled={pairsListItems.length === 0}
+          onClick={() => onChange([])}
           className="btn btn--compact"
-          onClick={() => setShowDescription(!showDescription)}
         >
-          Toggle Description
-        </button>
+          <Icon icon="trash-can" />
+          <span>Delete all</span>
+        </PromptButton>
+        <ToggleButton
+          className="btn btn--compact"
+          onChange={setShowDescription}
+          isSelected={showDescription}
+        >
+          {({ isSelected }) => (
+            <>
+              <Icon className={isSelected ? 'text-[--color-success]' : ''} icon={isSelected ? 'toggle-on' : 'toggle-off'} />
+              <span>Description</span>
+            </>
+          )}
+        </ToggleButton>
       </Toolbar>
       <ul className={classnames('key-value-editor', 'wide', className)}>
         {pairs.length === 0 && (
@@ -133,8 +163,8 @@ export const KeyValueEditor: FC<Props> = ({
                   defaultValue={pair.value}
                 />
               </div>
-              <button><i className="fa fa-empty" /></button>
-              <button><i className="fa fa-empty" /></button>
+              <Button><i className="fa fa-empty" /></Button>
+              <Button><i className="fa fa-empty" /></Button>
             </div>
           </li>
         )) : null}

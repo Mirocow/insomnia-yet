@@ -11,8 +11,8 @@ import {
 import { HotKeyRegistry, KeyboardShortcut, KeyCombination } from '../../../common/settings';
 import { useSettingsPatcher } from '../../hooks/use-request';
 import { RootLoaderData } from '../../routes/root';
+import { PromptButton } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
-import { PromptButton } from '../base/prompt-button';
 import { Hotkey } from '../hotkey';
 import { showModal } from '../modals';
 import { AddKeyCombinationModal } from '../modals/add-key-combination-modal';

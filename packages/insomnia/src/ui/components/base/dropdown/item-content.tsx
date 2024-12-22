@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import type { PlatformKeyCombinations } from '../../../../common/settings';
 import { svgPlacementHack } from '../../dropdowns/dropdown-placement-hacks';
 import { SvgIcon } from '../../svg-icon';
-import { PromptButton } from '../prompt-button';
+import { PromptButton } from '../button';
 import { DropdownHint } from './dropdown-hint';
 
 interface StyledIconProps {

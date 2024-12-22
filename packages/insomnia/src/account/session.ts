@@ -1,5 +1,3 @@
-import * as srp from 'srp-js';
-
 import { userSession } from '../models';
 import * as crypt from './crypt';
 
@@ -155,9 +153,6 @@ export async function setSessionData(
 // ~~~~~~~~~~~~~~~~ //
 // Helper Functions //
 // ~~~~~~~~~~~~~~~~ //
-function _getSymmetricKey() {
-  return _getSessionData()?.symmetricKey;
-}
 
 const _getSessionData = (): Partial<SessionData> | null => {
   const sessionId = getCurrentSessionId();
@@ -172,21 +167,3 @@ const _getSessionData = (): Partial<SessionData> | null => {
   }
   return JSON.parse(dataStr) as SessionData;
 };
-
-function _unsetSessionData() {
-  const sessionId = getCurrentSessionId();
-  window.localStorage.removeItem(_getSessionKey(sessionId));
-  window.localStorage.removeItem('currentSessionId');
-}
-
-function _getSessionKey(sessionId: string | null) {
-  return `session__${(sessionId || '').slice(0, 10)}`;
-}
-
-function _getSrpParams() {
-  return srp.params[2048];
-}
-
-function _sanitizePassphrase(passphrase: string) {
-  return passphrase.trim().normalize('NFKD');
-}

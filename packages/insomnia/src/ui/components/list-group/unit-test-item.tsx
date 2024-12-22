@@ -3,8 +3,8 @@ import useToggle from 'react-use/lib/useToggle';
 import styled from 'styled-components';
 
 import { Request } from '../../../models/request';
+import { Button } from '../base/button';
 import { SvgIcon } from '../svg-icon';
-import { Button } from '../themed-button';
 import { ListGroupItem } from './list-group-item';
 import { UnitTestRequestSelector } from './unit-test-request-selector';
 

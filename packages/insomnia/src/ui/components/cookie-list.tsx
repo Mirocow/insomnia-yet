@@ -1,11 +1,13 @@
-import React, { FC, useCallback, useState } from 'react';
+import { isValid } from 'date-fns';
+import React, { type FC, useCallback, useState } from 'react';
 import { Cookie as ToughCookie } from 'tough-cookie';
 import { v4 as uuidv4 } from 'uuid';
 
 import { cookieToString } from '../../common/cookies';
 import type { Cookie } from '../../models/cookie-jar';
-import { Dropdown, DropdownButton, DropdownItem, ItemContent } from './base/dropdown';
-import { PromptButton } from './base/prompt-button';
+import { Button, PromptButton } from './base/button';
+import { Dropdown, DropdownItem, ItemContent } from './base/dropdown';
+import { Icon } from './icon';
 import { CookieModifyModal } from './modals/cookie-modify-modal';
 import { RenderedText } from './rendered-text';
 
@@ -23,13 +25,16 @@ const MAX_TIME = 2147483647000;
 
 const CookieRow: FC<{
   cookie: Cookie;
-  index: number;
   deleteCookie: (cookie: Cookie) => void;
-}> = ({ cookie, index, deleteCookie }) => {
+}> = ({ cookie, deleteCookie }) => {
   const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
+  if (cookie.expires && !isValid(new Date(cookie.expires))) {
+    cookie.expires = null;
+  }
+
   const c = ToughCookie.fromJSON(cookie);
   const cookieString = c ? cookieToString(c) : '';
-  return <tr className="selectable" key={index}>
+  return <tr className="selectable" key={cookie.id}>
     <td>
       <RenderedText>{cookie.domain || ''}</RenderedText>
     </td>
@@ -108,13 +113,11 @@ export const CookieList: FC<CookieListProps> = ({
             <Dropdown
               aria-label='Cookie Actions Dropdown'
               triggerButton={
-                <DropdownButton
-                  title="Add cookie"
-                  className="btn btn--super-duper-compact btn--outlined txt-md"
-                  disableHoverBehavior={false}
+                <Button
+                  className="btn btn--super-super-compact btn--outlined txt-md"
                 >
                   Actions <i className="fa fa-caret-down" />
-                </DropdownButton>
+                </Button>
               }
             >
               <DropdownItem aria-label='Add Cookie'>
@@ -137,11 +140,10 @@ export const CookieList: FC<CookieListProps> = ({
         </tr>
       </thead>
       <tbody key={cookies.length}>
-        {cookies.map((cookie, i) => (
+        {cookies.map(cookie => (
           <CookieRow
             cookie={cookie}
-            index={i}
-            key={i}
+            key={cookie.id}
             deleteCookie={handleCookieDelete}
           />
         ))}
@@ -149,10 +151,10 @@ export const CookieList: FC<CookieListProps> = ({
     </table>
     {cookies.length === 0 && <div className="pad faint italic text-center">
       <p>I couldn't find any cookies for you.</p>
-      <p>
-        <button className="btn btn--clicky" onClick={addCookie}>
-          Add Cookie <i className="fa fa-plus-circle" />
-        </button>
+      <p className='pt-4'>
+        <Button className="border border-solid border-[--hl-lg] px-[--padding-md] h-[--line-height-xs] rounded-[--radius-md] hover:bg-[--hl-xs]" onPress={addCookie}>
+          <Icon icon="plus" /> Add Cookie
+        </Button>
       </p>
     </div>}
   </div>;

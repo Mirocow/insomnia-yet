@@ -20,8 +20,8 @@ import type {
 } from '../../../templating/utils';
 import * as templateUtils from '../../../templating/utils';
 import { useNunjucks } from '../../context/nunjucks/use-nunjucks';
+import { FileInputButton } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
-import { FileInputButton } from '../base/file-input-button';
 import { HelpTooltip } from '../help-tooltip';
 import { localTemplateTags } from './local-template-tags';
 
@@ -267,7 +267,7 @@ export const TagEditor: FC<Props> = props => {
   if (activeTagDefinition?.disablePreview && activeTagDefinition.disablePreview(activeTagData.args)) {
     finalPreview = preview.replace(/./g, '*');
   }
-  
+
   let previewElement;
   if (error) {
     previewElement = <textarea className="danger" value={error || 'Error'} readOnly rows={10} />;

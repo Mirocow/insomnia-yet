@@ -158,9 +158,25 @@ async function _traversePluginPath(
         // Delete require cache entry and re-require
         const module = global.require(modulePath);
 
+        let author = 'Anonymous';
+
+        if (typeof pluginJson.author === 'string') {
+            author = pluginJson.author;
+        } else if (Array.isArray(pluginJson.author)) {
+            let name = '';
+            if (typeof pluginJson.author.name !== 'undefined') {
+                name = pluginJson.author.name;
+            }
+            let email = '';
+            if (typeof pluginJson.author.email !== 'undefined') {
+                email = pluginJson.author.email;
+            }
+            author = `${name} (${email})`;
+        }
+
         pluginMap[pluginJson.name] = {
           name: pluginJson.name,
-          author: pluginJson.author,
+          author: author,
           description: pluginJson.description || pluginJson.insomnia.description || '',
           version: pluginJson.version || 'unknown',
           directory: modulePath || '',
@@ -317,6 +333,7 @@ export async function getRequestHooks(): Promise<RequestHook[]> {
   let functions: RequestHook[] = [{
     plugin: {
       name: 'default-headers',
+      author: 'Anonymous',
       description: 'Set default headers for all requests',
       version: '0.0.0',
       directory: '',

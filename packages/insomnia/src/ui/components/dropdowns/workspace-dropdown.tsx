@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useRef, useState } from 'react';
 import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 
-
 import { getProductName } from '../../../common/constants';
 import { database as db } from '../../../common/database';
 import { getWorkspaceLabel } from '../../../common/get-workspace-label';
@@ -13,10 +12,8 @@ import type { WorkspaceAction } from '../../../plugins';
 import { getWorkspaceActions } from '../../../plugins';
 import * as pluginContexts from '../../../plugins/context';
 import { invariant } from '../../../utils/invariant';
-
 import { WorkspaceLoaderData } from '../../routes/workspace';
 import { Dropdown, DropdownButton, type DropdownHandle, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
-
 import { showError, showPrompt } from '../modals';
 import { ExportRequestsModal } from '../modals/export-requests-modal';
 import { configGenerators, showGenerateConfigModal } from '../modals/generate-config-modal';

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
-import { Button } from '../themed-button';
+import { Button } from '../base/button';
 
 const Wrapper = styled.div({
   height: '100%',

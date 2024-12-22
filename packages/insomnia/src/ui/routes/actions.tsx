@@ -23,7 +23,7 @@ import { getSendRequestCallback } from '../../network/unit-test-feature';
 import { initializeLocalBackendProjectAndMarkForSync } from '../../sync/vcs/initialize-backend-project';
 import { getVCS } from '../../sync/vcs/vcs';
 import { invariant } from '../../utils/invariant';
-import { SegmentEvent } from '../analytics.ts';
+import { SegmentEvent } from '../analytics';
 
 // Project
 export const createNewProjectAction: ActionFunction = async ({ request, params }) => {
@@ -119,7 +119,7 @@ export const createNewWorkspaceAction: ActionFunction = async ({
   const workspaceMeta = await models.workspaceMeta.getOrCreateByParentId(workspace._id);
 
   await database.flushChanges(flushId);
-  if (session.isLoggedIn() && isRemoteProject(project) && !workspaceMeta.gitRepositoryId) {
+  if (await session.isLoggedIn() && isRemoteProject(project) && !workspaceMeta.gitRepositoryId) {
     const vcs = getVCS();
     if (vcs) {
       await initializeLocalBackendProjectAndMarkForSync({
@@ -222,7 +222,7 @@ export const duplicateWorkspaceAction: ActionFunction = async ({ request, params
   try {
     // Mark for sync if logged in and in the expected project
     const vcs = getVCS();
-    if (session.isLoggedIn() && vcs && isRemoteProject(duplicateToProject)) {
+    if (await session.isLoggedIn() && vcs && isRemoteProject(duplicateToProject)) {
       await initializeLocalBackendProjectAndMarkForSync({
         vcs: vcs.newInstance(),
         workspace: newWorkspace,
@@ -556,11 +556,6 @@ export const generateCollectionAndTestsAction: ActionFunction = async ({ params 
     content: apiSpec.contents,
   });
 
-  const aiGeneratedRequestGroup = await models.requestGroup.create({
-    name: 'AI Generated Requests',
-    parentId: workspaceId,
-  });
-
   const requests = resources.requests?.filter(isRequest).map(request => {
     return {
       ...request,
@@ -570,11 +565,6 @@ export const generateCollectionAndTestsAction: ActionFunction = async ({ params 
   }) || [];
 
   await Promise.all(requests.map(request => models.request.create(request)));
-
-  const aiTestSuite = await models.unitTestSuite.create({
-    name: 'AI Generated Tests',
-    parentId: workspaceId,
-  });
 
   const spec = parseApiSpec(apiSpec.contents);
 
@@ -680,11 +670,6 @@ export const generateTestsAction: ActionFunction = async ({ params }) => {
   const workspaceDescendants = await database.withDescendants(workspace);
 
   const requests = workspaceDescendants.filter(isRequest);
-
-  const aiTestSuite = await models.unitTestSuite.create({
-    name: 'AI Generated Tests',
-    parentId: workspaceId,
-  });
 
   const tests: Partial<UnitTest>[] = requests.map(request => {
     return {

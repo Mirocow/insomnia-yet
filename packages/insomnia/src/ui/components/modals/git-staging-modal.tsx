@@ -6,12 +6,12 @@ import { useFetcher, useParams } from 'react-router-dom';
 import { strings } from '../../../common/strings';
 import * as models from '../../../models';
 import { CommitToGitRepoResult, GitChangesLoaderData, GitRollbackChangesResult } from '../../routes/git-actions';
+import { PromptButton } from '../base/button';
 import { IndeterminateCheckbox } from '../base/indeterminate-checkbox';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
 import { ModalHeader } from '../base/modal-header';
-import { PromptButton } from '../base/prompt-button';
 import { Tooltip } from '../tooltip';
 import { showAlert } from '.';
 

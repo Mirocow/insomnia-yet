@@ -1,10 +1,8 @@
-import type { ISpectralDiagnostic } from '@stoplight/spectral-core';
-import type { RulesetDefinition } from '@stoplight/spectral-core';
-import { Spectral } from '@stoplight/spectral-core';
+import { type ISpectralDiagnostic, type RulesetDefinition, Spectral } from '@stoplight/spectral-core';
 // @ts-expect-error - This is a bundled file not sure why it's not found
 import { bundleAndLoadRuleset } from '@stoplight/spectral-ruleset-bundler/with-loader';
 import { oas } from '@stoplight/spectral-rulesets';
-import { app, BrowserWindow, ipcMain, IpcRendererEvent, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, type IpcRendererEvent, shell } from 'electron';
 import fs from 'fs';
 
 import { SegmentEvent, trackPageView, trackSegmentEvent } from '../analytics';
@@ -13,10 +11,10 @@ import { backup, restoreBackup } from '../backup';
 import { insomniaFetch } from '../insomniaFetch';
 import installPlugin from '../install-plugin';
 import { axiosRequest } from '../network/axios-request';
-import { CurlBridgeAPI } from '../network/curl';
+import type { CurlBridgeAPI } from '../network/curl';
 import { cancelCurlRequest, curlRequest } from '../network/libcurl-promise';
-import { WebSocketBridgeAPI } from '../network/websocket';
-import { gRPCBridgeAPI } from './grpc';
+import type { WebSocketBridgeAPI } from '../network/websocket';
+import type { gRPCBridgeAPI } from './grpc';
 
 export interface MainBridgeAPI {
   loginStateChange: () => void;

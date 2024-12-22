@@ -4,7 +4,7 @@ import React, { type CSSProperties, forwardRef, useRef } from 'react';
 import { mergeProps, useButton, useFocusRing } from 'react-aria';
 import styled from 'styled-components';
 
-import { Button as ThemedButton, type ButtonProps } from '../../themed-button';
+import { Button as ThemedButton, type ButtonProps } from '../button';
 
 interface StyledThemedButtonProps extends ButtonProps {
   removePaddings?: boolean;

@@ -14,22 +14,22 @@ import {
 import * as models from '../../models';
 import type { UnitTestSuite } from '../../models/unit-test-suite';
 import { invariant } from '../../utils/invariant';
+import { Button } from '../components/base/button';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../components/base/dropdown';
 import { WorkspaceSyncDropdown } from '../components/dropdowns/workspace-sync-dropdown';
 import { ErrorBoundary } from '../components/error-boundary';
 import { showPrompt } from '../components/modals';
 import { SidebarFooter, SidebarLayout } from '../components/sidebar-layout';
-import { Button } from '../components/themed-button';
 import { TestRunStatus } from './test-results';
 import TestSuiteRoute from './test-suite';
 
-interface LoaderData {
+interface TestLoaderData {
   unitTestSuites: UnitTestSuite[];
 }
 
 export const loader: LoaderFunction = async ({
   params,
-}): Promise<LoaderData> => {
+}): Promise<TestLoaderData> => {
   const { workspaceId } = params;
 
   invariant(workspaceId, 'Workspace ID is required');
@@ -43,7 +43,7 @@ export const loader: LoaderFunction = async ({
 };
 
 const TestRoute: FC = () => {
-  const { unitTestSuites } = useLoaderData() as LoaderData;
+  const { unitTestSuites } = useLoaderData() as TestLoaderData;
 
   const { organizationId, projectId, workspaceId, testSuiteId } = useParams() as {
     organizationId: string;
@@ -105,7 +105,7 @@ const TestRoute: FC = () => {
                     active: suite._id === testSuiteId,
                   })}
                 >
-                  <button
+                  <Button
                     onClick={e => {
                       e.preventDefault();
                       navigate(
@@ -114,7 +114,7 @@ const TestRoute: FC = () => {
                     }}
                   >
                     {suite.name}
-                  </button>
+                  </Button>
 
                   <Dropdown
                     aria-label='Test Suite Actions'

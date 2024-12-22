@@ -3,7 +3,7 @@ import React, { forwardRef, useCallback, useImperativeHandle, useRef, useState }
 
 import { exportHarRequest } from '../../../common/har';
 import { Request } from '../../../models/request';
-import { CopyButton } from '../base/copy-button';
+import { CopyButton } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../base/dropdown';
 import { Link } from '../base/link';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';

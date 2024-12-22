@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { ProtoDirectory } from '../../../models/proto-directory';
 import type { ProtoFile } from '../../../models/proto-file';
+import { Button } from '../base/button';
 import { ListGroup, ListGroupItem } from '../list-group';
-import { Button } from '../themed-button';
 
 export type SelectProtoFileHandler = (id: string) => void;
 export type DeleteProtoFileHandler = (protofile: ProtoFile) => void;

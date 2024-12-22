@@ -41,6 +41,7 @@ const EmptySpaceHelper = styled.div({
   textAlign: 'center',
   opacity: 'calc(var(--opacity-subtle) * 0.8)',
 });
+import { Button } from '../components/base/button';
 
 export const Toolbar = styled.div({
   boxSizing: 'content-box',
@@ -238,7 +239,6 @@ const Design: FC = () => {
       renderPageSidebar={
         apiSpec.contents ? (
           <ErrorBoundary
-            invalidationKey={apiSpec.contents}
             renderError={() => (
               <div className="text-left margin pad">
                 <h4>
@@ -260,9 +260,7 @@ const Design: FC = () => {
               style={{
                 gridRowStart: 6,
               }}
-            >
-
-            </div>
+            />
           </ErrorBoundary>
         ) : (
           <Fragment>
@@ -271,9 +269,7 @@ const Design: FC = () => {
               style={{
                 gridRowStart: 6,
               }}
-            >
-
-            </div>
+            />
           </Fragment>
         )
       }
@@ -357,7 +353,7 @@ const Design: FC = () => {
                     </RulesetLabel>
                   </Tooltip>
                 }
-                <button
+                <Button
                   disabled={lintMessages.filter(message => message.type === 'error').length > 0 || generateRequestCollectionFetcher.state !== 'idle'}
                   className="btn btn--compact"
                   onClick={() => {
@@ -375,7 +371,7 @@ const Design: FC = () => {
                   ) : (
                     <i className="fa fa-file-import" />
                   )} Generate Request Collection
-                </button>
+                </Button>
               </Toolbar>
             ) : null}
           </div>

@@ -1,21 +1,3 @@
-import { Analytics } from '@segment/analytics-node';
-import crypto from 'crypto';
-import { net } from 'electron';
-import { v4 as uuidv4 } from 'uuid';
-
-import {
-  getAppPlatform,
-  getAppVersion,
-  getProductName,
-  getSegmentWriteKey,
-} from '../common/constants';
-import * as models from '../models/index';
-
-const getDeviceId = async () => {
-  const settings = await models.settings.getOrCreate();
-  return settings.deviceId || (await models.settings.update(settings, { deviceId: uuidv4() })).deviceId;
-};
-
 export enum SegmentEvent {
   appStarted = 'App Started',
   collectionCreate = 'Collection Created',
@@ -40,10 +22,6 @@ export enum SegmentEvent {
   vcsSyncComplete = 'VCS Sync Completed',
   vcsAction = 'VCS Action Executed',
   buttonClick = 'Button Clicked',
-}
-
-function hashString(input: string) {
-  return crypto.createHash('sha256').update(input).digest('hex');
 }
 
 export async function trackSegmentEvent(

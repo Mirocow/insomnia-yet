@@ -5,7 +5,7 @@ import { useAsync } from 'react-use';
 import type { ThemeSettings } from '../../models/settings';
 import { type ColorScheme, getThemes } from '../../plugins';
 import { applyColorScheme, type PluginTheme } from '../../plugins/misc';
-import { useRootLoaderData } from '../routes/root';
+import { RootLoaderData } from '../routes/root';
 import { useSettingsPatcher } from './use-request';
 
 export const useThemes = () => {

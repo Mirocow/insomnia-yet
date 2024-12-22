@@ -9,11 +9,11 @@ import { getWorkspaceLabel } from '../../../common/get-workspace-label';
 import { strings } from '../../../common/strings';
 import { ProjectLoaderData } from '../../routes/project';
 import { WorkspaceLoaderData } from '../../routes/workspace';
+import { Button } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { Link } from '../base/link';
 import { ExportRequestsModal } from '../modals/export-requests-modal';
 import { ImportModal } from '../modals/import-modal';
-import { Button } from '../themed-button';
 interface Props {
   hideSettingsModal: () => void;
 }

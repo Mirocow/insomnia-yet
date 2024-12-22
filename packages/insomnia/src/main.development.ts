@@ -1,6 +1,5 @@
 
-import electron, { app, ipcMain, session } from 'electron';
-import { BrowserWindow } from 'electron';
+import electron, { app, BrowserWindow, ipcMain, session } from 'electron';
 import contextMenu from 'electron-context-menu';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'path';
@@ -9,17 +8,14 @@ import { userDataFolder } from '../config/config.json';
 import { getAppVersion, isDevelopment, isMac } from './common/constants';
 import { database } from './common/database';
 import log, { initializeLogging } from './common/log';
-import { backupIfNewerVersionAvailable } from './main/backup';
-import { registerElectronHandlers } from './main/ipc/electron';
 import { registergRPCHandlers } from './main/ipc/grpc';
+import { registerElectronHandlers } from './main/ipc/ipc-electron';
 import { registerMainHandlers } from './main/ipc/main';
 import { registerCurlHandlers } from './main/network/curl';
 import { registerWebSocketHandlers } from './main/network/websocket';
 import { checkIfRestartNeeded } from './main/squirrel-startup';
-import * as updates from './main/updates';
 import * as windowUtils from './main/window-utils';
 import * as models from './models/index';
-import type { Stats } from './models/stats';
 
 // Handle potential auto-update
 if (checkIfRestartNeeded()) {
@@ -90,9 +86,6 @@ app.on('ready', async () => {
   await _createModelInstances();
   windowUtils.init();
   await _launchApp();
-
-  // Init the rest
-  await updates.init();
 });
 
 // Set as default protocol
@@ -141,7 +134,6 @@ app.on('activate', (_error, hasVisibleWindows) => {
 });
 
 const _launchApp = async () => {
-  await _trackStats();
   let window: BrowserWindow;
   // Handle URLs sent via command line args
   ipcMain.once('halfSecondAfterAppStart', () => {
@@ -212,29 +204,4 @@ const _launchApp = async () => {
 async function _createModelInstances() {
   await models.stats.get();
   await models.settings.getOrCreate();
-}
-
-async function _trackStats() {
-  // Handle the stats
-  const oldStats = await models.stats.get();
-  const stats: Stats = await models.stats.update({
-    currentLaunch: Date.now(),
-    lastLaunch: oldStats.currentLaunch,
-    currentVersion: getAppVersion(),
-    lastVersion: oldStats.currentVersion,
-    launches: oldStats.launches + 1,
-  });
-
-  ipcMain.once('halfSecondAfterAppStart', async () => {
-    backupIfNewerVersionAvailable();
-    const { currentVersion, launches, lastVersion } = stats;
-
-    const firstLaunch = launches === 1;
-    const justUpdated = !firstLaunch && currentVersion !== lastVersion;
-    if (!justUpdated || !currentVersion) {
-      return;
-    }
-    console.log('[main] App update detected', currentVersion, lastVersion);
-  });
-  return stats;
 }

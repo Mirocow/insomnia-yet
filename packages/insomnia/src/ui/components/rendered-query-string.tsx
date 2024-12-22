@@ -6,7 +6,7 @@ import { Request } from '../../models/request';
 import { WebSocketRequest } from '../../models/websocket-request';
 import { buildQueryStringFromParams, joinUrlAndQueryString, smartEncodeUrl } from '../../utils/url/querystring';
 import { useNunjucks } from '../context/nunjucks/use-nunjucks';
-import { CopyButton as _CopyButton } from './base/copy-button';
+import { CopyButton as _CopyButton } from './base/button';
 
 const Wrapper = styled.div({
   display: 'flex',

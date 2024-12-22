@@ -7,11 +7,10 @@ import { database as db, Operation } from '../../../common/database';
 import { interceptAccessError } from '../../../sync/vcs/util';
 import { VCS } from '../../../sync/vcs/vcs';
 import { WorkspaceLoaderData } from '../../routes/workspace';
+import { PromptButton, SyncPullButton } from '../base/button';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalHeader } from '../base/modal-header';
-import { PromptButton } from '../base/prompt-button';
-import { SyncPullButton } from '../sync-pull-button';
 
 type Props = ModalProps & {
   vcs: VCS;

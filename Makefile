@@ -32,6 +32,9 @@ update: ## Проверка установленных пакетов на на�
 start: ## Запуск приложения в режиме окна
 	npm run dev
 
+start-debug: ## Запуск приложения в режиме окна (With debug mode)
+	npm run dev-debug
+
 watch: ## Запуск приложения на порту 3334
 	npm run watch:app
 

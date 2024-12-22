@@ -14,6 +14,7 @@ import type {
   PullFromGitRemoteResult,
   PushToGitRemoteResult,
 } from '../../routes/git-actions';
+import { Button } from '../base/button';
 import {
   Dropdown,
   DropdownButton,
@@ -29,7 +30,6 @@ import { GitBranchesModal } from '../modals/git-branches-modal';
 import { GitLogModal } from '../modals/git-log-modal';
 import { GitRepositorySettingsModal } from '../modals/git-repository-settings-modal';
 import { GitStagingModal } from '../modals/git-staging-modal';
-import { Button } from '../themed-button';
 import { Tooltip } from '../tooltip';
 
 interface Props {

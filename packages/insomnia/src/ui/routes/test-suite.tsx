@@ -15,6 +15,7 @@ import { isRequest, Request } from '../../models/request';
 import { isUnitTest, UnitTest } from '../../models/unit-test';
 import { UnitTestSuite } from '../../models/unit-test-suite';
 import { invariant } from '../../utils/invariant';
+import { Button } from '../components/base/button';
 import { Editable } from '../components/base/editable';
 import { CodeEditor, CodeEditorHandle } from '../components/codemirror/code-editor';
 import { ListGroup, UnitTestItem } from '../components/list-group';
@@ -22,7 +23,6 @@ import { showModal, showPrompt } from '../components/modals';
 import { SelectModal } from '../components/modals/select-modal';
 import { EmptyStatePane } from '../components/panes/empty-state-pane';
 import { SvgIcon } from '../components/svg-icon';
-import { Button } from '../components/themed-button';
 import { UnitTestEditable } from '../components/unit-test-editable';
 
 const HeaderButton = styled(Button)({

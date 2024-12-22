@@ -3,10 +3,10 @@ import orderedJSON from 'json-order';
 
 import * as models from '../models';
 import type { CookieJar } from '../models/cookie-jar';
-import type { Environment, UserUploadEnvironment } from '../models/environment';
+import type { Environment } from '../models/environment';
 import type { GrpcRequest, GrpcRequestBody } from '../models/grpc-request';
 import { isProject, type Project } from '../models/project';
-import { PATH_PARAMETER_REGEX, type Request } from '../models/request';
+import { type Request } from '../models/request';
 import { isRequestGroup, type RequestGroup } from '../models/request-group';
 import type { WebSocketRequest } from '../models/websocket-request';
 import { isWorkspace, type Workspace } from '../models/workspace';

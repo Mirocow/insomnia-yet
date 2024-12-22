@@ -19,17 +19,16 @@ import { pullBackendProject } from '../../../sync/vcs/pull-backend-project';
 import { interceptAccessError } from '../../../sync/vcs/util';
 import { VCS } from '../../../sync/vcs/vcs';
 import type { WorkspaceLoaderData } from '../../routes/workspace';
+import { Button } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { Link } from '../base/link';
 import { HelpTooltip } from '../help-tooltip';
-import { showError, showModal } from '../modals';
+import { showError } from '../modals';
 import { GitRepositorySettingsModal } from '../modals/git-repository-settings-modal';
-
 import { SyncBranchesModal } from '../modals/sync-branches-modal';
 import { SyncDeleteModal } from '../modals/sync-delete-modal';
 import { SyncHistoryModal } from '../modals/sync-history-modal';
 import { SyncStagingModal } from '../modals/sync-staging-modal';
-import { Button } from '../themed-button';
 import { Tooltip } from '../tooltip';
 // TODO: handle refetching logic in one place not here in a component
 
@@ -323,9 +322,9 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
   if (loadingProjectPull) {
     return (
       <div>
-        <button className="btn btn--compact wide">
+        <Button className="btn btn--compact wide">
           <i className="fa fa-refresh fa-spin" /> Initializing
-        </button>
+        </Button>
       </div>
     );
   }

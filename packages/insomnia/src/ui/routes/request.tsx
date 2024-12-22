@@ -25,7 +25,7 @@ import { isWebSocketRequestId, type WebSocketRequest } from '../../models/websoc
 import type { WebSocketResponse } from '../../models/websocket-response';
 import { fetchRequestData, responseTransform, sendCurlAndWriteTimeline, tryToInterpolateRequest } from '../../network/network';
 import { invariant } from '../../utils/invariant';
-import { SegmentEvent } from '../analytics.ts';
+import { SegmentEvent } from '../analytics';
 import { updateMimeType } from '../components/dropdowns/content-type-dropdown';
 import type { CreateRequestType } from '../hooks/use-request';
 

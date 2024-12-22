@@ -5,11 +5,11 @@ import { useFetcher, useParams } from 'react-router-dom';
 
 import { GitRepository } from '../../../models/git-repository';
 import { CreateNewGitBranchResult, GitBranchesLoaderData } from '../../routes/git-actions';
+import { PromptButton } from '../base/button';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
 import { ModalHeader } from '../base/modal-header';
-import { PromptButton } from '../base/prompt-button';
 import { showAlert } from '.';
 
 type Props = ModalProps & {

@@ -42,7 +42,6 @@ import {
   TAB_INDEX_PLUGINS,
   TAB_INDEX_THEMES } from '../components/modals/settings-modal';
 import { AppHooks } from '../containers/app-hooks';
-import { AIProvider } from '../context/app/ai-context';
 import { NunjucksEnabledProvider } from '../context/nunjucks/nunjucks-enabled-context';
 import { useSettingsPatcher } from '../hooks/use-request';
 import Modals from './modals';
@@ -249,7 +248,6 @@ const Root = () => {
     }
 
   return (
-    <AIProvider>
       <NunjucksEnabledProvider>
         <AppHooks />
         <div className="app">
@@ -304,7 +302,6 @@ const Root = () => {
           </div>
         </div>
       </NunjucksEnabledProvider>
-    </AIProvider>
   );
 };
 

@@ -1,11 +1,11 @@
 import classnames from 'classnames';
 import React, { forwardRef, type ReactNode, useImperativeHandle, useRef, useState } from 'react';
 
+import { PromptButton } from '../base/button';
 import { Modal, type ModalHandle, type ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
 import { ModalHeader } from '../base/modal-header';
-import { PromptButton } from '../base/prompt-button';
 interface State {
   title: string;
   hints?: string[];

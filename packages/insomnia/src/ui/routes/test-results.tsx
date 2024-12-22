@@ -11,6 +11,20 @@ interface TestResultsData {
   testResult: UnitTestResult;
 }
 
+export const loader: LoaderFunction = async ({
+  params,
+}): Promise<TestResultsData> => {
+  const { testResultId } = params;
+  invariant(testResultId, 'Test Result ID is required');
+  const testResult = await database.getWhere<UnitTestResult>(models.unitTestResult.type, {
+    _id: testResultId,
+  });
+  invariant(testResult, 'Test Result not found');
+  return {
+    testResult,
+  };
+};
+
 export const indexLoader: LoaderFunction = async ({ params }) => {
   const { organizationId, projectId, workspaceId, testSuiteId } = params;
   invariant(projectId, 'Project ID is required');
@@ -24,20 +38,6 @@ export const indexLoader: LoaderFunction = async ({ params }) => {
   }
 
   return null;
-};
-
-export const loader: LoaderFunction = async ({
-  params,
-}): Promise<TestResultsData> => {
-  const { testResultId } = params;
-  invariant(testResultId, 'Test Result ID is required');
-  const testResult = await database.getWhere<UnitTestResult>(models.unitTestResult.type, {
-    _id: testResultId,
-  });
-  invariant(testResult, 'Test Result not found');
-  return {
-    testResult,
-  };
 };
 
 export const TestRunStatus: FC = () => {
