@@ -7,8 +7,12 @@ import type { Response } from '../../../models/response';
 import type { TemplateTag } from '../../../plugins';
 import type { PluginTemplateTag } from '../../../templating/extensions';
 import { buildQueryStringFromParams, joinUrlAndQueryString, smartEncodeUrl } from '../../../utils/url/querystring';
+import { hashTag } from './tags/hashed';
+import { uuidTag } from './tags/uuid';
 
 const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
+  uuidTag,
+  hashTag,
   {
     templateTag: {
       name: 'currentrequest',
@@ -93,7 +97,7 @@ const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
         },
       ],
 
-      async run(context: PluginTemplateTagContext, attribute, name, folderIndex) {
+      async run(context: PluginTemplateTag, attribute, name, folderIndex) {
         const { meta } = context;
 
         if (!meta.requestId || !meta.workspaceId) {
@@ -641,7 +645,7 @@ const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
  * @param context
  * @returns
  */
-function searchByParams(attributes: any[], filter: string | undefined, context: PluginTemplateTagContext) {
+function searchByParams(attributes: any[], filter: string | undefined, context: PluginTemplateTag) {
     const sanitizedFilter = filter.trim();
 
     const choices = attributes.filter((attr: { disabled: any }) => !attr.disabled)

@@ -19,6 +19,7 @@ import {
   SelectValue,
   useDragAndDrop,
 } from 'react-aria-components';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import {
   type LoaderFunction,
   redirect,
@@ -29,7 +30,11 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { SORT_ORDERS, type SortOrder, sortOrderName } from '../../common/constants';
+import {
+  DEFAULT_SIDEBAR_SIZE,
+  SORT_ORDERS,
+  type SortOrder,
+  sortOrderName } from '../../common/constants';
 import { type ChangeBufferEvent, database as db } from '../../common/database';
 import { generateId } from '../../common/misc';
 import type { PlatformKeyCombinations } from '../../common/settings';
@@ -69,7 +74,6 @@ import { GrpcResponsePane } from '../components/panes/grpc-response-pane';
 import { PlaceholderRequestPane } from '../components/panes/placeholder-request-pane';
 import { RequestPane } from '../components/panes/request-pane';
 import { ResponsePane } from '../components/panes/response-pane';
-import { SidebarLayout } from '../components/sidebar-layout';
 import { getMethodShortHand } from '../components/tags/method-tag';
 import { ConnectionCircle } from '../components/websockets/action-bar';
 import { RealtimeResponsePane } from '../components/websockets/realtime-response-pane';
@@ -618,9 +622,9 @@ export const Debug: FC = () => {
   });
 
   return (
-    <SidebarLayout
-      className="new-sidebar"
-      renderPageSidebar={
+    <PanelGroup autoSaveId="insomnia-sidebar" id="wrapper" className='new-sidebar w-full h-full text-[--color-font]' direction='horizontal'>
+      <Panel id="sidebar" className='sidebar theme--sidebar' defaultSize={DEFAULT_SIDEBAR_SIZE} maxSize={40} minSize={10} collapsible>
+
         <div className="flex flex-1 flex-col overflow-hidden divide-solid divide-y divide-[--hl-md]">
           <div className="flex flex-col items-start gap-2 justify-between p-[--padding-sm]">
             <div className="flex w-full items-center gap-2 justify-between">
@@ -1023,9 +1027,12 @@ export const Debug: FC = () => {
             />
           )}
         </div>
-      }
-      renderPaneOne={
-        workspaceId ? (
+
+      </Panel>
+      <PanelResizeHandle className='h-full w-[1px] bg-[--hl-md]' />
+      <Panel id="pane-one" className='pane-one theme--pane'>
+
+        {workspaceId ? (
           <ErrorBoundary showAlert>
             {isGrpcRequestId(requestId) && grpcState && (
               <GrpcRequestPane
@@ -1056,9 +1063,12 @@ export const Debug: FC = () => {
               />
             )}
           </ErrorBoundary>
-        ) : null
-      }
-      renderPaneTwo={
+        ) : null}
+
+      </Panel>
+      <PanelResizeHandle className='h-full w-[1px] bg-[--hl-md]' />
+      <Panel id="pane-two" className='pane-two theme--pane'>
+
         <ErrorBoundary showAlert>
           {activeRequest && isGrpcRequest(activeRequest) && grpcState && (
             <GrpcResponsePane grpcState={grpcState} />
@@ -1070,8 +1080,9 @@ export const Debug: FC = () => {
             <ResponsePane runningRequests={runningRequests} />
           )}
         </ErrorBoundary>
-      }
-    />
+
+      </Panel>
+    </PanelGroup>
   );
 };
 

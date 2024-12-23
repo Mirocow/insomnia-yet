@@ -3,6 +3,7 @@ import CodeMirror from 'codemirror';
 import { stat } from 'fs/promises';
 import path from 'path';
 import React, { createRef, type FC, Fragment, useCallback, useEffect, useMemo } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import {
   type LoaderFunction,
   useFetcher,
@@ -14,11 +15,15 @@ import styled from 'styled-components';
 import { SwaggerUIBundle } from 'swagger-ui-dist';
 
 import { parseApiSpec } from '../../common/api-specs';
-import { ACTIVITY_SPEC } from '../../common/constants';
+import {
+  ACTIVITY_SPEC,
+  DEFAULT_SIDEBAR_SIZE,
+} from '../../common/constants';
 import { debounce } from '../../common/misc';
 import type { ApiSpec } from '../../models/api-spec';
 import * as models from '../../models/index';
 import { invariant } from '../../utils/invariant';
+import { Button } from '../components/base/button';
 import {
   CodeEditor,
   type CodeEditorHandle,
@@ -26,13 +31,13 @@ import {
 import { DesignEmptyState } from '../components/design-empty-state';
 import { ErrorBoundary } from '../components/error-boundary';
 import { type Notice, NoticeTable } from '../components/notice-table';
-import { SidebarLayout } from '../components/sidebar-layout';
 import { SpecEditorSidebar } from '../components/spec-editor/spec-editor-sidebar';
 import { Tooltip } from '../components/tooltip';
 import {
   useActiveApiSpecSyncVCSVersion,
   useGitVCSVersion,
 } from '../hooks/use-vcs-version';
+
 const EmptySpaceHelper = styled.div({
   display: 'flex',
   alignItems: 'flex-start',
@@ -41,7 +46,6 @@ const EmptySpaceHelper = styled.div({
   textAlign: 'center',
   opacity: 'calc(var(--opacity-subtle) * 0.8)',
 });
-import { Button } from '../components/base/button';
 
 export const Toolbar = styled.div({
   boxSizing: 'content-box',
@@ -235,23 +239,11 @@ const Design: FC = () => {
   const uniquenessKey = `${apiSpec?._id}::${apiSpec?.created}::${gitVersion}::${syncVersion}`;
 
   return (
-    <SidebarLayout
-      renderPageSidebar={
-        apiSpec.contents ? (
-          <ErrorBoundary
-            renderError={() => (
-              <div className="text-left margin pad">
-                <h4>
-                  An error occurred while trying to render your spec's
-                  navigation.
-                </h4>
-                <p>
-                  This navigation will automatically refresh, once you have a
-                  valid specification that can be rendered.
-                </p>
-              </div>
-            )}
-          >
+    <PanelGroup autoSaveId="insomnia-sidebar" id="wrapper" className='new-sidebar w-full h-full text-[--color-font]' direction='horizontal'>
+      <Panel id="sidebar" className='sidebar theme--sidebar' defaultSize={DEFAULT_SIDEBAR_SIZE} maxSize={40} minSize={10} collapsible>
+
+        {apiSpec.contents ? (
+          <ErrorBoundary>
             <SpecEditorSidebar
               apiSpec={apiSpec}
               handleSetSelection={handleScrollToSelection}
@@ -271,11 +263,13 @@ const Design: FC = () => {
               }}
             />
           </Fragment>
-        )
-      }
-      renderPaneTwo={showRightPane && <SwaggerUIDiv text={apiSpec.contents} />}
-      renderPaneOne={
-        apiSpec ? (
+        )}
+
+      </Panel>
+      <PanelResizeHandle className='h-full w-[1px] bg-[--hl-md]' />
+      <Panel id="pane-one" className='pane-one theme--pane'>
+
+        {apiSpec ? (
           <div className="column tall theme--pane__body">
             <div className="tall relative overflow-hidden">
               <CodeEditor
@@ -375,9 +369,17 @@ const Design: FC = () => {
               </Toolbar>
             ) : null}
           </div>
-        ) : null
-      }
-    />
+        ) : null}
+
+      </Panel>
+      <PanelResizeHandle className='h-full w-[1px] bg-[--hl-md]' />
+
+      <Panel id="pane-two" className='pane-two theme--pane'>
+
+        {showRightPane && <SwaggerUIDiv text={apiSpec.contents} />}
+
+      </Panel>
+    </PanelGroup>
   );
 };
 

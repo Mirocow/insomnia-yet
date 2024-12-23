@@ -122,35 +122,6 @@ const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
     },
     {
       templateTag: {
-        displayName: 'UUID',
-        name: 'uuid',
-        description: 'generate v1 or v4 UUIDs',
-        args: [
-          {
-            displayName: 'Version',
-            type: 'enum',
-            options: [
-              { displayName: 'Version 4', value: 'v4' },
-              { displayName: 'Version 1', value: 'v1' },
-            ],
-          },
-        ],
-        run(_context, uuidType = 'v4') {
-          switch ((uuidType + '').toLowerCase()) {
-            case '1':
-            case 'v1':
-              return uuid.v1();
-            case '4':
-            case 'v4':
-              return uuid.v4();
-            default:
-              throw new Error(`Invalid UUID type "${uuidType}"`);
-          }
-        },
-      },
-    },
-    {
-      templateTag: {
         displayName: 'OS',
         name: 'os',
         description: 'get OS info',
@@ -190,53 +161,6 @@ const localTemplatePlugins: { templateTag: PluginTemplateTag }[] = [
           } else {
             return value;
           }
-        },
-      },
-    },
-    {
-      templateTag: {
-        name: 'hash',
-        displayName: 'Hash',
-        description: 'apply hash to a value',
-        args: [
-          {
-            displayName: 'Algorithm',
-            type: 'enum',
-            options: [
-              { displayName: 'MD5', value: 'md5' },
-              { displayName: 'SHA1', value: 'sha1' },
-              { displayName: 'SHA256', value: 'sha256' },
-              { displayName: 'SHA512', value: 'sha512' },
-            ],
-          },
-          {
-            displayName: 'Digest Encoding',
-            description: 'The encoding of the output',
-            type: 'enum',
-            options: [
-              { displayName: 'Hexadecimal', value: 'hex' },
-              { displayName: 'Base64', value: 'base64' },
-            ],
-          },
-          {
-            displayName: 'Input',
-            type: 'string',
-            placeholder: 'Value to hash',
-          },
-        ],
-        run(_context, algorithm, encoding, value = '') {
-          if (encoding !== 'hex' && encoding !== 'latin1' && encoding !== 'base64') {
-            throw new Error(`Invalid encoding ${encoding}. Choices are hex, latin1, base64`);
-          }
-  
-          const valueType = typeof value;
-          if (valueType !== 'string') {
-            throw new Error(`Cannot hash value of type "${valueType}"`);
-          }
-  
-          const hash = crypto.createHash(algorithm);
-          hash.update(value || '', 'utf8');
-          return hash.digest(encoding);
         },
       },
     },

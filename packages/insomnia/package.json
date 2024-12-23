@@ -34,9 +34,11 @@
     "start:electron": "cross-env NODE_ENV=development esr esbuild.main.ts && electron . --inspect=5858",
     "start-debug": "concurrently -n dev,app --kill-others \"npm run start:dev-server\" \"npm run start-debug:electron\"",
     "start-debug:electron": "cross-env NODE_ENV=development esr esbuild.main.ts && electron . --inspect=5858 --remote-debugging-port=9223",
-    "test": "jest",
     "electron:dev-build": "electron ./build/main.min.js",
+    "test": "jest",
+    "test:script": "jest $1",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "type-check": "tsc --noEmit --project tsconfig.json",
     "type-check:watch": "npm run type-check -- --watch",
     "convert-svg": "npm_config_yes=true npx @svgr/cli@6.4.0 --no-index --config-file svgr.config.js --out-dir src/ui/components/assets/svgr src/ui/components/assets/"

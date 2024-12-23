@@ -149,6 +149,11 @@
 			"path": "packages/insomnia/src/ui/routes/project.tsx",
 			"bookmarks": [
 				{
+					"line": 67,
+					"column": 0,
+					"label": ""
+				},
+				{
 					"line": 395,
 					"column": 0,
 					"label": ""
@@ -183,6 +188,11 @@
 		{
 			"path": "packages/insomnia/src/ui/routes/design.tsx",
 			"bookmarks": [
+				{
+					"line": 28,
+					"column": 0,
+					"label": ""
+				},
 				{
 					"line": 133,
 					"column": 0,
@@ -305,6 +315,26 @@
 			"bookmarks": [
 				{
 					"line": 1,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/routes/debug.tsx",
+			"bookmarks": [
+				{
+					"line": 71,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/routes/unit-test.tsx",
+			"bookmarks": [
+				{
+					"line": 21,
 					"column": 0,
 					"label": ""
 				}

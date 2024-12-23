@@ -215,15 +215,17 @@ const Root = () => {
                 to={`/organization/${organizationId}/project/${workspaceData.activeProject._id}`}
               >
                 {isDesign(workspaceData) ? (
-                  <div className="px-1 h-full rounded-s-sm bg-[--color-info] text-[--color-font-info]">
+                  <div className="px-1 h-full rounded-s-sm bg-[--color-info] text-[--color-font-info] w-[20px]">
                     <Icon icon="file" />
                   </div>
                 ) : (
-                  <div className="px-1 h-full rounded-s-sm bg-[--color-surprise] text-[--color-font-surprise]">
+                  <div className="px-1 h-full rounded-s-sm bg-[--color-surprise] text-[--color-font-surprise] w-[20px]">
                     <Icon icon="bars" />
                   </div>
                 )}
-                { /*workspaceData.activeProject.name*/ }
+                {/* <div className="px-1 h-full w-full">
+                {workspaceData.activeProject.name}
+                </div> */}
               </NavLink>
             </Link>
           ),
@@ -245,9 +247,7 @@ const Root = () => {
             <NavLink
               key={item.id}
               to={`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/${item.id}`}
-              className={({ isActive }) => `uppercase ${isActive
-                ? 'underline'
-                : ''}`}
+              className={({ isActive }) => `uppercase ${isActive ? 'underline px-2 hover:bg-[--hl-xs] ' : 'px-2 hover:bg-[--hl-xs] '}`}
             >
               {item.name}
             </NavLink>)
@@ -260,56 +260,72 @@ const Root = () => {
       <NunjucksEnabledProvider>
         <AppHooks />
         <div className="app">
-          <Modals />
-          {/* triggered by insomnia://app/import */}
-          {importUri && (
-            <ImportModal
-              onHide={() => setImportUri('')}
-              projectName="Insomnia"
-              organizationId={organizationId}
-              from={{ type: 'uri', defaultValue: importUri }}
-            />
-          )}
-          <div className="w-full h-full divide-x divide-solid divide-y divide-[--hl-md] grid-template-app-layout grid relative bg-[--color-bg]">
-            <Outlet />
-            <div className="relative [grid-area:Statusbar] flex items-center justify-between overflow-hidden" style={{ height: '32px' }}>
-              <div className="p-[--padding-sm]">
-                {workspaceData && (
-                  <Fragment>
-                    { /* Menu in footer */ }
-                    <Breadcrumbs items={crumbs} className="flex items-left justify-left">
-                      {item => (
-                        <Breadcrumb key={item.id} id={item.id} className="px-1 flex truncate select-none items-center gap-2 text-[--color-font] h-full outline-none data-[focused]:outline-none">
-                          {item.node}
-                        </Breadcrumb>
-                      )}
-                    </Breadcrumbs>
-                  </Fragment>
-                )}
+          <div className="w-full h-full">
+            {/* triggered by insomnia://app/import */}
+            {importUri && (
+              <ImportModal
+                onHide={() => setImportUri('')}
+                projectName="Insomnia"
+                defaultProjectId={projectId}
+                organizationId={organizationId}
+                from={{ type: 'uri', defaultValue: importUri }}
+              />
+            )}
+            {/* Main window */}
+            <div className="w-full h-full divide-x divide-solid divide-[--hl-md] grid-template-app-layout grid relative bg-[--color-bg]">
+              {/* Header */}
+              <header className="[grid-area:Header] grid grid-cols-3 items-center border-b border-solid border-[--hl-md]">
+                <div className="flex items-center gap-2" />
+              </header>
+              {/* Content */}
+              <div className="[grid-area:Content] overflow-hidden border-b border-[--hl-md]">
+                <Outlet />
               </div>
-              <TooltipTrigger>
-                <Button
-                  data-testid="settings-button"
-                  className="px-4 py-1 h-full flex items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] text-[--color-font] text-xs hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all"
-                  onPress={showSettingsModal}
-                >
-                  <Icon icon="gear" /> Preferences
-                </Button>
-                <Tooltip
-                  placement="top"
-                  offset={8}
-                  className="border flex items-center gap-2 select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] text-[--color-font] px-4 py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
-                >
-                  Preferences
-                  <Hotkey
-                    keyBindings={
-                      settings.hotKeyRegistry.preferences_showGeneral
-                    }
-                  />
-                </Tooltip>
-              </TooltipTrigger>
+              {/* Footer */}
+              <div className="relative [grid-area:Statusbar] flex items-center overflow-hidden">
+                <div className="flex w-full h-full items-center justify-between">
+                  <div className="flex h-full">
+                    {workspaceData && (
+                      <Fragment>
+                        { /* Menu in footer */ }
+                        <Breadcrumbs items={crumbs} className="px-4 py-1 h-full flex items-center justify-center gap-1 aria-pressed:bg-[--hl-sm] text-[--color-font] text-xs focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all">
+                          {item => (
+                            <Breadcrumb key={item.id} id={item.id} className="px-1">
+                              {item.node}
+                            </Breadcrumb>
+                          )}
+                        </Breadcrumbs>
+                      </Fragment>
+                    )}
+                  </div>
+                  <div className="flex h-full">
+                    <TooltipTrigger>
+                    <Button
+                      data-testid="settings-button"
+                      className="px-4 py-1 h-full flex items-center justify-center gap-1 aria-pressed:bg-[--hl-sm] text-[--color-font] text-xs hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all"
+                      onPress={showSettingsModal}
+                    >
+                      <Icon icon="gear" /> Preferences
+                    </Button>
+                    <Tooltip
+                      placement="top"
+                      offset={8}
+                      className=""
+                    >
+                      Preferences
+                      <Hotkey
+                        keyBindings={
+                          settings.hotKeyRegistry.preferences_showGeneral
+                        }
+                      />
+                    </Tooltip>
+                  </TooltipTrigger>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+          <Modals />
         </div>
       </NunjucksEnabledProvider>
   );

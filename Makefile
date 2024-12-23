@@ -53,8 +53,11 @@ build-js: ## Сборка приложения (JS)
 build-svg: ## Сборка приложения (SVG)
 	cd packages/insomnia &&	npm run convert-svg && cd ../..
 
-tests: ## Запуск тестов
+tests-all: ## Запуск всех тестов
 	cd packages/insomnia &&	npm run test && cd ../..
+
+tests: ## Запуск указанных тестов (передается папка или файл)
+	cd packages/insomnia && npm run test:script '${args}'
 
 package: ## Сборка приложения
 	npm run app-package

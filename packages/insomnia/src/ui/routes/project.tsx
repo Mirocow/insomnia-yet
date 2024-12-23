@@ -16,6 +16,7 @@ import {
   Select,
   SelectValue,
 } from 'react-aria-components';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import {
   type LoaderFunction,
   matchPath,
@@ -32,8 +33,8 @@ import {
   DASHBOARD_SORT_ORDERS,
   type DashboardSortOrder,
   dashboardSortOrderName,
-  getProductName,
-} from '../../common/constants';
+  DEFAULT_SIDEBAR_SIZE,
+  getProductName } from '../../common/constants';
 import { fuzzyMatchAll, isNotNullOrUndefined } from '../../common/misc';
 import { descendingNumberSort, sortMethodMap } from '../../common/sorting';
 import { strings } from '../../common/strings';
@@ -64,7 +65,6 @@ import { showAlert, showPrompt } from '../components/modals';
 import { GitRepositoryCloneModal } from '../components/modals/git-repository-settings-modal/git-repo-clone-modal';
 import { ImportModal } from '../components/modals/import-modal';
 import { EmptyStatePane } from '../components/panes/project-empty-state-pane';
-import { SidebarLayout } from '../components/sidebar-layout';
 import { TimeFromNow } from '../components/time-from-now';
 import { useOrganizationLoaderData } from './organization';
 
@@ -463,10 +463,9 @@ const ProjectRoute: FC = () => {
     <ErrorBoundary>
       <Fragment>
 
-        <SidebarLayout
-          className="new-sidebar"
-
-          renderPageSidebar={
+        <PanelGroup autoSaveId="insomnia-sidebar" id="wrapper" className='new-sidebar w-full h-full text-[--color-font]' direction='horizontal'>
+           {/* Left sidebar */}
+          <Panel id="sidebar" className='sidebar theme--sidebar' defaultSize={DEFAULT_SIDEBAR_SIZE} maxSize={40} minSize={10} collapsible>
 
             <div className="flex flex-1 flex-col overflow-hidden divide-solid divide-y divide-[--hl-md]">
               <div className="p-[--padding-sm]">
@@ -487,8 +486,8 @@ const ProjectRoute: FC = () => {
                     <Icon icon="caret-down" />
                     ({projectsCount})
                   </Button>
-                  <Popover className="min-w-max">
-                    <ListBox<Organization>
+                  <Popover className="min-w-max overflow-y-hidden flex flex-col">
+                    <ListBox
                       items={organizations}
                       className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
                     >
@@ -630,7 +629,7 @@ const ProjectRoute: FC = () => {
                 </GridList>
 
               <div className="flex flex-col" style={{ height: '150px' }}>
-              { /* list of scop actions */ }
+              { /* list of actions` scop */ }
               <GridList
                 aria-label="Scope filter"
                 items={scopeActionList}
@@ -679,8 +678,13 @@ const ProjectRoute: FC = () => {
               </GridList>
             </div>
             </div>
-          }
-          renderPaneOne={
+
+          </Panel>
+          {/* Splitter */}
+          <PanelResizeHandle className='h-full w-[1px] bg-[--hl-md]' />
+          {/* Right sidebar */}
+          <Panel id="pane-one" className='pane-one theme--pane'>
+
             <div className="w-full h-full flex flex-col overflow-hidden">
               <div className="flex justify-between w-full gap-1 p-[--padding-md]">
                 <SearchField
@@ -924,13 +928,16 @@ const ProjectRoute: FC = () => {
                 }}
               </GridList>
             </div>
-          }
-        />
+
+          </Panel>
+        </PanelGroup>
+
         {isGitRepositoryCloneModalOpen && (
           <GitRepositoryCloneModal
             onHide={() => setIsGitRepositoryCloneModalOpen(false)}
           />
         )}
+
         {importModalType && (
           <ImportModal
             onHide={() => setImportModalType(null)}
@@ -940,6 +947,7 @@ const ProjectRoute: FC = () => {
             defaultProjectId={activeProject._id}
           />
         )}
+
       </Fragment>
     </ErrorBoundary>
   );

@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import React, { FC, Suspense } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import {
   LoaderFunction,
   Route,
@@ -11,6 +12,9 @@ import {
   useParams,
 } from 'react-router-dom';
 
+import {
+  DEFAULT_SIDEBAR_SIZE,
+} from '../../common/constants';
 import * as models from '../../models';
 import type { UnitTestSuite } from '../../models/unit-test-suite';
 import { invariant } from '../../utils/invariant';
@@ -19,7 +23,6 @@ import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../componen
 import { WorkspaceSyncDropdown } from '../components/dropdowns/workspace-sync-dropdown';
 import { ErrorBoundary } from '../components/error-boundary';
 import { showPrompt } from '../components/modals';
-import { SidebarFooter, SidebarLayout } from '../components/sidebar-layout';
 import { TestRunStatus } from './test-results';
 import TestSuiteRoute from './test-suite';
 
@@ -66,8 +69,9 @@ const TestRoute: FC = () => {
   const navigate = useNavigate();
 
   return (
-    <SidebarLayout
-      renderPageSidebar={
+    <PanelGroup autoSaveId="insomnia-sidebar" id="wrapper" className='new-sidebar w-full h-full text-[--color-font]' direction='horizontal'>
+      <Panel id="sidebar" className='sidebar theme--sidebar' defaultSize={DEFAULT_SIDEBAR_SIZE} maxSize={40} minSize={10} collapsible>
+
         <ErrorBoundary showAlert>
           <div className="unit-tests__sidebar">
             <div className="pad-sm">
@@ -162,12 +166,13 @@ const TestRoute: FC = () => {
               ))}
             </ul>
           </div>
-          <SidebarFooter>
             <WorkspaceSyncDropdown />
-          </SidebarFooter>
         </ErrorBoundary>
-      }
-      renderPaneOne={
+
+      </Panel>
+      <PanelResizeHandle className='h-full w-[1px] bg-[--hl-md]' />
+      <Panel id="pane-one" className='pane-one theme--pane'>
+
         <Routes>
           <Route
             path={'test-suite/:testSuiteId/*'}
@@ -186,8 +191,11 @@ const TestRoute: FC = () => {
             }
           />
         </Routes>
-      }
-      renderPaneTwo={
+
+      </Panel>
+      <PanelResizeHandle className='h-full w-[1px] bg-[--hl-md]' />
+      <Panel id="pane-two" className='pane-two theme--pane'>
+
         <Routes>
           <Route
             path="test-suite/:testSuiteId/test-result/:testResultId"
@@ -222,8 +230,9 @@ const TestRoute: FC = () => {
             }
           />
         </Routes>
-      }
-    />
+
+      </Panel>
+    </PanelGroup>
   );
 };
 
