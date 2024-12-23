@@ -2,6 +2,7 @@
 import electron, { app, BrowserWindow, ipcMain, session } from 'electron';
 import contextMenu from 'electron-context-menu';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+import fs from 'fs/promises';
 import path from 'path';
 
 import { userDataFolder } from '../config/config.json';
@@ -86,6 +87,8 @@ app.on('ready', async () => {
   await _createModelInstances();
   windowUtils.init();
   await _launchApp();
+  // recursive = ignore already exists error
+  await fs.mkdir(path.join(dataPath, 'responses'), { recursive: true });
 });
 
 // Set as default protocol
@@ -139,6 +142,7 @@ const _launchApp = async () => {
   ipcMain.once('halfSecondAfterAppStart', () => {
     console.log('[main] Window ready, handling command line arguments', process.argv);
     const args = process.argv.slice(1).filter(a => a !== '.');
+    console.log('[main] Check args and create windows', args);
     if (args.length) {
       window = windowUtils.getOrCreateWindow();
       window.webContents.send('shell:open', args.join());
@@ -154,7 +158,7 @@ const _launchApp = async () => {
     } else {
       // Called when second instance launched with args (Windows/Linux)
       app.on('second-instance', (_1, args) => {
-        console.log('Second instance listener received:', args.join('||'));
+        console.log('[main] Second instance listener received:', args.join('||'));
         window = windowUtils.getOrCreateWindow();
         if (window) {
           if (window.isMinimized()) {

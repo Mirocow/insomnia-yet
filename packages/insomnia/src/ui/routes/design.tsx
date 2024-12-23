@@ -1,4 +1,4 @@
-import type { IRuleResult } from '@stoplight/spectral-core';
+import { type IRuleResult } from '@stoplight/spectral-core';
 import CodeMirror from 'codemirror';
 import { stat } from 'fs/promises';
 import path from 'path';

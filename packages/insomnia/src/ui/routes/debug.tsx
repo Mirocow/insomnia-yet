@@ -6,10 +6,12 @@ import {
   Button,
   DropIndicator,
   GridList,
+  GridListItem,
   Input,
-  Item,
   ListBox,
+  ListBoxItem,
   Menu,
+  MenuItem,
   MenuTrigger,
   Popover,
   SearchField,
@@ -636,7 +638,6 @@ export const Debug: FC = () => {
                   );
                 }}
                 selectedKey={activeEnvironment._id}
-                items={environmentsList}
               >
                 <Button className="px-4 py-1 flex flex-1 items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm">
                   <SelectValue<Environment> className="flex truncate items-center justify-center gap-2">
@@ -673,10 +674,11 @@ export const Debug: FC = () => {
                 <Popover className="min-w-max">
                   <ListBox<Environment>
                     key={activeEnvironment._id}
+                    items={environmentsList}
                     className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
                   >
                     {item => (
-                      <Item
+                      <ListBoxItem
                         id={item._id}
                         key={item._id}
                         className="flex gap-2 px-[--padding-md] aria-selected:font-bold items-center text-[--color-font] h-[--line-height-xs] w-full text-md whitespace-nowrap bg-transparent hover:bg-[--hl-sm] disabled:cursor-not-allowed focus:bg-[--hl-xs] focus:outline-none transition-colors"
@@ -709,7 +711,7 @@ export const Debug: FC = () => {
                             )}
                           </Fragment>
                         )}
-                      </Item>
+                      </ListBoxItem>
                     )}
                   </ListBox>
                 </Popover>
@@ -764,12 +766,6 @@ export const Debug: FC = () => {
                     sortOrder: order.toString(),
                   })
                 }
-                items={SORT_ORDERS.map(order => {
-                  return {
-                    id: order,
-                    name: sortOrderName[order],
-                  };
-                })}
               >
                 <Button
                   aria-label="Select sort order"
@@ -777,10 +773,18 @@ export const Debug: FC = () => {
                 >
                   <Icon icon="sort" />
                 </Button>
-                <Popover className="min-w-max">
-                  <ListBox<{ id: string; name: string }> className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none">
+                <Popover className="min-w-max overflow-y-hidden flex flex-col">
+                  <ListBox
+                    items={SORT_ORDERS.map(order => {
+                      return {
+                        id: order,
+                        name: sortOrderName[order],
+                      };
+                    })}
+                    className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] py-2 rounded-md overflow-y-auto focus:outline-none"
+                  >
                     {item => (
-                      <Item
+                      <ListBoxItem
                         id={item.id}
                         key={item.id}
                         className="flex gap-2 px-[--padding-md] aria-selected:font-bold items-center text-[--color-font] h-[--line-height-xs] w-full text-md whitespace-nowrap bg-transparent hover:bg-[--hl-sm] disabled:cursor-not-allowed focus:bg-[--hl-xs] focus:outline-none transition-colors"
@@ -799,7 +803,7 @@ export const Debug: FC = () => {
                             )}
                           </Fragment>
                         )}
-                      </Item>
+                      </ListBoxItem>
                     )}
                   </ListBox>
                 </Popover>
@@ -826,7 +830,7 @@ export const Debug: FC = () => {
                     className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
                   >
                     {item => (
-                      <Item
+                      <MenuItem
                         key={item.id}
                         id={item.id}
                         className="flex gap-2 px-[--padding-md] aria-selected:font-bold items-center text-[--color-font] h-[--line-height-xs] w-full text-md whitespace-nowrap bg-transparent hover:bg-[--hl-sm] disabled:cursor-not-allowed focus:bg-[--hl-xs] focus:outline-none transition-colors"
@@ -834,7 +838,7 @@ export const Debug: FC = () => {
                       >
                         <Icon icon={item.icon} />
                         <span>{item.name}</span>
-                      </Item>
+                      </MenuItem>
                     )}
                   </Menu>
                 </Popover>
@@ -859,7 +863,7 @@ export const Debug: FC = () => {
             >
               {item => {
                 return (
-                  <Item
+                  <GridListItem
                     key={item.doc._id}
                     id={item.doc._id}
                     className="group outline-none select-none"
@@ -897,7 +901,7 @@ export const Debug: FC = () => {
                         />
                       )}
                     </div>
-                  </Item>
+                  </GridListItem>
                 );
               }}
             </GridList>
@@ -933,7 +937,7 @@ export const Debug: FC = () => {
                 {virtualItem => {
                   const item = visibleCollection[virtualItem.index];
                   return (
-                    <Item
+                    <GridListItem
                       className="group outline-none absolute top-0 left-0 select-none w-full"
                       textValue={item.doc.name}
                       style={{
@@ -990,7 +994,7 @@ export const Debug: FC = () => {
                           />
                         )}
                       </div>
-                    </Item>
+                    </GridListItem>
                   );
                 }}
               </GridList>

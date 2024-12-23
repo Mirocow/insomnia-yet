@@ -4,7 +4,7 @@ import { ModifiedGraphQLJumpOptions } from 'codemirror-graphql/jump';
 import type { OpenDialogOptions } from 'electron';
 import { readFileSync } from 'fs';
 import { DefinitionNode, DocumentNode, GraphQLNonNull, GraphQLSchema, Kind, NonNullTypeNode, OperationDefinitionNode, parse, typeFromAST } from 'graphql';
-import { buildClientSchema, getIntrospectionQuery } from 'graphql/utilities';
+import { buildClientSchema, getIntrospectionQuery } from 'graphql';
 import { Maybe } from 'graphql-language-service';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';

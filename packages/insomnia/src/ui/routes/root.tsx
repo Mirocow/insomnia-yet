@@ -3,9 +3,9 @@ import '../css/styles.css';
 import type { IpcRendererEvent } from 'electron';
 import React, { Fragment, useEffect, useState } from 'react';
 import {
+  Breadcrumb,
   Breadcrumbs,
   Button,
-  Item,
   Link,
   Tooltip,
   TooltipTrigger,
@@ -214,7 +214,16 @@ const Root = () => {
               <NavLink
                 to={`/organization/${organizationId}/project/${workspaceData.activeProject._id}`}
               >
-                {workspaceData.activeProject.name}
+                {isDesign(workspaceData) ? (
+                  <div className="px-1 h-full rounded-s-sm bg-[--color-info] text-[--color-font-info]">
+                    <Icon icon="file" />
+                  </div>
+                ) : (
+                  <div className="px-1 h-full rounded-s-sm bg-[--color-surprise] text-[--color-font-surprise]">
+                    <Icon icon="bars" />
+                  </div>
+                )}
+                { /*workspaceData.activeProject.name*/ }
               </NavLink>
             </Link>
           ),
@@ -264,14 +273,15 @@ const Root = () => {
           <div className="w-full h-full divide-x divide-solid divide-y divide-[--hl-md] grid-template-app-layout grid relative bg-[--color-bg]">
             <Outlet />
             <div className="relative [grid-area:Statusbar] flex items-center justify-between overflow-hidden" style={{ height: '32px' }}>
-            <div className="p-[--padding-sm]">
-            {workspaceData && (
+              <div className="p-[--padding-sm]">
+                {workspaceData && (
                   <Fragment>
-                    <Breadcrumbs items={crumbs}>
+                    { /* Menu in footer */ }
+                    <Breadcrumbs items={crumbs} className="flex items-left justify-left">
                       {item => (
-                        <Item key={item.id} id={item.id}>
+                        <Breadcrumb key={item.id} id={item.id} className="px-1 flex truncate select-none items-center gap-2 text-[--color-font] h-full outline-none data-[focused]:outline-none">
                           {item.node}
-                        </Item>
+                        </Breadcrumb>
                       )}
                     </Breadcrumbs>
                   </Fragment>
