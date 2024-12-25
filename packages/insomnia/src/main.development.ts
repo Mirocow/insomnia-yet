@@ -10,7 +10,7 @@ import { getAppVersion, isDevelopment, isMac } from './common/constants';
 import { database } from './common/database';
 import log, { initializeLogging } from './common/log';
 import { registergRPCHandlers } from './main/ipc/grpc';
-import { registerElectronHandlers } from './main/ipc/ipc-electron';
+import { registerElectronHandlers } from './main/ipc/electron';
 import { registerMainHandlers } from './main/ipc/main';
 import { registerCurlHandlers } from './main/network/curl';
 import { registerWebSocketHandlers } from './main/network/websocket';

@@ -29,5 +29,6 @@ export const uuidTag: { templateTag: PluginTemplateTag } = {
                     throw new Error(`Invalid UUID type "${uuidType}"`);
             }
         },
+        author: '',
     },
 };

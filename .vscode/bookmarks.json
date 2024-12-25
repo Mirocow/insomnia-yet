@@ -339,6 +339,16 @@
 					"label": ""
 				}
 			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/components/settings/import-export.tsx",
+			"bookmarks": [
+				{
+					"line": 44,
+					"column": 0,
+					"label": ""
+				}
+			]
 		}
 	]
 }

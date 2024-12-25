@@ -44,6 +44,9 @@ check: ## Проверка проекта на наличие ошибок
 check-fix: ## Проверка проекта на наличие ошибок с исправлениями
 	cd packages/insomnia && npm run lint-fix && cd ../..
 
+require: ## Установка указанного пакета
+	cd packages/insomnia &&	npm install $(args) && cd ../..
+
 build: ## Сборка приложения
 	cd packages/insomnia &&	npm run build && cd ../..
 

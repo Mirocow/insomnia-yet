@@ -12,6 +12,7 @@
         "**/__tests__": false,
         "**/__fixtures__": false,
         "**/__snapshots__": false,
+        "*.tests.ts": false,
         "screenshots": false,
         "packages/insomnia/bin": false,
         "packages/insomnia/build": false,
@@ -19,12 +20,11 @@
         "packages/insomnia/coverage": false,
         "packages/openapi-2-kong": false,
         "packages/insomnia-testing": false,
-        "packages/insomnia-sdk": false,
         "packages/insomnia/.eslintcache": false,
         "packages/insomnia/src/main.min.js.map": false
     },
     "cSpell.words": [
         "tinykeys"
     ],
-    "favorites.sortDirection": "ASC"
+    "favorites.sortDirection": "ASC",
 }

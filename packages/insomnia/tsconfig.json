@@ -1,32 +1,41 @@
 {
   "compilerOptions": {
-    "lib": ["DOM.Iterable", "DOM"],
-    "isolatedModules": true,
-    "jsx": "react",
-    "outDir": "./build",
-    "rootDir": ".",
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "types": ["node", "vite/client"],
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": true,
-    "allowUnusedLabels": false,
-    "checkJs": true,
-    "declaration": true,
-    "declarationMap": true,
+    /* Basic */
     "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2020",
+    "allowJs": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
+    "isolatedModules": true,
+    /* Transpiling Options */
+    "module": "ESNext",
+    "sourceMap": true,
+    /* Runs in the DOM */
+    "lib": [
+      "ES2023",
+      "DOM.Iterable",
+      "DOM"
+    ],
+    "jsx": "react",
+    /* Strictness */
+    "strict": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "pretty": true,
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "strict": true,
-    "target": "ES2019",
-    "useUnknownInCatchVariables": false
+    "noFallthroughCasesInSwitch": true,
+    "useUnknownInCatchVariables": false,
+    /* Error: "ipcMain" is not exported by "virtual:external:electron" */
+    "verbatimModuleSyntax": false,
+    /* Debug mode */
+    // "strictNullChecks": true,
+    // "allowSyntheticDefaultImports": true,
+    // "allowUnreachableCode": true,
+    // "allowUnusedLabels": false,
+    // "pretty": true,
+    // "checkJs": true,
+    // "declaration": true,
+    // "declarationMap": true,
   },
   "include": [
     ".eslintrc.js",
@@ -34,8 +43,6 @@
     "electron-builder.config.js",
     "esbuild.main.ts",
     "esbuild.sr.ts",
-    "jest.config.js",
-    "**/*.d.ts",
     "package.json",
     "scripts",
     "send-request",
@@ -43,9 +50,19 @@
     "tailwind.config.js",
     "postcss.config.js",
     "vite.config.ts",
-    "vite-plugin-electron-node-require"
+    "vite-plugin-electron-node-require",
+    "**/*.d.ts",
+    "jest.config.js",
   ],
   "exclude": [
+    "bin",
+    "build",
+    "config",
+    "node_modules",
+    "src/coverage",
+    "src/main.min.js",
+    "src/preload.js",
+    "svgr.config.js",
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/__jest__",
@@ -56,7 +73,6 @@
     "__jest__",
     "assets",
     "bin",
-    "build",
     "config",
     "jest.config.js",
     "node_modules",
@@ -64,5 +80,6 @@
     "src/main.min.js",
     "src/preload.js",
     "svgr.config.js",
+    "./src/__mocks__/@getinsomnia/node-libcurl.ts"
   ],
 }
