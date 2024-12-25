@@ -163,8 +163,12 @@ export const KeyValueEditor: FC<Props> = ({
                   defaultValue={pair.value}
                 />
               </div>
-              <Button><i className="fa fa-empty" /></Button>
-              <Button><i className="fa fa-empty" /></Button>
+              <ToggleButton isDisabled={true}>
+                <i className="fa fa-check-square-o" />
+                </ToggleButton>
+              <ToggleButton isDisabled={true}>
+                <i className="fa fa-trash-o" />
+                </ToggleButton>
             </div>
           </li>
         )) : null}

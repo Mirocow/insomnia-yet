@@ -304,6 +304,7 @@ const authTypesMap: Record<string, string[]> = {
   [AUTH_AWS_IAM]: ['AWS', 'AWS IAM v4'],
   [AUTH_ASAP]: ['ASAP', 'Atlassian ASAP'],
   [AUTH_NETRC]: ['Netrc', 'Netrc File'],
+  [AUTH_NONE]: ['None', 'No Auth'],
 };
 
 // Sort Orders
@@ -379,7 +380,20 @@ export function getPreviewModeName(previewMode: PreviewMode, useLong = false) {
     return '';
   }
 }
+export function getMimeTypeFromContentType(contentType: string) {
+  // Check if the Content-Type header is provided
+  if (!contentType) {
+    return null;
+  }
 
+  // Split the Content-Type header to separate MIME type from parameters
+  const [mimePart] = contentType.split(';');
+
+  // Trim any extra spaces
+  const mimeType = mimePart.trim();
+
+  return mimeType;
+}
 export function getContentTypeName(contentType?: string | null, useLong = false) {
   if (typeof contentType !== 'string') {
     return '';

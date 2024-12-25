@@ -1,46 +1,17 @@
-import { type ISpectralDiagnostic, type RulesetDefinition, Spectral } from '@stoplight/spectral-core';
+import { type RulesetDefinition, Spectral } from '@stoplight/spectral-core';
 // @ts-expect-error - This is a bundled file not sure why it's not found
 import { bundleAndLoadRuleset } from '@stoplight/spectral-ruleset-bundler/with-loader';
 import { oas } from '@stoplight/spectral-rulesets';
-import { app, BrowserWindow, ipcMain, type IpcRendererEvent, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import fs from 'fs';
 
 import { SegmentEvent, trackPageView, trackSegmentEvent } from '../analytics';
 import { authorizeUserInWindow } from '../authorizeUserInWindow';
-import { backup, restoreBackup } from '../backup';
 import { insomniaFetch } from '../insomniaFetch';
 import installPlugin from '../install-plugin';
 import { axiosRequest } from '../network/axios-request';
-import type { CurlBridgeAPI } from '../network/curl';
 import { cancelCurlRequest, curlRequest } from '../network/libcurl-promise';
-import type { WebSocketBridgeAPI } from '../network/websocket';
-import type { gRPCBridgeAPI } from './grpc';
 
-export interface MainBridgeAPI {
-  loginStateChange: () => void;
-  openInBrowser: (url: string) => void;
-  restart: () => void;
-  halfSecondAfterAppStart: () => void;
-  manualUpdateCheck: () => void;
-  backup: () => Promise<void>;
-  restoreBackup: (version: string) => Promise<void>;
-  spectralRun: (options: { contents: string; rulesetPath: string }) => Promise<ISpectralDiagnostic[]>;
-  authorizeUserInWindow: typeof authorizeUserInWindow;
-  setMenuBarVisibility: (visible: boolean) => void;
-  installPlugin: typeof installPlugin;
-  writeFile: (options: { path: string; content: string }) => Promise<string>;
-  cancelCurlRequest: typeof cancelCurlRequest;
-  curlRequest: typeof curlRequest;
-  on: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => () => void;
-  webSocket: WebSocketBridgeAPI;
-  grpc: gRPCBridgeAPI;
-  curl: CurlBridgeAPI;
-  trackSegmentEvent: (options: { event: string; properties?: Record<string, unknown> }) => void;
-  trackPageView: (options: { name: string }) => void;
-  axiosRequest: typeof axiosRequest;
-  insomniaFetch: typeof insomniaFetch;
-  showContextMenu: (options: { key: string }) => void;
-}
 export function registerMainHandlers() {
   ipcMain.handle('insomniaFetch', async (_, options: Parameters<typeof insomniaFetch>[0]) => {
     return insomniaFetch(options);
@@ -54,14 +25,6 @@ export function registerMainHandlers() {
     BrowserWindow.getAllWindows().forEach(w => {
       w.webContents.send('loggedIn');
     });
-  });
-
-  ipcMain.handle('backup', async () => {
-    return backup();
-  });
-
-  ipcMain.handle('restoreBackup', async (_, options: string) => {
-    return restoreBackup(options);
   });
 
   ipcMain.handle('authorizeUserInWindow', (_, options: Parameters<typeof authorizeUserInWindow>[0]) => {

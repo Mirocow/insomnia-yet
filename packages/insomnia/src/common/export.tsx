@@ -7,10 +7,10 @@ import YAML from 'yaml';
 
 import { isApiSpec } from '../models/api-spec';
 import { isCookieJar } from '../models/cookie-jar';
-import { isEnvironment } from '../models/environment';
+import { type Environment, isEnvironment } from '../models/environment';
 import { isGrpcRequest } from '../models/grpc-request';
 import * as requestOperations from '../models/helpers/request-operations';
-import type { BaseModel } from '../models/index';
+import { type BaseModel, environment } from '../models/index';
 import * as models from '../models/index';
 import { isProtoDirectory } from '../models/proto-directory';
 import { isProtoFile } from '../models/proto-file';
@@ -20,12 +20,12 @@ import { isUnitTest } from '../models/unit-test';
 import { isUnitTestSuite } from '../models/unit-test-suite';
 import { isWebSocketPayload } from '../models/websocket-payload';
 import { isWebSocketRequest } from '../models/websocket-request';
-import { isWorkspace, Workspace } from '../models/workspace';
+import { isWorkspace, type Workspace } from '../models/workspace';
 import { resetKeys } from '../sync/ignore-keys';
 import { showAlert, showError, showModal } from '../ui/components/modals';
 import { AskModal } from '../ui/components/modals/ask-modal';
 import { SelectModal } from '../ui/components/modals/select-modal';
-import { Insomnia4Data } from '../utils/importers/importers';
+import type { Insomnia4Data } from '../utils/importers/importers';
 import {
   EXPORT_TYPE_API_SPEC,
   EXPORT_TYPE_COOKIE_JAR,
@@ -268,10 +268,11 @@ export async function exportRequestsData(
       return d;
     });
 
+  const stringifiedData = JSON.stringify(data);
   if (format.toLowerCase() === 'yaml') {
-    return YAML.stringify(data);
+    return YAML.stringify(JSON.parse(stringifiedData));
   } else if (format.toLowerCase() === 'json') {
-    return JSON.stringify(data);
+    return stringifiedData;
   } else {
     throw new Error(`Invalid export format ${format}. Must be "json" or "yaml"`);
   }

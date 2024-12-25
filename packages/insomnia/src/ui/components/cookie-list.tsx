@@ -1,11 +1,12 @@
 import { isValid } from 'date-fns';
 import React, { type FC, useCallback, useState } from 'react';
+import { Button } from 'react-aria-components';
 import { Cookie as ToughCookie } from 'tough-cookie';
 import { v4 as uuidv4 } from 'uuid';
 
 import { cookieToString } from '../../common/cookies';
 import type { Cookie } from '../../models/cookie-jar';
-import { Button, PromptButton } from './base/button';
+import { PromptButton } from './base/button';
 import { Dropdown, DropdownItem, ItemContent } from './base/dropdown';
 import { Icon } from './icon';
 import { CookieModifyModal } from './modals/cookie-modify-modal';
