@@ -105,7 +105,7 @@ export const database = {
   docUpdate: async <T extends BaseModel>(originalDoc: T, ...patches: Patch<T>[]) => {
     // No need to re-initialize the model during update; originalDoc will be in a valid state by virtue of loading
     const doc = await models.initModel<T>(
-      originalDoc.type,
+      originalDoc.type || '',
       originalDoc,
 
       // NOTE: This is before `patches` because we want `patch.modified` to win if it has it

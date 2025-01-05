@@ -7,10 +7,10 @@ import type { BaseModel } from '../../models';
 import * as models from '../../models';
 import { isWorkspace } from '../../models/workspace';
 import { resetKeys } from '../ignore-keys';
-import { GIT_INSOMNIA_DIR_NAME } from './git-vcs';
 import parseGitPath from './parse-git-path';
 import Stat from './stat';
 import { SystemError } from './system-error';
+import { GIT_INSOMNIA_DIR_NAME } from './vcs';
 
 export class NeDBClient {
   _workspaceId: string;

@@ -75,7 +75,7 @@ describe('getContentTypeName', () => {
     expect(getContentTypeName('application/json; charset=utf-8')).toBe('JSON');
     expect(getContentTypeName('text/plain')).toBe('Plain');
     expect(getContentTypeName('application/xml')).toBe('XML');
-    expect(getContentTypeName('text/yaml')).toBe('YAML');
+    expect(getContentTypeName('application/yaml')).toBe('YAML');
     expect(getContentTypeName('application/edn')).toBe('EDN');
     expect(getContentTypeName('application/x-www-form-urlencoded')).toBe('Form');
     expect(getContentTypeName('multipart/form-data')).toBe('Multipart');

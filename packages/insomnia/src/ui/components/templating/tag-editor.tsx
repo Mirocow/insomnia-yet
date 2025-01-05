@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import clone from 'clone';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useMount } from 'react-use';
 
 import { database as db } from '../../../common/database';
@@ -8,27 +8,30 @@ import { delay, fnOrString } from '../../../common/misc';
 import { metaSortKeySort } from '../../../common/sorting';
 import * as models from '../../../models';
 import type { BaseModel } from '../../../models/index';
-import { isRequest, Request } from '../../../models/request';
-import { isRequestGroup, RequestGroup } from '../../../models/request-group';
+import { isRequest, type Request } from '../../../models/request';
+import { isRequestGroup, type RequestGroup } from '../../../models/request-group';
 import type { Workspace } from '../../../models/workspace';
 import * as plugins from '../../../plugins';
 import * as pluginContexts from '../../../plugins/context';
 import * as templating from '../../../templating';
-import type {
-  NunjucksParsedTag,
-  NunjucksParsedTagArg,
+import {
+  type NunjucksParsedTag,
+  type NunjucksParsedTagArg,
+  sanitizeStrForWin32,
 } from '../../../templating/utils';
 import * as templateUtils from '../../../templating/utils';
 import { useNunjucks } from '../../context/nunjucks/use-nunjucks';
 import { FileInputButton } from '../base/button';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { HelpTooltip } from '../help-tooltip';
+import { Icon } from '../icon';
 import { localTemplateTags } from './local-template-tags';
 
 interface Props {
   defaultValue: string;
   onChange: (...args: any[]) => any;
   workspace: Workspace;
+  editorId?: string;
 }
 
 interface State {
@@ -102,7 +105,7 @@ export const TagEditor: FC<Props> = props => {
     // Fix strings: arg.value expects an escaped value (based on updateArg logic)
     for (const arg of activeTagData.args) {
       if (typeof arg.value === 'string') {
-        arg.value = arg.value.replace(/\\/g, '\\\\');
+        arg.value = sanitizeStrForWin32(arg.value);
       }
     }
     await Promise.all([
@@ -135,7 +138,7 @@ export const TagEditor: FC<Props> = props => {
     }
     // Fix strings
     if (typeof argValue === 'string') {
-      argValue = argValue.replace(/\\/g, '\\\\');
+      argValue = sanitizeStrForWin32(argValue);
     }
     // Ensure all arguments exist
     const defaultArgs = templateUtils.tokenizeTag(templateUtils.getDefaultFill(
@@ -182,7 +185,6 @@ export const TagEditor: FC<Props> = props => {
     if (event.currentTarget.type === 'number') {
       return updateArg(parseFloat(event.currentTarget.value), argIndex);
     } else if (event.currentTarget.type === 'checkbox') {
-      // @ts-expect-error -- TSCONVERSION .checked doesn't exist on HTMLSelectElement
       return updateArg(event.currentTarget.checked, argIndex);
     } else {
       return updateArg(event.currentTarget.value, argIndex);
@@ -270,11 +272,11 @@ export const TagEditor: FC<Props> = props => {
 
   let previewElement;
   if (error) {
-    previewElement = <textarea className="danger" value={error || 'Error'} readOnly rows={10} />;
+    previewElement = <textarea className="danger" value={error || 'Error'} readOnly rows={5} />;
   } else if (rendering) {
-    previewElement = <textarea value="rendering..." readOnly rows={10} />;
+    previewElement = <textarea value="rendering..." readOnly rows={5} />;
   } else {
-    previewElement = <textarea value={finalPreview || 'error'} readOnly rows={10} />;
+    previewElement = <textarea value={finalPreview || 'error'} readOnly rows={5} />;
   }
 
   return (
@@ -293,10 +295,10 @@ export const TagEditor: FC<Props> = props => {
           >
             {state.tagDefinitions.map((tagDefinition, i) => (
               <option key={`${i}::${tagDefinition.name}`} value={tagDefinition.name}>
-                {tagDefinition.displayName}({tagDefinition.name}) – {tagDefinition.description}
+                {tagDefinition.displayName}({tagDefinition.name}) - {tagDefinition.description}
               </option>
             ))}
-            <option value="custom">-- Custom --</option>
+            {/* <option value="custom">-- Custom --</option> */}
           </select>
         </label>
       </div>
@@ -339,7 +341,7 @@ export const TagEditor: FC<Props> = props => {
             const encoding = argDefinition.encoding || 'utf8';
             argInput = (<input
               type="text"
-              defaultValue={strValue.replace(/\\\\/g, '\\') || ''}
+              defaultValue={sanitizeStrForWin32(strValue)}
               placeholder={placeholder}
               onChange={handleChange}
               data-encoding={encoding}
@@ -376,7 +378,7 @@ export const TagEditor: FC<Props> = props => {
               showFileName
               className="btn btn--clicky btn--super-compact"
               onChange={path => updateArg(path, index)}
-              path={strValue.replace(/\\\\/g, '\\')}
+              path={sanitizeStrForWin32(strValue)}
               itemtypes={argDefinition.itemTypes}
               extensions={argDefinition.extensions}
             />);
@@ -439,7 +441,7 @@ export const TagEditor: FC<Props> = props => {
             : '';
 
         let validationError = '';
-        const canValidate = argDefinition.type === 'string' || argDefinition.type === 'text' || argDefinition.type === 'number';
+        const canValidate = argDefinition.type === 'string' || argDefinition.type === 'number';
         if (canValidate && typeof argDefinition.validate === 'function') {
           validationError = argDefinition.validate(strValue) || '';
         }
@@ -449,9 +451,9 @@ export const TagEditor: FC<Props> = props => {
           'form-control--thin': argDefinition.type === 'boolean',
           'form-control--outlined': argDefinition.type !== 'boolean',
         });
-
+        const uniqueKey = `${activeTagData.name || activeTagData.displayName}-${argDefinition.displayName}`;
         return (
-          <div key={index} className="form-row">
+          <div key={uniqueKey} className="form-row">
             <div className={formControlClasses}>
               <label data-arg-index={index}>
                 {fnOrString(displayName, activeTagData.args)}
@@ -467,8 +469,8 @@ export const TagEditor: FC<Props> = props => {
                     <option key="n/a" value="NO_VARIABLE">
                       -- Select Variable --
                     </option>
-                    {state.variables.map((v, i) => (
-                      <option key={`${i}::${v.name}`} value={v.name}>
+                      {state.variables.map(v => (
+                        <option key={v.name} value={v.name}>
                         {v.name}
                       </option>
                     ))}

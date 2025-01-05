@@ -1,9 +1,9 @@
 import * as git from 'isomorphic-git';
 
 import type { GitRepository } from '../../models/git-repository';
-import { GIT_CLONE_DIR, GIT_INTERNAL_DIR } from './git-vcs';
 import { httpClient } from './http-client';
 import { gitCallbacks } from './utils';
+import { GIT_CLONE_DIR, GIT_INTERNAL_DIR } from './vcs';
 
 interface Options {
   fsClient: git.FsClient;

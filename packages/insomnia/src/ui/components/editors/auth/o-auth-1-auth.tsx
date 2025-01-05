@@ -1,14 +1,16 @@
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
+import type { AuthTypeOAuth1 } from '../../../../models/request';
 import {
-  OAuth1SignatureMethod,
+  type OAuth1SignatureMethod,
   SIGNATURE_METHOD_HMAC_SHA1,
   SIGNATURE_METHOD_HMAC_SHA256,
   SIGNATURE_METHOD_PLAINTEXT,
   SIGNATURE_METHOD_RSA_SHA1,
 } from '../../../../network/o-auth-1/constants';
-import { RequestLoaderData } from '../../../routes/request';
+import type { RequestLoaderData } from '../../../actions/request';
+import type { RequestGroupLoaderData } from '../../../actions/request-group';
 import { AuthInputRow } from './components/auth-input-row';
 import { AuthPrivateKeyRow } from './components/auth-private-key-row';
 import { AuthSelectRow } from './components/auth-select-row';
@@ -16,7 +18,7 @@ import { AuthTableBody } from './components/auth-table-body';
 import { AuthToggleRow } from './components/auth-toggle-row';
 
 const blankForDefault = 'Leave blank for default';
-const signatureMethodOptions: {name: string; value: OAuth1SignatureMethod}[] = [{
+export const signatureMethodOptions: { name: OAuth1SignatureMethod; value: OAuth1SignatureMethod }[] = [{
   name: 'HMAC-SHA1',
   value: SIGNATURE_METHOD_HMAC_SHA1,
 },
@@ -34,15 +36,18 @@ const signatureMethodOptions: {name: string; value: OAuth1SignatureMethod}[] = [
 }];
 
 export const OAuth1Auth: FC = () => {
-  const { activeRequest: { authentication: { signatureMethod } } } = useRouteLoaderData('request/:requestId') as RequestLoaderData;
+  const reqData = useRouteLoaderData('request/:requestId') as RequestLoaderData;
+  const groupData = useRouteLoaderData('request-group/:requestGroupId') as RequestGroupLoaderData;
+  const authentication = (reqData?.activeRequest || groupData.activeRequestGroup).authentication as AuthTypeOAuth1;
 
+  const { signatureMethod } = authentication;
   return (
     <AuthTableBody>
       <AuthToggleRow label="Enabled" property="disabled" invert />
       <AuthInputRow label='Consumer Key' property='consumerKey' />
-      <AuthInputRow label='Consumer Secret' property='consumerSecret' />
+      <AuthInputRow label='Consumer Secret' property='consumerSecret' mask />
       <AuthInputRow label='Token Key' property='tokenKey' />
-      <AuthInputRow label='Token Secret' property='tokenSecret' />
+      <AuthInputRow label='Token Secret' property='tokenSecret' mask />
       <AuthSelectRow label='Signature Method' property='signatureMethod' options={signatureMethodOptions} />
       {signatureMethod === SIGNATURE_METHOD_RSA_SHA1 && <AuthPrivateKeyRow label='Private Key' property='privateKey' />}
       <AuthInputRow label='Callback URL' property='callback' />

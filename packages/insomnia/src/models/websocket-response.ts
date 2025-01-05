@@ -60,7 +60,7 @@ export function init(): BaseWebSocketResponse {
   };
 }
 
-export function migrate(doc: Response) {
+export function migrate(doc: WebSocketResponse) {
   return doc;
 }
 
@@ -153,7 +153,7 @@ async function _findRecentForRequest(
   environmentId: string | null,
   limit: number,
 ) {
-  const query: Query = {
+  const query: Query<WebSocketResponse> = {
     parentId: requestId,
   };
 

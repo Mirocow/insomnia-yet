@@ -1,6 +1,5 @@
 import * as path from 'path';
-import React, { FC, useEffect, useState } from 'react';
-import { useRouteLoaderData } from 'react-router-dom';
+import React, { type FC, useEffect, useState } from 'react';
 
 import {
   NPM_PACKAGE_BASE,
@@ -12,7 +11,7 @@ import type { Plugin } from '../../../plugins/index';
 import { getPlugins } from '../../../plugins/index';
 import { reload } from '../../../templating/index';
 import { useSettingsPatcher } from '../../hooks/use-request';
-import { RootLoaderData } from '../../routes/root';
+import { useRootLoaderData } from '../../routes/root';
 import { Button, CopyButton } from '../base/button';
 import { Link } from '../base/link';
 import { HelpTooltip } from '../help-tooltip';
@@ -27,6 +26,7 @@ interface State {
   isInstallingFromNpm: boolean;
   isRefreshingPlugins: boolean;
 }
+
 export const Plugins: FC = () => {
   const [state, setState] = useState<State>({
     plugins: [],
@@ -36,6 +36,7 @@ export const Plugins: FC = () => {
     isInstallingFromNpm: false,
     isRefreshingPlugins: false,
   });
+
   const {
     plugins,
     error,
@@ -44,9 +45,10 @@ export const Plugins: FC = () => {
     isRefreshingPlugins,
     npmPluginValue,
   } = state;
+
   const {
     settings,
-  } = useRouteLoaderData('root') as RootLoaderData;
+  } = useRootLoaderData();
 
   useEffect(() => {
     refreshPlugins();

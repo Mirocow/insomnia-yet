@@ -2501,7 +2501,7 @@ input.editable {
   height: 100%;
 }
 .modal.modal--wide .modal__content__wrapper {
-  width: var(--modal-width);
+  width: var(--modal-width) wide;
 }
 .modal.modal--skinny .modal__content__wrapper {
   width: var(--modal-width-skinny);
@@ -2960,10 +2960,14 @@ input.editable {
 ::-webkit-scrollbar-corner {
   background: transparent;
 }
+[data-platform="darwin"] * {
+  scrollbar-width: thin;
+}
 .scrollbar-thin::-webkit-scrollbar {
   width: 3px;
   height: 3px;
 }
+
 .shortcuts td.options {
   width: 0.1em;
 }

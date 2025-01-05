@@ -1,7 +1,5 @@
 import React, { FormEvent, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
-import * as session from '../../../account/session';
-import { getLoginUrl, submitAuthCode } from '../../auth-session-provider';
 import { Modal, type ModalHandle } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';

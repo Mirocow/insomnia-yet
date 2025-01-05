@@ -1,11 +1,11 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { format } from 'date-fns';
-import React, { FC, useRef } from 'react';
+import React, { type FC, useRef } from 'react';
 import { useMeasure } from 'react-use';
 import styled from 'styled-components';
 
-import { CurlEvent } from '../../../main/network/curl';
-import { WebSocketEvent } from '../../../main/network/websocket';
+import type { CurlEvent } from '../../../main/network/curl';
+import type { WebSocketEvent } from '../../../main/network/websocket';
 import { SvgIcon, SvgIconProps } from '../svg-icon';
 
 const Timestamp: FC<{ time: Date | number }> = ({ time }) => {

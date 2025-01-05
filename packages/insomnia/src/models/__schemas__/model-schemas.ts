@@ -64,6 +64,7 @@ export const gitRepositorySchema: Schema<GitRepository> = {
   author: () => ({ name: '', email: '' }),
   credentials: () => null,
   uri: () => '',
+  branch: () => '',
   needsFullClone: () => false,
   uriNeedsMigration: () => true,
 };

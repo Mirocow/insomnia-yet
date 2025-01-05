@@ -1,10 +1,10 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { type FC, type PropsWithChildren } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { keyboardShortcutDescriptions } from '../../../common/hotkeys';
-import { KeyboardShortcut } from '../../../common/settings';
-import { RootLoaderData } from '../../routes/root';
+import type { KeyboardShortcut } from '../../../common/settings';
+import { useRootLoaderData } from '../../routes/root';
 import { Hotkey } from '../hotkey';
 import { Pane, PaneBody, PaneHeader } from './pane';
 
@@ -31,7 +31,7 @@ const Description = styled.div({
 export const PlaceholderResponsePane: FC<PropsWithChildren<{}>> = ({ children }) => {
   const {
     settings,
-  } = useRouteLoaderData('root') as RootLoaderData;
+  } = useRootLoaderData();
   const { hotKeyRegistry } = settings;
   return (
     <Pane type="response">

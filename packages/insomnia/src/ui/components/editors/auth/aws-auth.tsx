@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { AuthInputRow } from './components/auth-input-row';
 import { AuthTableBody } from './components/auth-table-body';
@@ -14,6 +14,7 @@ export const AWSAuth: FC = () => (
     <AuthInputRow
       label="Secret Access Key"
       property="secretAccessKey"
+      mask={true}
     />
     <AuthInputRow
       label="Region"

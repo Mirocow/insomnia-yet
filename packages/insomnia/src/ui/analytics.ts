@@ -1,9 +1,11 @@
 export enum SegmentEvent {
   appStarted = 'App Started',
+  analyticsDisabled = 'Analytics Disabled',
   collectionCreate = 'Collection Created',
   dataExport = 'Data Exported',
   dataImport = 'Data Imported',
   documentCreate = 'Document Created',
+  environmentWorkspaceCreate = 'Environment Workspace Created',
   kongConnected = 'Kong Connected',
   kongSync = 'Kong Synced',
   requestBodyTypeSelect = 'Request Body Type Selected',

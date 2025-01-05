@@ -1,5 +1,6 @@
 import type { EditorFromTextArea, MarkerRange } from 'codemirror';
 import _ from 'lodash';
+import React from 'react';
 
 import type { DisplayName, PluginArgumentEnumOption, PluginTemplateTagActionContext } from './extensions';
 import objectPath from './third_party/objectPath';

@@ -86,16 +86,6 @@
 			]
 		},
 		{
-			"path": "packages/insomnia/src/templating/base-extension.ts",
-			"bookmarks": [
-				{
-					"line": 145,
-					"column": 0,
-					"label": ""
-				}
-			]
-		},
-		{
 			"path": "packages/insomnia/src/plugins/context/response.ts",
 			"bookmarks": [
 				{
@@ -169,17 +159,17 @@
 					"label": ""
 				},
 				{
-					"line": 848,
+					"line": 776,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 853,
+					"line": 811,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 857,
+					"line": 876,
 					"column": 0,
 					"label": ""
 				}
@@ -221,7 +211,7 @@
 			]
 		},
 		{
-			"path": "packages/insomnia/src/ui/index.tsx",
+			"path": "packages/insomnia/src/ui/routes/index.tsx",
 			"bookmarks": [
 				{
 					"line": 300,
@@ -311,7 +301,7 @@
 			]
 		},
 		{
-			"path": "packages/insomnia/src/ui/routes/actions.tsx",
+			"path": "packages/insomnia/src/ui/actions.tsx",
 			"bookmarks": [
 				{
 					"line": 1,
@@ -345,6 +335,146 @@
 			"bookmarks": [
 				{
 					"line": 44,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/components/panes/request-pane.tsx",
+			"bookmarks": [
+				{
+					"line": 72,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 102,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 103,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/components/modals/workspace-environments-edit-modal.tsx",
+			"bookmarks": [
+				{
+					"line": 184,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/hooks/use-vcs-version.ts",
+			"bookmarks": [
+				{
+					"line": 9,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 38,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/sync/git/vcs.ts",
+			"bookmarks": [
+				{
+					"line": 649,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/ui/components/dropdowns/git-sync-dropdown.tsx",
+			"bookmarks": [
+				{
+					"line": 442,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/sync/git/git-vcs.ts",
+			"bookmarks": [
+				{
+					"line": 656,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/actions/git-actions.tsx",
+			"bookmarks": [
+				{
+					"line": 100,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 113,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 626,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 639,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/components/modals/login-modal.tsx",
+			"bookmarks": [
+				{
+					"line": 53,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 82,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/components/codemirror/extensions/autocomplete.ts",
+			"bookmarks": [
+				{
+					"line": 455,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/insomnia/src/ui/components/modals/nunjucks-modal.tsx",
+			"bookmarks": [
+				{
+					"line": 63,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 65,
 					"column": 0,
 					"label": ""
 				}

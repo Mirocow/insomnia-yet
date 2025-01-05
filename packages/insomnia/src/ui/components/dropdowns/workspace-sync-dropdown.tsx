@@ -1,5 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
-import React from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import { generateId } from '../../../common/misc';
@@ -11,7 +10,6 @@ import { WorkspaceLoaderData } from '../../routes/workspace';
 import { showModal } from '../modals';
 import { SyncMergeModal } from '../modals/sync-merge-modal';
 import { GitSyncDropdown } from './git-sync-dropdown';
-import { SyncDropdown } from './sync-dropdown';
 
 export function useVCS({
   workspaceId,
@@ -72,23 +70,8 @@ export const WorkspaceSyncDropdown: FC = () => {
     ':workspaceId'
   ) as WorkspaceLoaderData;
 
-  const vcs = useVCS({
-    workspaceId: activeWorkspace?._id,
-  });
-
-  if (isRemoteProject(activeProject) && vcs && !activeWorkspaceMeta?.gitRepositoryId) {
-    return (
-      <SyncDropdown
-        key={activeWorkspace?._id}
-        workspace={activeWorkspace}
-        project={activeProject}
-        vcs={vcs}
-      />
-    );
-  }
-
   if (activeWorkspaceMeta?.gitRepositoryId || !isRemoteProject(activeProject)) {
-    return <GitSyncDropdown isInsomniaSyncEnabled={isRemoteProject(activeProject)} gitRepository={gitRepository} />;
+    return <GitSyncDropdown gitRepository={gitRepository} />;
   }
 
   return null;

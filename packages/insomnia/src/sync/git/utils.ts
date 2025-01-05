@@ -1,9 +1,9 @@
 import type { AuthCallback, AuthFailureCallback, AuthSuccessCallback, GitAuth, MessageCallback } from 'isomorphic-git';
 
 import type { OauthProviderName } from '../../models/git-repository';
-import type { GitCredentials } from './git-vcs';
 import { getAccessToken as getGitHubAccessToken } from './github-oauth-provider';
 import { getAccessToken as getGitlabAccessToken, refreshToken as refreshGitlabToken } from './gitlab-oauth-provider';
+import type { GitCredentials } from './vcs';
 
 export const addDotGit = (url: string): string => (url.endsWith('.git') ? url : `${url}.git`);
 

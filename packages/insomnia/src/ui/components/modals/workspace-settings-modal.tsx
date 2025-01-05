@@ -72,6 +72,7 @@ interface Props extends ModalProps {
   clientCertificates: ClientCertificate[];
   caCertificate: CaCertificate | null;
 }
+
 export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertificates, caCertificate, onHide }: Props) => {
   const hasDescription = !!workspace.description;
 
@@ -265,7 +266,7 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
         {workspace ?
           <ModalHeader key={`header::${workspace._id}`}>
             {getWorkspaceLabel(workspace).singular} Settings{' '}
-            <div className="txt-sm selectable faint monospace">{workspace ? workspace._id : ''}</div>
+            {/* <div className="txt-sm selectable faint monospace">{workspace ? workspace._id : ''}</div> */}
           </ModalHeader> : null}
         {workspace ?
           <ModalBody key={`body::${workspace._id}`} noScroll>
@@ -305,32 +306,40 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                         onClick={() => {
                           setState({ ...state, showDescription: true });
                         }}
-                        className="btn btn--outlined btn--super-duper-compact"
+                        className="btn btn--outlined btn--super-super-compact"
                       >
                         Add Description
                       </button>
                     )}
                   </div>
-                  <h2>Actions</h2>
-                  <div className="form-control form-control--padded">
-                    <PromptButton
-                      onClick={_handleRemoveWorkspace}
-                      className="width-auto btn btn--clicky inline-block"
-                    >
-                      <i className="fa fa-trash-o" /> Delete Collection
-                    </PromptButton>
-                    <PromptButton
-                      onClick={_handleClearAllResponses}
-                      className="width-auto btn btn--clicky inline-block"
-                    >
-                      <i className="fa fa-trash-o" /> Clear All Responses
-                    </PromptButton>
-                    <PromptButton
-                      onClick={_handleClearAllRequests}
-                      className="width-auto btn btn--clicky inline-block"
-                    >
-                      <i className="fa fa-trash-o" /> Clear All Requests
-                    </PromptButton>
+                  <div className="form-control form-control--outlined">
+                    <label>
+                      Actions
+                    </label>
+                  </div>
+                  <div className="space-left">
+                  <PromptButton
+                    onClick={_handleRemoveWorkspace}
+                    className="width-auto btn btn--clicky inline-block"
+                  >
+                    <i className="fa fa-trash-o" /> Delete Collection
+                  </PromptButton>
+                  </div>
+                  <div className="space-left">
+                  <PromptButton
+                    onClick={_handleClearAllResponses}
+                    className="width-auto btn btn--clicky inline-block"
+                  >
+                    <i className="fa fa-trash-o" /> Clear All Responses
+                  </PromptButton>
+                  </div>
+                  <div className="space-left">
+                  <PromptButton
+                    onClick={_handleClearAllRequests}
+                    className="width-auto btn btn--clicky inline-block"
+                  >
+                    <i className="fa fa-trash-o" /> Clear All Requests
+                  </PromptButton>
                   </div>
                 </PanelContainer>
               </TabItem>
@@ -569,4 +578,5 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
     </OverlayContainer>
   );
 };
+
 WorkspaceSettingsModal.displayName = 'WorkspaceSettingsModal';

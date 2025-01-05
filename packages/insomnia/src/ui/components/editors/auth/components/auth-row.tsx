@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import React, { FC, PropsWithChildren, ReactNode } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
-import { RequestLoaderData } from '../../../../routes/request';
+import { RequestLoaderData } from '../../../../actions/request';
 import { HelpTooltip } from '../../../help-tooltip';
 
 interface Props {

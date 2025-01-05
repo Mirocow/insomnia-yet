@@ -7,10 +7,10 @@ import YAML from 'yaml';
 
 import { isApiSpec } from '../models/api-spec';
 import { isCookieJar } from '../models/cookie-jar';
-import { type Environment, isEnvironment } from '../models/environment';
+import { isEnvironment } from '../models/environment';
 import { isGrpcRequest } from '../models/grpc-request';
 import * as requestOperations from '../models/helpers/request-operations';
-import { type BaseModel, environment } from '../models/index';
+import { type BaseModel } from '../models/index';
 import * as models from '../models/index';
 import { isProtoDirectory } from '../models/proto-directory';
 import { isProtoFile } from '../models/proto-file';

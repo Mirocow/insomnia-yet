@@ -1,6 +1,6 @@
 {
   "name": "insomnia",
-  "version": "2023.5.8-dev",
+  "version": "2024.0.0-dev",
   "productName": "Insomnia",
   "private": true,
   "description": "The Collaborative API Design Tool",
@@ -9,7 +9,7 @@
     "url": "https://github.com/Kong/insomnia/issues"
   },
   "engines": {
-    "node": ">=18.15 <20",
+    "node": ">=18.20 <20",
     "npm": ">=8.19.0"
   },
   "repository": {
@@ -83,10 +83,10 @@
     "html-entities": "^2.5.2",
     "httpsnippet": "^2.0.0",
     "iconv-lite": "^0.6.3",
-    "isomorphic-git": "^1.10.4",
     "js-yaml": "^3.14.1",
     "jsdom": "^25.0.1",
     "jshint": "^2.13.6",
+    "json-diff-kit": "^1.0.30",
     "jsonlint-mod-fixed": "1.7.7",
     "jsonpath-plus": "^6.0.1",
     "marked": "^5.1.1",
@@ -158,7 +158,6 @@
     "@types/xmldom": "0.1.30",
     "@vitejs/plugin-react": "^4.2.1",
     "@xmldom/xmldom": "^0.8.10",
-    "styled-components": "^5.3.3",
     "autoprefixer": "^10.4.19",
     "buffer": "^6.0.3",
     "classnames": "^2.5.1",
@@ -179,6 +178,7 @@
     "graphql": "^16.8.1",
     "highlight.js": "^11.9.0",
     "httplease-asap": "^0.6.0",
+    "isomorphic-git": "1.25.7",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.0.2",
     "jest-mock": "^28.0.2",
@@ -196,6 +196,7 @@
     "react-router-dom": "^6.26.2",
     "react-stately": "3.30.1",
     "react-use": "^17.5.0",
+    "styled-components": "^5.3.3",
     "tailwindcss": "^3.4.3",
     "tinykeys": "^2.1.0",
     "type-fest": "^4.15.0",

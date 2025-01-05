@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import {
   ImportResourcesActionResult,
   ScanForResourcesActionResult,
-} from '../../routes/import';
+} from '../../actions/import';
 import { Button } from '../base/button';
 import { Modal, ModalHandle, ModalProps } from '../base/modal';
 import { ModalHeader } from '../base/modal-header';

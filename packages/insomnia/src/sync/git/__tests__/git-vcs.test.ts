@@ -2,8 +2,8 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, jest } from '@je
 import * as git from 'isomorphic-git';
 import path from 'path';
 
-import GitVCS, { GIT_CLONE_DIR, GIT_INSOMNIA_DIR } from '../git-vcs';
 import { MemClient } from '../mem-client';
+import GitVCS, { GIT_CLONE_DIR, GIT_INSOMNIA_DIR } from '../vcs';
 import { setupDateMocks } from './util';
 
 describe('Git-VCS', () => {
@@ -54,14 +54,14 @@ describe('Git-VCS', () => {
         fs: fsClient,
       });
       await GitVCS.setAuthor('Karen Brown', 'karen@example.com');
-      expect(await GitVCS.status(barTxt)).toBe('*added');
-      expect(await GitVCS.status(fooTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(barTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('*added');
       await GitVCS.add(fooTxt);
-      expect(await GitVCS.status(barTxt)).toBe('*added');
-      expect(await GitVCS.status(fooTxt)).toBe('added');
+      expect(await GitVCS.fileStatus(barTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('added');
       await GitVCS.remove(fooTxt);
-      expect(await GitVCS.status(barTxt)).toBe('*added');
-      expect(await GitVCS.status(fooTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(barTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('*added');
     });
 
     it('Returns empty log without first commit', async () => {
@@ -93,8 +93,8 @@ describe('Git-VCS', () => {
       await GitVCS.setAuthor('Karen Brown', 'karen@example.com');
       await GitVCS.add(fooTxt);
       await GitVCS.commit('First commit!');
-      expect(await GitVCS.status(barTxt)).toBe('*added');
-      expect(await GitVCS.status(fooTxt)).toBe('unmodified');
+      expect(await GitVCS.fileStatus(barTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('unmodified');
       expect(await GitVCS.log()).toEqual([
         {
           commit: {
@@ -124,14 +124,14 @@ First commit!
         },
       ]);
       await fsClient.promises.unlink(fooTxt);
-      expect(await GitVCS.status(barTxt)).toBe('*added');
-      expect(await GitVCS.status(fooTxt)).toBe('*deleted');
+      expect(await GitVCS.fileStatus(barTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('*deleted');
       await GitVCS.remove(fooTxt);
-      expect(await GitVCS.status(barTxt)).toBe('*added');
-      expect(await GitVCS.status(fooTxt)).toBe('deleted');
+      expect(await GitVCS.fileStatus(barTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('deleted');
       await GitVCS.remove(fooTxt);
-      expect(await GitVCS.status(barTxt)).toBe('*added');
-      expect(await GitVCS.status(fooTxt)).toBe('deleted');
+      expect(await GitVCS.fileStatus(barTxt)).toBe('*added');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('deleted');
     });
 
     it('create branch', async () => {
@@ -198,13 +198,13 @@ First commit!
       // Change the file
       await fsClient.promises.writeFile(fooTxt, 'changedContent');
       await fsClient.promises.writeFile(folderBarTxt, 'changedContent');
-      expect(await GitVCS.status(fooTxt)).toBe('*modified');
-      expect(await GitVCS.status(folderBarTxt)).toBe('*modified');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('*modified');
+      expect(await GitVCS.fileStatus(folderBarTxt)).toBe('*modified');
       // Undo
       await GitVCS.undoPendingChanges();
       // Ensure git doesn't recognize a change anymore
-      expect(await GitVCS.status(fooTxt)).toBe('unmodified');
-      expect(await GitVCS.status(folderBarTxt)).toBe('unmodified');
+      expect(await GitVCS.fileStatus(fooTxt)).toBe('unmodified');
+      expect(await GitVCS.fileStatus(folderBarTxt)).toBe('unmodified');
       // Expect original doc to have reverted
       expect((await fsClient.promises.readFile(fooTxt)).toString()).toBe(originalContent);
       expect((await fsClient.promises.readFile(folderBarTxt)).toString()).toBe(originalContent);
@@ -234,16 +234,16 @@ First commit!
       await GitVCS.commit('First commit!');
       // Change all files
       await Promise.all(files.map(f => fsClient.promises.writeFile(f, changedContent)));
-      await Promise.all(files.map(() => expect(GitVCS.status(foo1Txt)).resolves.toBe('*modified')));
+      await Promise.all(files.map(() => expect(GitVCS.fileStatus(foo1Txt)).resolves.toBe('*modified')));
       // Undo foo1 and foo2, but not foo3
       await GitVCS.undoPendingChanges([foo1Txt, foo2Txt]);
-      expect(await GitVCS.status(foo1Txt)).toBe('unmodified');
-      expect(await GitVCS.status(foo2Txt)).toBe('unmodified');
+      expect(await GitVCS.fileStatus(foo1Txt)).toBe('unmodified');
+      expect(await GitVCS.fileStatus(foo2Txt)).toBe('unmodified');
       // Expect original doc to have reverted for foo1 and foo2
       expect((await fsClient.promises.readFile(foo1Txt)).toString()).toBe(originalContent);
       expect((await fsClient.promises.readFile(foo2Txt)).toString()).toBe(originalContent);
       // Expect changed content for foo3
-      expect(await GitVCS.status(foo3Txt)).toBe('*modified');
+      expect(await GitVCS.fileStatus(foo3Txt)).toBe('*modified');
       expect((await fsClient.promises.readFile(foo3Txt)).toString()).toBe(changedContent);
     });
   });

@@ -79,7 +79,6 @@
     "src/coverage",
     "src/main.min.js",
     "src/preload.js",
-    "svgr.config.js",
-    "./src/__mocks__/@getinsomnia/node-libcurl.ts"
+    "svgr.config.js"
   ],
 }

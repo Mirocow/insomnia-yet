@@ -66,6 +66,10 @@ export type PluginArgument =
   | PluginArgumentFile
   | PluginArgumentNumber;
 
+export type PluginEnvirovment =
+  | 'local'
+  | 'extension';
+
 export type PluginTemplateTagContext = HelperContext & {
   app: AppContext;
   store:  PluginStore;
@@ -107,4 +111,5 @@ export interface PluginTemplateTag {
   deprecated?: boolean;
   validate?: (value: any) => string | null;
   priority?: number;
+  env?: PluginEnvirovment;
 }

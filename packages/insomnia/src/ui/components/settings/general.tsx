@@ -1,5 +1,4 @@
-import React, { FC, Fragment } from 'react';
-import { useRouteLoaderData } from 'react-router-dom';
+import React, { type FC, Fragment } from 'react';
 
 import {
   EditorKeyMap,
@@ -12,7 +11,7 @@ import {
 import { docsKeyMaps } from '../../../common/documentation';
 import { HttpVersion, HttpVersions } from '../../../common/settings';
 import { initNewOAuthSession } from '../../../network/o-auth-2/get-token';
-import { RootLoaderData } from '../../routes/root';
+import { useRootLoaderData } from '../../routes/root';
 import { Link } from '../base/link';
 import { Tooltip } from '../tooltip';
 import { BooleanSetting } from './boolean-setting';
@@ -37,7 +36,7 @@ const RestartTooltip: FC<{ message: string }> = ({ message }) => (
 export const General: FC = () => {
   const {
     settings,
-  } = useRouteLoaderData('root') as RootLoaderData;
+  } = useRootLoaderData();
 
   return (
     <div className="pad-bottom">
@@ -310,15 +309,6 @@ export const General: FC = () => {
           disabled={!settings.proxyEnabled}
         />
       </div>
-
-      <hr className="pad-top" />
-      <h2>Plugins</h2>
-      <TextSetting
-        label="Additional Plugin Path"
-        setting="pluginPath"
-        help="Add a custom path to direct Insomnia to a different plugin directory."
-        placeholder="~/.insomnia:/other/path"
-      />
     </div>
   );
 };

@@ -22,7 +22,6 @@ module.exports = {
   },
   collectCoverage: !!process.env.CI,
   collectCoverageFrom: [
-    'src/account/**/*.ts',
     'src/common/**/*.ts',
     'src/main/**/*.ts',
     'src/models/**/*.ts',

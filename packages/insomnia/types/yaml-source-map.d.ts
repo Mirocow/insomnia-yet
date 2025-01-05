@@ -1,3 +1,5 @@
+import YAML from 'yaml';
+
 declare module 'yaml-source-map' {
   interface Location {
     filename?: string;

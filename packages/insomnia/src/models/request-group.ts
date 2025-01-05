@@ -1,5 +1,7 @@
 import { database as db } from '../common/database';
+import type { EnvironmentType } from './environment';
 import type { BaseModel } from './index';
+import type { RequestHeader } from './request';
 
 export const name = 'Folder';
 
@@ -15,7 +17,9 @@ interface BaseRequestGroup {
   description: string;
   environment: Record<string, any>;
   environmentPropertyOrder: Record<string, any> | null;
+  environmentType?: EnvironmentType;
   metaSortKey: number;
+  headers?: RequestHeader[];
 }
 
 export type RequestGroup = BaseModel & BaseRequestGroup;
@@ -31,6 +35,7 @@ export function init(): BaseRequestGroup {
     environment: {},
     environmentPropertyOrder: null,
     metaSortKey: -1 * Date.now(),
+    headers: undefined,
   };
 }
 
@@ -78,7 +83,6 @@ export async function duplicate(requestGroup: RequestGroup, patch: Partial<Reque
     },
   };
 
-  // @ts-expect-error -- TSCONVERSION appears to be a genuine error
   const [nextRequestGroup] = await db.find<RequestGroup>(type, q, {
     metaSortKey: 1,
   });
@@ -96,4 +100,4 @@ export async function duplicate(requestGroup: RequestGroup, patch: Partial<Reque
   });
 }
 
-export const isRequestGroupId = (id: string) => id.startsWith(prefix);
+export const isRequestGroupId = (id?: string | null) => id?.startsWith(prefix);

@@ -3,7 +3,6 @@ import crypto from 'crypto';
 import path from 'path';
 
 import * as crypt from '../../account/crypt';
-import * as session from '../../account/session';
 import { generateId } from '../../common/misc';
 import { strings } from '../../common/strings';
 import type { BaseModel } from '../../models';
@@ -24,7 +23,7 @@ import type {
   StatusCandidate,
   Team,
 } from '../types';
-import { BackendProjectWithTeams, normalizeBackendProjectTeam } from './normalize-backend-project-team';
+import { type BackendProjectWithTeams, normalizeBackendProjectTeam } from './normalize-backend-project-team';
 import * as paths from './paths';
 import {
   compareBranches,
@@ -41,7 +40,7 @@ import {
 
 const EMPTY_HASH = crypto.createHash('sha1').digest('hex').replace(/./g, '0');
 
-type ConflictHandler = (conflicts: MergeConflict[]) => Promise<MergeConflict[]>;
+type ConflictHandler = (conflicts: MergeConflict[], labels: { ours: string; theirs: string }) => Promise<MergeConflict[]>;
 
 // breaks one array into multiple arrays of size chunkSize
 export function chunkArray<T>(arr: T[], chunkSize: number) {
@@ -51,9 +50,14 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
   }
   return chunks;
 }
+// Stage/Unstage
+// Staged items are about to be commited
+// Unstaged items have changed compared to staged or not and can be staged
+//
 export class VCS {
   _store: Store;
   _driver: BaseDriver;
+  // stored by key `/projects/${project.id}/meta.json`
   _backendProject: BackendProject | null;
   _conflictHandler?: ConflictHandler | null;
 
@@ -1230,19 +1234,6 @@ export class VCS {
   async _getCurrentBranch() {
     const head = await this._getHead();
     return this._getOrCreateBranch(head.branch);
-  }
-
-  _assertSession() {
-    if (!session.isLoggedIn()) {
-      throw new Error('Not logged in');
-    }
-
-    return {
-      accountId: session.getAccountId(),
-      sessionId: session.getCurrentSessionId(),
-      privateKey: session.getPrivateKey(),
-      publicKey: session.getPublicKey(),
-    };
   }
 
   async _assertBranch(branchName: string) {

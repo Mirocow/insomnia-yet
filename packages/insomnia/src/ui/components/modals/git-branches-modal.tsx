@@ -4,7 +4,7 @@ import { OverlayContainer } from 'react-aria';
 import { useFetcher, useParams } from 'react-router-dom';
 
 import { GitRepository } from '../../../models/git-repository';
-import { CreateNewGitBranchResult, GitBranchesLoaderData } from '../../routes/git-actions';
+import { CreateNewGitBranchResult, GitBranchesLoaderData } from '../../actions/git-actions';
 import { PromptButton } from '../base/button';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';

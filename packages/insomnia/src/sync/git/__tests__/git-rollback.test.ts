@@ -3,8 +3,8 @@ import path from 'path';
 
 import type { FileWithStatus } from '../git-rollback';
 import { gitRollback } from '../git-rollback';
-import GitVCS, { GIT_CLONE_DIR, GIT_INSOMNIA_DIR } from '../git-vcs';
 import { MemClient } from '../mem-client';
+import GitVCS, { GIT_CLONE_DIR, GIT_INSOMNIA_DIR } from '../vcs';
 import { setupDateMocks } from './util';
 
 describe('git rollback', () => {
@@ -141,9 +141,9 @@ describe('git rollback', () => {
       await fsClient.promises.writeFile(bazTxt, 'changedContent');
       // foo is staged, bar is unstaged, but both are untracked (thus, new to git)
       await vcs.add(`${GIT_INSOMNIA_DIR}/bar.txt`);
-      const fooStatus = await vcs.status(fooTxt);
-      const barStatus = await vcs.status(barTxt);
-      const bazStatus = await vcs.status(bazTxt);
+      const fooStatus = await vcs.fileStatus(fooTxt);
+      const barStatus = await vcs.fileStatus(barTxt);
+      const bazStatus = await vcs.fileStatus(bazTxt);
       expect(fooStatus).toBe('*added');
       expect(barStatus).toBe('added');
       expect(bazStatus).toBe('*modified');
@@ -164,9 +164,9 @@ describe('git rollback', () => {
       // Remove both
       await gitRollback(vcs, files);
       // Ensure git doesn't know about the two files anymore
-      expect(await vcs.status(fooTxt)).toBe('absent');
-      expect(await vcs.status(barTxt)).toBe('absent');
-      expect(await vcs.status(bazTxt)).toBe('unmodified');
+      expect(await vcs.fileStatus(fooTxt)).toBe('absent');
+      expect(await vcs.fileStatus(barTxt)).toBe('absent');
+      expect(await vcs.fileStatus(bazTxt)).toBe('unmodified');
       // Ensure the two files have been removed from the fs (memClient)
       await expect(fsClient.promises.readFile(fooTxt)).rejects.toThrowError(
         `ENOENT: no such file or directory, scandir '${fooTxt}'`,

@@ -23,6 +23,7 @@ const MAX_CONSTANTS = -1;
 const MAX_SNIPPETS = -1;
 const MAX_VARIABLES = -1;
 const MAX_TAGS = -1;
+
 const ICONS = {
   [TYPE_CONSTANT]: {
     char: '𝒄',
@@ -358,7 +359,7 @@ function hint(cm: CodeMirror.Editor, options: ShowHintOptions) {
  * @param self
  * @param data
  */
-async function replaceHintMatch(cm: CodeMirror.Editor, _self: any, data: any) {
+async function handlerReplaceHintMatch(cm: CodeMirror.Editor, _self: any, data: any) {
   if (typeof data.text === 'function') {
     data.text = await data.text();
   }
@@ -446,13 +447,24 @@ function isTagCompletionItem(item: CompletionItem): item is TagCompletionItem {
   return item.type === TYPE_TAG;
 }
 
-function getCompletionHints(completionItems: CompletionItem[], segment: string, type: CompletionItem['type'], limit = -1) {
+function getCompletionHints(
+  completionItems: CompletionItem[],
+  segment: string,
+  type: CompletionItem['type'],
+  limit = -1
+) {
   const matches: Hint[] = [];
 
   for (const item of completionItems) {
     const name = typeof item === 'string' ? item : item.name;
     const value = typeof item === 'string' ? '' : item.value ?? '';
-    const displayName = item.displayName || name;
+    const displayName = typeof item === 'string' ? '' : item.displayName ?? name;
+    let liveDisplayName = displayName;
+
+    if (typeof item !== 'string' && typeof item.liveDisplayName === 'function') {
+      liveDisplayName = item.liveDisplayName([{ value: displayName }]);
+    }
+
     let defaultFill = '';
 
     if (isConstantCompletionItem(item) || isSnippetCompletionItem(item)) {
@@ -484,9 +496,9 @@ function getCompletionHints(completionItems: CompletionItem[], segment: string, 
       comment: value.toString(),
       score: name.length,
       text: defaultFill,
-      displayText: displayName || name,
-      render: renderHintMatch,
-      hint: replaceHintMatch,
+      displayText: liveDisplayName,
+      render: handlerRenderHintMatch,
+      hint: handlerReplaceHintMatch,
     });
   }
 
@@ -514,10 +526,10 @@ function escapeHTML(unsafeText: string) {
 /**
  * Render the autocomplete list entry
  */
-function renderHintMatch(li: HTMLElement, _allHints: CodeMirror.Hints, hint: Hint) {
+function handlerRenderHintMatch(li: HTMLElement, _allHints: CodeMirror.Hints, hint: Hint) {
   // Bold the matched text
   const { displayText, segment, type, displayValue } = hint;
-  const markedName = replaceWithSurround(displayText || '', segment, '<strong>', '</strong>');
+  const label = replaceWithSurround(displayText || '', segment, '<strong>', '</strong>');
   const { char, title } = ICONS[type];
   let safeValue = '';
 
@@ -533,7 +545,7 @@ function renderHintMatch(li: HTMLElement, _allHints: CodeMirror.Hints, hint: Hin
   li.className += ` fancy-hint type--${type}`;
   li.innerHTML = `
     <label class="label" title="${title}">${char}</label>
-    <div class="name">${markedName}</div>
+    <div class="name">${label}</div>
     ${safeValue}
   `;
 }

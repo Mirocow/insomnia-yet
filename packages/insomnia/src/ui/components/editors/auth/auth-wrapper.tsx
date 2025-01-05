@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import {
@@ -14,7 +14,7 @@ import {
   AUTH_OAUTH_1,
   AUTH_OAUTH_2,
 } from '../../../../common/constants';
-import { RequestLoaderData } from '../../../routes/request';
+import { RequestLoaderData } from '../../../actions/request';
 import { ApiKeyAuth } from './api-key-auth';
 import { AsapAuth } from './asap-auth';
 import { AWSAuth } from './aws-auth';

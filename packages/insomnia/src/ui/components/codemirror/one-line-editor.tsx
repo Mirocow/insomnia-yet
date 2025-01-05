@@ -2,12 +2,12 @@ import './base-imports';
 
 import classnames from 'classnames';
 import clone from 'clone';
-import CodeMirror, { type EditorConfiguration } from 'codemirror';
+import CodeMirror, { type EditorConfiguration, type EditorEventMap } from 'codemirror';
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 import { useMount, useUnmount } from 'react-use';
 
-import { DEBOUNCE_MILLIS } from '../../../common/constants';
+import { DEBOUNCE_MILLIS, isMac } from '../../../common/constants';
 import * as misc from '../../../common/misc';
 import type { KeyCombination } from '../../../common/settings';
 import { getTagDefinitions } from '../../../templating/index';
@@ -25,8 +25,14 @@ export interface OneLineEditorProps {
   readOnly?: boolean;
   type?: string;
   onPaste?: (text: string) => void;
+  onBlur?: (e: FocusEvent) => void;
+  eventListeners?: EditorEventListener<keyof EditorEventMap>[];
 }
 
+export interface EditorEventListener<T extends keyof EditorEventMap> {
+  eventName: T;
+  handler: EditorEventMap[T];
+}
 export interface OneLineEditorHandle {
   selectAll: () => void;
   focusEnd: () => void;
@@ -41,6 +47,8 @@ export const OneLineEditor = forwardRef<OneLineEditorHandle, OneLineEditorProps>
   readOnly,
   type,
   onPaste,
+  onBlur,
+  eventListeners,
 }, ref) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const codeMirror = useRef<CodeMirror.EditorFromTextArea | null>(null);
@@ -90,6 +98,7 @@ export const OneLineEditor = forwardRef<OneLineEditorHandle, OneLineEditorProps>
       keyMap: !readOnly && settings.editorKeyMap ? settings.editorKeyMap : 'default',
       extraKeys: CodeMirror.normalizeKeyMap({
         'Ctrl-Space': 'autocomplete',
+        [isMac() ? 'Cmd-F' : 'Ctrl-F']: () => { },
       }),
       gutters: [],
       mode: !handleRender ? 'text/plain' : {
@@ -108,7 +117,9 @@ export const OneLineEditor = forwardRef<OneLineEditorHandle, OneLineEditorProps>
     codeMirror.current.on('beforeChange', (_: CodeMirror.Editor, change: CodeMirror.EditorChangeCancellable) => {
       const isPaste = change.text && change.text.length > 1;
       if (isPaste) {
-        if (change.text[0].startsWith('curl')) {
+        const startsWithCurl = change.text[0].startsWith('curl');
+        const isWhitespace = change.text.join('').trim();
+        if (startsWithCurl || !isWhitespace) {
           change.cancel();
           return;
         }
@@ -121,6 +132,12 @@ export const OneLineEditor = forwardRef<OneLineEditorHandle, OneLineEditorProps>
       // TODO: watch out for pasting urls that are curl<something>, e.g. curl.se would be picked up here without the space
       if (onPaste && text && text.startsWith('curl ')) {
         onPaste(text);
+      }
+    });
+
+    codeMirror.current.on('blur', (_, e) => {
+      if (onBlur) {
+        onBlur(e);
       }
     });
 
@@ -159,7 +176,12 @@ export const OneLineEditor = forwardRef<OneLineEditorHandle, OneLineEditorProps>
         onKeyDown(event, doc.getValue());
       }
     });
-
+    // extra event listeners for editor
+    if (Array.isArray(eventListeners) && eventListeners.length > 0) {
+      eventListeners.forEach(({ eventName, handler }) => {
+        codeMirror.current?.on(eventName, handler);
+      });
+    }
     codeMirror.current.on('blur', () => codeMirror.current?.getTextArea().parentElement?.removeAttribute('data-focused'));
     codeMirror.current.on('focus', () => codeMirror.current?.getTextArea().parentElement?.setAttribute('data-focused', 'on'));
     codeMirror.current.on('keyHandled', (_: CodeMirror.Editor, _keyName: string, event: Event) => event.stopPropagation());

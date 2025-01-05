@@ -8,9 +8,9 @@ import { getSetCookieHeaders } from '../../../common/misc';
 import * as models from '../../../models';
 import { cancelRequestById } from '../../../network/cancellation';
 import { jsonPrettify } from '../../../utils/prettify/json';
+import type { RequestLoaderData } from '../../actions/request';
 import { useRequestMetaPatcher } from '../../hooks/use-request';
-import { RequestLoaderData } from '../../routes/request';
-import { RootLoaderData } from '../../routes/root';
+import { useRootLoaderData } from '../../routes/root';
 import { PanelContainer, TabItem, Tabs } from '../base/tabs';
 import { PreviewModeDropdown } from '../dropdowns/preview-mode-dropdown';
 import { ResponseHistoryDropdown } from '../dropdowns/response-history-dropdown';
@@ -40,7 +40,7 @@ export const ResponsePane: FC<Props> = ({
   const patchRequestMeta = useRequestMetaPatcher();
   const {
     settings,
-  } = useRouteLoaderData('root') as RootLoaderData;
+  } = useRootLoaderData();
   const previewMode = activeRequestMeta.previewMode || PREVIEW_MODE_SOURCE;
   const handleSetFilter = async (responseFilter: string) => {
     if (!activeResponse) {

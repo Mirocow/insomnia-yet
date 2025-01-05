@@ -164,6 +164,7 @@ export const loader: LoaderFunction = async ({
         remoteId: null,
       }));
   }
+
   invariant(project, 'Project was not found');
 
   const projectWorkspaces = await models.workspace.findByParentId(project._id);
@@ -519,6 +520,8 @@ const ProjectRoute: FC = () => {
               </div>
                 {organizationId === DEFAULT_ORGANIZATION_ID && (
                   <div className="flex justify-between gap-1 p-[--padding-sm]">
+
+                    {/* Projects filter */}
                     <SearchField
                       aria-label="Projects filter"
                       className="group relative flex-1"
@@ -687,6 +690,8 @@ const ProjectRoute: FC = () => {
 
             <div className="w-full h-full flex flex-col overflow-hidden">
               <div className="flex justify-between w-full gap-1 p-[--padding-md]">
+
+                {/* Workspaces filter */}
                 <SearchField
                   aria-label="Workspaces filter"
                   className="group relative flex-1"
@@ -803,6 +808,7 @@ const ProjectRoute: FC = () => {
                     </Menu>
                   </Popover>
                 </MenuTrigger>
+
                 {isRemoteProject(activeProject) && (
                   <RemoteWorkspacesDropdown
                     key={activeProject._id}

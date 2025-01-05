@@ -22,13 +22,12 @@ import {
 import { ACTIVITY_COLLECTION, ACTIVITY_SPEC, ACTIVITY_TEST, isDevelopment } from '../../common/constants';
 import * as models from '../../models';
 import type { Settings } from '../../models/settings';
-import { isDesign } from '../../models/workspace';
+import { isCollection, isDesign } from '../../models/workspace';
 import { reloadPlugins } from '../../plugins';
 import { createPlugin } from '../../plugins/create';
 import { setTheme } from '../../plugins/misc';
 import { exchangeCodeForToken } from '../../sync/git/github-oauth-provider';
 import { exchangeCodeForGitLabToken } from '../../sync/git/gitlab-oauth-provider';
-import { submitAuthCode } from '../auth-session-provider';
 import { WorkspaceDropdown } from '../components/dropdowns/workspace-dropdown';
 import { Hotkey } from '../components/hotkey';
 import { Icon } from '../components/icon';
@@ -50,6 +49,10 @@ import type { WorkspaceLoaderData } from './workspace';
 export interface RootLoaderData {
   settings: Settings;
 }
+
+export const useRootLoaderData = () => {
+  return useRouteLoaderData('root') as RootLoaderData;
+};
 
 export const loader: LoaderFunction = async (): Promise<RootLoaderData> => {
   return {
@@ -83,7 +86,7 @@ const Root = () => {
         if (isDevelopment()) {
           urlWithoutParams = urlWithoutParams.replace(
             'insomniadev://',
-            'insomnia://'
+            'insomnia://',
           );
         }
         switch (urlWithoutParams) {
@@ -141,12 +144,12 @@ const Root = () => {
                   const mainJsContent = `module.exports.themes = [${JSON.stringify(
                     parsedTheme,
                     null,
-                    2
+                    2,
                   )}];`;
                   await createPlugin(
                     `theme-${parsedTheme.name}`,
                     '0.0.1',
-                    mainJsContent
+                    mainJsContent,
                   );
                   patchSettings({ theme: parsedTheme.name });
                   await reloadPlugins();
@@ -185,11 +188,6 @@ const Root = () => {
             break;
           }
 
-          case 'insomnia://app/auth/finish': {
-            submitAuthCode(params.box);
-            break;
-          }
-
           default: {
             console.log(`Unknown deep link: ${url}`);
           }
@@ -214,13 +212,13 @@ const Root = () => {
               <NavLink
                 to={`/organization/${organizationId}/project/${workspaceData.activeProject._id}`}
               >
-                {isDesign(workspaceData) ? (
-                  <div className="px-1 h-full rounded-s-sm bg-[--color-info] text-[--color-font-info] w-[20px]">
-                    <Icon icon="file" />
+                {isCollection(workspaceData.activeWorkspace) ? (
+                  <div className="px-1 h-full rounded-s-sm bg-[--color-surprise] text-[--color-font-surprise] w-[15px]">
+                    <Icon icon="bars" />
                   </div>
                 ) : (
-                  <div className="px-1 h-full rounded-s-sm bg-[--color-surprise] text-[--color-font-surprise] w-[20px]">
-                    <Icon icon="bars" />
+                  <div className="px-1 h-full rounded-s-sm bg-[--color-info] text-[--color-font-info] w-[15px]">
+                    <Icon icon="file" className='svg-inline--fa fa-file'/>
                   </div>
                 )}
                 {/* <div className="px-1 h-full w-full">
@@ -261,6 +259,7 @@ const Root = () => {
         <AppHooks />
         <div className="app">
           <div className="w-full h-full">
+          <Modals />
             {/* triggered by insomnia://app/import */}
             {importUri && (
               <ImportModal
@@ -325,7 +324,6 @@ const Root = () => {
               </div>
             </div>
           </div>
-          <Modals />
         </div>
       </NunjucksEnabledProvider>
   );

@@ -1,18 +1,18 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { type FC, Fragment, useEffect, useRef, useState } from 'react';
 import { useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { AuthType, CONTENT_TYPE_JSON } from '../../../common/constants';
 import * as models from '../../../models';
-import { Environment } from '../../../models/environment';
-import { WebSocketRequest } from '../../../models/websocket-request';
+import type { Environment } from '../../../models/environment';
+import type { WebSocketRequest } from '../../../models/websocket-request';
 import { tryToInterpolateRequestOrShowRenderErrorModal } from '../../../utils/try-interpolate';
 import { buildQueryStringFromParams, joinUrlAndQueryString } from '../../../utils/url/querystring';
+import { WebSocketRequestLoaderData } from '../../actions/request';
 import { useReadyState } from '../../hooks/use-ready-state';
 import { useRequestPatcher } from '../../hooks/use-request';
 import { useActiveRequestSyncVCSVersion, useGitVCSVersion } from '../../hooks/use-vcs-version';
-import { WebSocketRequestLoaderData } from '../../routes/request';
-import { RootLoaderData } from '../../routes/root';
+import { useRootLoaderData } from '../../routes/root';
 import { TabItem, Tabs } from '../base/tabs';
 import { CodeEditor, CodeEditorHandle } from '../codemirror/code-editor';
 import { AuthDropdown } from '../dropdowns/auth-dropdown';
@@ -212,7 +212,7 @@ export const WebSocketRequestPane: FC<Props> = ({ environment }) => {
   const readyState = useReadyState({ requestId: activeRequest._id, protocol: 'webSocket' });
   const {
     settings,
-  } = useRouteLoaderData('root') as RootLoaderData;
+  } = useRootLoaderData();
   const { useBulkParametersEditor } = settings;
 
   const disabled = readyState;

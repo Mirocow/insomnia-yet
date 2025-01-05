@@ -1,4 +1,3 @@
-import { isLoggedIn } from '../../account/session';
 import { database } from '../../common/database';
 import { isNotNullOrUndefined } from '../../common/misc';
 import * as models from '../../models';
@@ -24,16 +23,11 @@ export const logCollectionMovedToProject = (collection: Workspace, remoteProject
 export const migrateCollectionsIntoRemoteProject = async (vcs: VCS) => {
   console.log('[sync] checking for collections which need to be moved into a remote project');
 
-  // If not logged in, exit
-  if (!isLoggedIn()) {
-    return;
-  }
-
   const collections = (await models.workspace.all()).filter(isCollection);
   const remoteProjects = (await models.project.all()).filter(isRemoteProject);
 
   // Are there any collections that have sync setup but are not in a remote project?
-  const isNotInRemoteProject = (collection: Workspace) => !Boolean(remoteProjects.find(project => project._id === collection.parentId));
+  const isNotInRemoteProject = (collection: Workspace) => !remoteProjects.find(project => project._id === collection.parentId);
   const hasLocalProject = (collection: Workspace) => vcs.hasBackendProjectForRootDocument(collection._id);
 
   const needsMigration = (await Promise.all(collections.map(async coll => await hasLocalProject(coll) && isNotInRemoteProject(coll) ? coll : null))).filter(isNotNullOrUndefined);

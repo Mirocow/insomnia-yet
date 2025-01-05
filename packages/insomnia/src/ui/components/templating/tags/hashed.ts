@@ -4,6 +4,7 @@ import type { PluginTemplateTag } from '../../../../templating/extensions';
 
 export const hashTag: { templateTag: PluginTemplateTag } = {
     templateTag: {
+        env: 'local',
         name: 'hash',
         displayName: 'Hash',
         description: 'apply hash to a value',

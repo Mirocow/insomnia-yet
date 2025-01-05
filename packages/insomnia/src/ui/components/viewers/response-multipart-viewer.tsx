@@ -4,7 +4,7 @@ import fs from 'fs';
 import { extension as mimeExtension } from 'mime-types';
 import multiparty from 'multiparty';
 import path from 'path';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { PassThrough } from 'stream';
 
 import {
@@ -113,7 +113,7 @@ export const ResponseMultipartViewer: FC<Props> = ({
     };
     const { canceled, filePath } = await window.dialog.showSaveDialog(options);
 
-    if (canceled) {
+    if (canceled || !filePath) {
       return;
     }
 
@@ -122,7 +122,6 @@ export const ResponseMultipartViewer: FC<Props> = ({
 
     // Save the file
     try {
-      // @ts-expect-error -- TSCONVERSION if filePath is undefined, don't try to write anything
       await fs.promises.writeFile(filePath, selectedPart.value);
     } catch (err) {
       console.warn('Failed to save multipart to file', err);

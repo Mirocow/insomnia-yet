@@ -2,34 +2,18 @@ import { type RulesetDefinition, Spectral } from '@stoplight/spectral-core';
 // @ts-expect-error - This is a bundled file not sure why it's not found
 import { bundleAndLoadRuleset } from '@stoplight/spectral-ruleset-bundler/with-loader';
 import { oas } from '@stoplight/spectral-rulesets';
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, ipcMain, shell } from 'electron';
 import fs from 'fs';
 
 import { SegmentEvent, trackPageView, trackSegmentEvent } from '../analytics';
-import { authorizeUserInWindow } from '../authorizeUserInWindow';
-import { insomniaFetch } from '../insomniaFetch';
 import installPlugin from '../install-plugin';
 import { axiosRequest } from '../network/axios-request';
 import { cancelCurlRequest, curlRequest } from '../network/libcurl-promise';
 
 export function registerMainHandlers() {
-  ipcMain.handle('insomniaFetch', async (_, options: Parameters<typeof insomniaFetch>[0]) => {
-    return insomniaFetch(options);
-  });
 
   ipcMain.handle('axiosRequest', async (_, options: Parameters<typeof axiosRequest>[0]) => {
     return axiosRequest(options);
-  });
-
-  ipcMain.on('loginStateChange', async () => {
-    BrowserWindow.getAllWindows().forEach(w => {
-      w.webContents.send('loggedIn');
-    });
-  });
-
-  ipcMain.handle('authorizeUserInWindow', (_, options: Parameters<typeof authorizeUserInWindow>[0]) => {
-    const { url, urlSuccessRegex, urlFailureRegex, sessionId } = options;
-    return authorizeUserInWindow({ url, urlSuccessRegex, urlFailureRegex, sessionId });
   });
 
   ipcMain.handle('writeFile', async (_, options: { path: string; content: string }) => {
@@ -101,4 +85,5 @@ export function registerMainHandlers() {
 
     return diagnostics;
   });
+
 }

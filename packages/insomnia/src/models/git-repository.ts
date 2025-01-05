@@ -1,5 +1,5 @@
 import { database as db } from '../common/database';
-import type { GitCredentials } from '../sync/git/git-vcs';
+import type { GitCredentials } from '../sync/git/vcs';
 import type { BaseModel } from './index';
 
 export type OauthProviderName = 'gitlab' | 'github' | 'custom';
@@ -20,6 +20,7 @@ export function init(): BaseGitRepository {
   return {
     needsFullClone: false,
     uri: '',
+    branch: '',
     credentials: null,
     author: {
       name: '',
@@ -32,6 +33,7 @@ export function init(): BaseGitRepository {
 export interface BaseGitRepository {
   needsFullClone: boolean;
   uri: string;
+  branch: string;
   credentials: GitCredentials | null;
   author: {
     name: string;

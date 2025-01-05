@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { type FC, Fragment, useState } from 'react';
 import { useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -7,9 +7,9 @@ import * as models from '../../../models';
 import { queryAllWorkspaceUrls } from '../../../models/helpers/query-all-workspace-urls';
 import type { Settings } from '../../../models/settings';
 import { deconstructQueryStringToParams, extractQueryStringFromUrl } from '../../../utils/url/querystring';
+import { RequestLoaderData } from '../../actions/request';
 import { useRequestPatcher, useSettingsPatcher } from '../../hooks/use-request';
 import { useActiveRequestSyncVCSVersion, useGitVCSVersion } from '../../hooks/use-vcs-version';
-import { RequestLoaderData } from '../../routes/request';
 import { WorkspaceLoaderData } from '../../routes/workspace';
 import { PanelContainer, TabItem, Tabs } from '../base/tabs';
 import { AuthDropdown } from '../dropdowns/auth-dropdown';
@@ -78,6 +78,7 @@ export const RequestPane: FC<Props> = ({
   const patchRequest = useRequestPatcher();
 
   useState(false);
+
   const handleImportQueryFromUrl = () => {
     let query;
 

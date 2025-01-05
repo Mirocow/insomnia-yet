@@ -9,8 +9,8 @@ import {
 import type { RequestAuthentication } from '../../../models/request';
 import { SIGNATURE_METHOD_HMAC_SHA1 } from '../../../network/o-auth-1/constants';
 import { GRANT_TYPE_AUTHORIZATION_CODE } from '../../../network/o-auth-2/constants';
+import type { RequestLoaderData } from '../../actions/request';
 import { useRequestPatcher } from '../../hooks/use-request';
-import type { RequestLoaderData } from '../../routes/request';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { showModal } from '../modals';
 import { AlertModal } from '../modals/alert-modal';

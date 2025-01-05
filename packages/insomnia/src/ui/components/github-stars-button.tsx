@@ -68,7 +68,7 @@ export const GitHubStarsButton = () => {
     });
   }, []);
 
-  const shouldShowCount = !Boolean(error);
+  const shouldShowCount = !error;
 
   return (
     <div className="flex select-none rounded-lg divide-x divide-[--hl-md] divide-solid border border-solid border-[--hl-md]">

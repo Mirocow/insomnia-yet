@@ -2,8 +2,8 @@ import React, { FC, ReactNode, useCallback } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import { toKebabCase } from '../../../../../common/misc';
+import { RequestLoaderData } from '../../../../actions/request';
 import { useRequestPatcher } from '../../../../hooks/use-request';
-import { RequestLoaderData } from '../../../../routes/request';
 import { AuthRow } from './auth-row';
 
 interface Props {
@@ -41,7 +41,7 @@ export const AuthToggleRow: FC<Props> = ({
   return (
     <AuthRow labelFor={id} label={label} help={help} disabled={disabled}>
       <button
-        className="btn btn--super-duper-compact"
+        className="btn btn--super-super-compact"
         id={id}
         onClick={() => toggle(!databaseValue)}
         title={title}

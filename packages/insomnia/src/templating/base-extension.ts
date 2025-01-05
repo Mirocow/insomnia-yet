@@ -30,7 +30,11 @@ export default class BaseExtension {
   }
 
   getTag() {
-    return this._ext?.name || null;
+    return this._ext?.name || '';
+  }
+
+  getEnv() {
+    return this._ext?.env || 'extension';
   }
 
   getPriority() {
@@ -42,7 +46,11 @@ export default class BaseExtension {
   }
 
   getName() {
-    return typeof this._ext?.displayName === 'string' ? this._ext?.displayName : this.getTag();
+    return typeof this._ext?.name === 'string' ? this._ext?.name || '' : this.getTag();
+  }
+
+  getDisplayName() {
+    return typeof this._ext?.displayName === 'string' ? this._ext?.displayName || '' : '';
   }
 
   getDescription() {
@@ -50,11 +58,15 @@ export default class BaseExtension {
   }
 
   getLiveDisplayName() {
+    const displayName = this.getDisplayName();
+    const name = this.getName();
+    const description = this.getDescription();
     return (
       // @ts-expect-error -- TSCONVERSION
       this._ext?.liveDisplayName ||
-      function() {
-        return '';
+      function(_args?: any) {
+        const value = _args[0]?.value || '';
+        return `${value} - ${displayName}(${name}) ${description}`;
       }
     );
   }

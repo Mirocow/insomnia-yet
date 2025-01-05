@@ -7,8 +7,8 @@ import { exportHarCurrentRequest } from '../../../common/har';
 import * as models from '../../../models';
 import { isRequest } from '../../../models/request';
 import { isResponse } from '../../../models/response';
+import type { RequestLoaderData } from '../../actions/request';
 import { useRequestMetaPatcher } from '../../hooks/use-request';
-import type { RequestLoaderData } from '../../routes/request';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 
 interface Props {

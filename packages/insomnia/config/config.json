@@ -10,9 +10,5 @@
   "lightTheme": "studio-light",
   "darkTheme": "default",
   "githubOrg": "Kong",
-  "githubRepo": "insomnia",
-  "segmentWriteKeys": {
-    "development": "rTOCSvGV23cHGJyb3HI9EUQDNA6ar7ay",
-    "production": "4l7QUfACrIcqvC913hiIwAA2BDYP2OJ1"
-  }
+  "githubRepo": "insomnia"
 }

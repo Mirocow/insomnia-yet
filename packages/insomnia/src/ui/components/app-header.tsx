@@ -2,13 +2,7 @@ import classNames from 'classnames';
 import React, { FC, Fragment, ReactNode } from 'react';
 import styled from 'styled-components';
 
-import * as session from '../../account/session';
 import { GitHubStarsButton } from './github-stars-button';
-import { InsomniaAILogo } from './insomnia-icon';
-const LogoWrapper = styled.div({
-  display: 'flex',
-  justifyContent: 'center',
-});
 
 export interface AppHeaderProps {
   gridCenter?: ReactNode;
@@ -77,10 +71,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
     <Header
       gridLeft={(
         <Fragment>
-          <LogoWrapper>
-            <InsomniaAILogo />
-          </LogoWrapper>
-          {!session.isLoggedIn() ? <GitHubStarsButton /> : null}
+          <GitHubStarsButton />
         </Fragment>
       )}
       gridCenter={gridCenter}

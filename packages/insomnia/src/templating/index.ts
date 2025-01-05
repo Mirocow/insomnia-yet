@@ -138,9 +138,10 @@ export async function getTagDefinitions() {
     .filter(ext => !ext.isDeprecated())
     .sort((a, b) => (a.getPriority() > b.getPriority() ? 1 : -1))
     .map<NunjucksParsedTag>(ext => ({
-      name: ext.getTag() || '',
-      author: ext.getAuthor() || '',
-      displayName: ext.getName() || '',
+      env: ext.getEnv(),
+      name: ext.getTag(),
+      author: ext.getAuthor(),
+      displayName: ext.getName(),
       liveDisplayName: ext.getLiveDisplayName(),
       description: ext.getDescription(),
       disablePreview: ext.getDisablePreview(),
@@ -202,7 +203,7 @@ async function getNunjucks(renderMode: string, ignoreUndefinedEnvVariable?: bool
 
   const pluginTemplateTags = await plugins.getTemplateTags();
 
-  const allExtensions = [...pluginTemplateTags, ...localTemplateTags];
+  const allExtensions = [...localTemplateTags, ...pluginTemplateTags];
 
   for (const extension of allExtensions) {
     const { templateTag, plugin } = extension;

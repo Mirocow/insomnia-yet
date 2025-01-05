@@ -10,13 +10,16 @@ export interface Options {
  * Allows Vite to import modules that will be resolved by Node's require() function.
  */
 export function electronNodeRequire(options: Options): Plugin {
+
   const {
     modules = [],
   } = options;
 
   return {
     name: 'vite-plugin-electron-node-require',
+
     config(conf) {
+
       // Exclude the modules from Vite's dependency optimization (pre-bundling)
       conf.optimizeDeps = {
         ...conf.optimizeDeps,
@@ -43,6 +46,7 @@ export function electronNodeRequire(options: Options): Plugin {
 
       return conf;
     },
+
     resolveId(id) {
       const externalId = id.split('virtual:external:')[1];
       if (modules.includes(externalId)) {
@@ -54,6 +58,7 @@ export function electronNodeRequire(options: Options): Plugin {
       // Return null to indicate that this plugin should not resolve the module
       return null;
     },
+
     load(id) {
       if (id.includes('virtual:external:')) {
         const externalId = id.split('virtual:external:')[1];

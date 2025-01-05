@@ -4,7 +4,7 @@ import { useRouteLoaderData } from 'react-router-dom';
 import { getRenderContext, getRenderContextAncestors, type HandleGetRenderContext, type HandleRender, render } from '../../../common/render';
 import { NUNJUCKS_TEMPLATE_GLOBAL_PROPERTY_NAME } from '../../../templating';
 import { getKeys } from '../../../templating/utils';
-import type { RequestLoaderData } from '../../routes/request';
+import type { RequestLoaderData } from '../../actions/request';
 import type { WorkspaceLoaderData } from '../../routes/workspace';
 let getRenderContextPromiseCache: any = {};
 

@@ -4,6 +4,7 @@ import type { PluginTemplateTag } from '../../../../templating/extensions';
 
 export const uuidTag: { templateTag: PluginTemplateTag } = {
     templateTag: {
+        env: 'local',
         displayName: 'UUID',
         name: 'uuid',
         description: 'generate v1 or v4 UUIDs',

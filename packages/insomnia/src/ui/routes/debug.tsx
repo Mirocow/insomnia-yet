@@ -4,9 +4,11 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React, { type FC, Fragment, useEffect, useRef, useState } from 'react';
 import {
   Button,
+  Collection,
   DropIndicator,
   GridList,
   GridListItem,
+  Header,
   Input,
   ListBox,
   ListBoxItem,
@@ -15,6 +17,7 @@ import {
   MenuTrigger,
   Popover,
   SearchField,
+  Section,
   Select,
   SelectValue,
   useDragAndDrop,
@@ -32,9 +35,11 @@ import {
 
 import {
   DEFAULT_SIDEBAR_SIZE,
+  getProductName,
   SORT_ORDERS,
   type SortOrder,
-  sortOrderName } from '../../common/constants';
+  sortOrderName,
+} from '../../common/constants';
 import { type ChangeBufferEvent, database as db } from '../../common/database';
 import { generateId } from '../../common/misc';
 import type { PlatformKeyCombinations } from '../../common/settings';
@@ -56,8 +61,15 @@ import {
   isWebSocketRequestId,
 } from '../../models/websocket-request';
 import { invariant } from '../../utils/invariant';
+import type {
+  GrpcRequestLoaderData,
+  RequestLoaderData,
+  WebSocketRequestLoaderData,
+} from '../actions/request';
+import { DropdownHint } from '../components/base/dropdown/dropdown-hint';
 import { RequestActionsDropdown } from '../components/dropdowns/request-actions-dropdown';
 import { RequestGroupActionsDropdown } from '../components/dropdowns/request-group-actions-dropdown';
+import { WorkspaceSyncDropdown } from '../components/dropdowns/workspace-sync-dropdown';
 import { ErrorBoundary } from '../components/error-boundary';
 import { Icon } from '../components/icon';
 import { useDocBodyKeyboardShortcuts } from '../components/keydown-binder';
@@ -65,6 +77,7 @@ import { showModal, showPrompt } from '../components/modals';
 import { AskModal } from '../components/modals/ask-modal';
 import { CookiesModal } from '../components/modals/cookies-modal';
 import { GenerateCodeModal } from '../components/modals/generate-code-modal';
+import { ImportModal } from '../components/modals/import-modal';
 import { PasteCurlModal } from '../components/modals/paste-curl-modal';
 import { PromptModal } from '../components/modals/prompt-modal';
 import { RequestSettingsModal } from '../components/modals/request-settings-modal';
@@ -84,13 +97,8 @@ import {
   useRequestGroupMetaPatcher,
   useRequestMetaPatcher,
 } from '../hooks/use-request';
-import type {
-  GrpcRequestLoaderData,
-  RequestLoaderData,
-  WebSocketRequestLoaderData,
-} from './request';
-import type { RootLoaderData } from './root';
-import type { Child, WorkspaceLoaderData } from './workspace';
+import { useRootLoaderData } from './root';
+import type { WorkspaceLoaderData } from './workspace';
 
 export interface GrpcMessage {
   id: string;
@@ -116,8 +124,8 @@ const INITIAL_GRPC_REQUEST_STATE = {
   error: undefined,
   methods: [],
 };
-export const loader: LoaderFunction = async ({ params }) => {
-  if (!params.requestId) {
+export const loader: LoaderFunction = async ({ params, request }) => {
+  if (!params.requestId && !params.requestGroupId) {
     const { projectId, workspaceId, organizationId } = params;
     invariant(workspaceId, 'Workspace ID is required');
     invariant(projectId, 'Project ID is required');
@@ -128,7 +136,11 @@ export const loader: LoaderFunction = async ({ params }) => {
     invariant(activeWorkspaceMeta, 'Workspace meta not found');
     const activeRequestId = activeWorkspaceMeta.activeRequestId;
     const activeRequest = activeRequestId ? await models.request.getById(activeRequestId) : null;
-    if (activeRequest) {
+    // TODO(george): we should remove this after enabling the sidebar for the runner
+    const startOfQuery = request.url.indexOf('?');
+    const urlWithoutQuery = startOfQuery > 0 ? request.url.slice(0, startOfQuery) : request.url;
+    const isDisplayingRunner = urlWithoutQuery.includes('/runner');
+    if (activeRequest && !isDisplayingRunner) {
       return redirect(`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/debug/request/${activeRequestId}`);
     }
   }
@@ -180,11 +192,11 @@ export const Debug: FC = () => {
     })),
   );
   const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
-  const [isRequestSettingsModalOpen, setIsRequestSettingsModalOpen] =
-    useState(false);
+  const [isRequestSettingsModalOpen, setIsRequestSettingsModalOpen] = useState(false);
   const [isEnvironmentModalOpen, setEnvironmentModalOpen] = useState(false);
-
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const patchRequestMeta = useRequestMetaPatcher();
+
   useEffect(() => {
     db.onChange(async (changes: ChangeBufferEvent[]) => {
       for (const change of changes) {
@@ -199,7 +211,7 @@ export const Debug: FC = () => {
     });
   }, []);
 
-  const { settings } = useRouteLoaderData('root') as RootLoaderData;
+  const { settings } = useRootLoaderData();
   const [runningRequests, setRunningRequests] = useState<
     Record<string, boolean>
   >({});
@@ -300,10 +312,11 @@ export const Debug: FC = () => {
       }
     },
     request_showDelete: () => {
-      if (activeRequest) {
+      if (activeRequest && requestId) {
         showModal(AskModal, {
           title: 'Delete Request?',
           message: `Really delete ${activeRequest.name}?`,
+          color: 'danger',
           onDone: async (confirmed: boolean) => {
             if (confirmed) {
               requestFetcher.submit(
@@ -415,7 +428,8 @@ export const Debug: FC = () => {
     getItems: keys =>
       [...keys].map(key => ({ 'text/plain': key.toString() })),
     onReorder(event) {
-      const id = event.keys.values().next().value.toString();
+      const [firstKey] = event.keys.values();
+      const id = firstKey.toString();
       const targetId = event.target.key.toString();
 
       const dropItem = collection.find(r => r.doc._id === id);
@@ -518,102 +532,124 @@ export const Debug: FC = () => {
   });
 
   const createInCollectionActionList: {
-    id: string;
     name: string;
+    id: string;
     icon: IconName;
-    hint?: PlatformKeyCombinations;
-    action: () => void;
-  }[] = [
+    items: {
+      id: string;
+      name: string;
+      icon: IconName;
+      hint?: PlatformKeyCombinations;
+      action: () => void;
+    }[];
+  }[] =
+    [
       {
-        id: 'HTTP',
-        name: 'HTTP Request',
-        icon: 'plus-circle',
-        hint: hotKeyRegistry.request_createHTTP,
-        action: () =>
-          createRequest({
-            requestType: 'HTTP',
-            parentId: workspaceId,
-          }),
+        name: 'Create',
+        id: 'create',
+        icon: 'plus',
+        items: [
+          {
+            id: 'New Folder',
+            name: 'New Folder',
+            icon: 'folder',
+            hint: hotKeyRegistry.request_showCreateFolder,
+            action: () => showPrompt({
+              title: 'New Folder',
+              defaultValue: 'My Folder',
+              submitName: 'Create',
+              label: 'Name',
+              selectText: true,
+              onComplete: name =>
+                requestFetcher.submit(
+                  { parentId: workspaceId, name },
+                  {
+                    action: `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/debug/request-group/new`,
+                    method: 'post',
+                  }
+                ),
+            }),
+          },
+          {
+            id: 'HTTP',
+            name: 'HTTP Request',
+            icon: 'plus-circle',
+            hint: hotKeyRegistry.request_createHTTP,
+            action: () =>
+              createRequest({
+                requestType: 'HTTP',
+                parentId: workspaceId,
+              }),
+          },
+          {
+            id: 'Event Stream',
+            name: 'Event Stream Request (SSE)',
+            icon: 'plus-circle',
+            action: () =>
+              createRequest({
+                requestType: 'Event Stream',
+                parentId: workspaceId,
+              }),
+          },
+          {
+            id: 'GraphQL Request',
+            name: 'GraphQL Request',
+            icon: 'plus-circle',
+            action: () =>
+              createRequest({
+                requestType: 'GraphQL',
+                parentId: workspaceId,
+              }),
+          },
+          {
+            id: 'gRPC Request',
+            name: 'gRPC Request',
+            icon: 'plus-circle',
+            action: () =>
+              createRequest({
+                requestType: 'gRPC',
+                parentId: workspaceId,
+              }),
+          },
+          {
+            id: 'WebSocket Request',
+            name: 'WebSocket Request',
+            icon: 'plus-circle',
+            action: () =>
+              createRequest({
+                requestType: 'WebSocket',
+                parentId: workspaceId,
+              }),
+          }],
       },
       {
-        id: 'Event Stream',
-        name: 'Event Stream Request',
-        icon: 'plus-circle',
-        action: () =>
-          createRequest({
-            requestType: 'Event Stream',
-            parentId: workspaceId,
-          }),
-      },
-      {
-        id: 'GraphQL Request',
-        name: 'GraphQL Request',
-        icon: 'plus-circle',
-        action: () =>
-          createRequest({
-            requestType: 'GraphQL',
-            parentId: workspaceId,
-          }),
-      },
-      {
-        id: 'gRPC Request',
-        name: 'gRPC Request',
-        icon: 'plus-circle',
-        action: () =>
-          createRequest({
-            requestType: 'gRPC',
-            parentId: workspaceId,
-          }),
-      },
-      {
-        id: 'WebSocket Request',
-        name: 'WebSocket Request',
-        icon: 'plus-circle',
-        action: () =>
-          createRequest({
-            requestType: 'WebSocket',
-            parentId: workspaceId,
-          }),
-      },
-      {
-        id: 'From Curl',
-        name: 'From Curl',
-        icon: 'terminal',
-        action: () => setPasteCurlModalOpen(true),
-      },
-      {
-        id: 'New Folder',
-        name: 'New Folder',
-        icon: 'folder',
-        action: () =>
-          showPrompt({
-            title: 'New Folder',
-            defaultValue: 'My Folder',
-            submitName: 'Create',
-            label: 'Name',
-            selectText: true,
-            onComplete: name =>
-              requestFetcher.submit(
-                { parentId: workspaceId, name },
-                {
-                  action: `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/debug/request-group/new`,
-                  method: 'post',
-                }
-              ),
-          }),
-      },
-    ];
+        name: 'Import',
+        id: 'import',
+        icon: 'file-import',
+        items: [{
+          id: 'From Curl',
+          name: 'From Curl',
+          icon: 'terminal',
+          action: () => setPasteCurlModalOpen(true),
+        },
+          {
+            id: 'from-file',
+            name: 'From File',
+            icon: 'file-import',
+            action: () => setIsImportModalOpen(true),
+        }],
+      }];
 
-  const environmentsList = [baseEnvironment, ...subEnvironments].map(e => ({
-    id: e._id,
-    name: e.name,
-    color: e.color,
+  // baseEnvironment + subEnvironments
+  const environmentsList = [baseEnvironment, ...subEnvironments].map(environment => ({
+    id: environment._id,
+    ...environment,
   }));
 
   const visibleCollection = collection.filter(item => !item.hidden);
 
   const parentRef = useRef<HTMLDivElement>(null);
-  const virtualizer = useVirtualizer<HTMLDivElement | null, Child>({
+  const virtualizer = useVirtualizer<HTMLDivElement, Element>({
     getScrollElement: () => parentRef.current,
     count: visibleCollection.length,
     estimateSize: React.useCallback(() => 32, []),
@@ -654,20 +690,33 @@ export const Debug: FC = () => {
                       ) {
                         return (
                           <Fragment>
-                            <Icon icon="cancel" />
-                            No Environment
+                            <span
+                              style={{
+                                borderColor: 'var(--color-font)',
+                              }}
+                            >
+                              <Icon className='text-xs w-5' icon="refresh" />
+                            </span>
+                            {baseEnvironment.name}
                           </Fragment>
                         );
                       }
 
                       return (
                         <Fragment>
+                          <span
+                            style={{
+                              borderColor: selectedItem.color ?? 'var(--color-font)',
+                            }}
+                          >
                           <Icon
-                            icon="circle"
+                            icon={selectedItem.isPrivate ? 'lock' : 'refresh'}
                             style={{
                               color: selectedItem.color ?? 'var(--color-font)',
                             }}
+                            className='text-xs w-5'
                           />
+                          </span>
                           {selectedItem.name}
                         </Fragment>
                       );
@@ -692,20 +741,22 @@ export const Debug: FC = () => {
                       >
                         {({ isSelected }) => (
                           <Fragment>
-                            <Icon
-                              icon={
-                                item._id === baseEnvironment._id
-                                  ? 'cancel'
-                                  : 'circle'
-                              }
+                            <span
+                              // className='p-1 border-solid border w-5 h-5 rounded bg-[--hl-sm] flex-shrink-0 flex items-center justify-center'
                               style={{
-                                color: item.color ?? 'var(--color-font)',
+                                borderColor: item.color ?? 'var(--color-font)',
                               }}
-                            />
-                            <span>
-                              {item._id === baseEnvironment._id
-                                ? 'No Environment'
-                                : item.name}
+                            >
+                              <Icon
+                                icon={item.isPrivate ? 'lock' : 'refresh'}
+                                className='text-xs'
+                                style={{
+                                  color: item.color ?? 'var(--color-font)',
+                                }}
+                              />
+                            </span>
+                            <span className='flex-1 truncate'>
+                              {item.name}
                             </span>
                             {isSelected && (
                               <Icon
@@ -820,29 +871,34 @@ export const Debug: FC = () => {
                 >
                   <Icon icon="plus-circle" />
                 </Button>
-                <Popover className="min-w-max">
+                <Popover className="min-w-max overflow-y-hidden flex flex-col">
                   <Menu
                     aria-label="Create a new request"
                     selectionMode="single"
-                    onAction={key => {
-                      const item = createInCollectionActionList.find(item => item.id === key);
-                      if (item) {
-                        item.action();
-                      }
-                    }}
+                    onAction={key => createInCollectionActionList.find(i => i.items.find(a => a.id === key))?.items.find(a => a.id === key)?.action()}
                     items={createInCollectionActionList}
                     className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
                   >
-                    {item => (
-                      <MenuItem
-                        key={item.id}
-                        id={item.id}
-                        className="flex gap-2 px-[--padding-md] aria-selected:font-bold items-center text-[--color-font] h-[--line-height-xs] w-full text-md whitespace-nowrap bg-transparent hover:bg-[--hl-sm] disabled:cursor-not-allowed focus:bg-[--hl-xs] focus:outline-none transition-colors"
-                        aria-label={item.name}
-                      >
-                        <Icon icon={item.icon} />
-                        <span>{item.name}</span>
-                      </MenuItem>
+                    {section => (
+                      <Section className='flex-1 flex flex-col'>
+                        <Header className='pl-2 py-1 flex items-center gap-2 text-[--hl] text-xs uppercase'>
+                          <Icon icon={section.icon} /> <span>{section.name}</span>
+                        </Header>
+                        <Collection items={section.items}>
+                          {item => (
+                            <MenuItem
+                              key={item.id}
+                              id={item.id}
+                              className="flex gap-2 px-[--padding-md] aria-selected:font-bold items-center text-[--color-font] h-[--line-height-xs] w-full text-md whitespace-nowrap bg-transparent hover:bg-[--hl-sm] disabled:cursor-not-allowed focus:bg-[--hl-xs] focus:outline-none transition-colors"
+                              aria-label={item.name}
+                            >
+                              <Icon icon={item.icon} />
+                              <span>{item.name}</span>
+                              {item.hint && (<DropdownHint keyBindings={item.hint} />)}
+                            </MenuItem>
+                          )}
+                        </Collection>
+                      </Section>
                     )}
                   </Menu>
                 </Popover>
@@ -876,18 +932,31 @@ export const Debug: FC = () => {
                       className="flex select-none outline-none group-aria-selected:text-[--color-font] relative group-hover:bg-[--hl-xs] group-focus:bg-[--hl-sm] transition-colors gap-2 px-4 items-center h-[--line-height-xs] w-full overflow-hidden text-[--hl]"
                     >
                       <span className="group-aria-selected:bg-[--color-surprise] transition-colors top-0 left-0 absolute h-full w-[2px] bg-transparent" />
-                      {isRequest(item.doc) && (
-                        <span className={`w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center justify-center http-method-${item.doc.method}`}>
+                      {/* {isRequest(item.doc) && (
+                        <span
+                          className={
+                            `w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center justify-center
+                            ${{
+                              'GET': 'text-[--color-font-surprise] bg-[rgba(var(--color-surprise-rgb),0.5)]',
+                              'POST': 'text-[--color-font-success] bg-[rgba(var(--color-success-rgb),0.5)]',
+                              'HEAD': 'text-[--color-font-info] bg-[rgba(var(--color-info-rgb),0.5)]',
+                              'OPTIONS': 'text-[--color-font-info] bg-[rgba(var(--color-info-rgb),0.5)]',
+                              'DELETE': 'text-[--color-font-danger] bg-[rgba(var(--color-danger-rgb),0.5)]',
+                              'PUT': 'text-[--color-font-warning] bg-[rgba(var(--color-warning-rgb),0.5)]',
+                              'PATCH': 'text-[--color-font-notice] bg-[rgba(var(--color-notice-rgb),0.5)]',
+                            }[item.doc.method] || 'text-[--color-font] bg-[--hl-md]'}`
+                          }
+                        >
                           {getMethodShortHand(item.doc)}
                         </span>
-                      )}
+                      )} */}
                       {isWebSocketRequest(item.doc) && (
-                        <span className="w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center info justify-center">
+                        <span className="w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center justify-center text-[--color-font-notice] bg-[rgba(var(--color-notice-rgb),0.5)]">
                           WS
                         </span>
                       )}
                       {isGrpcRequest(item.doc) && (
-                        <span className="w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center method-grpc justify-center">
+                        <span className="w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center justify-center text-[--color-font-info] bg-[rgba(var(--color-info-rgb),0.5)]">
                           gRPC
                         </span>
                       )}
@@ -940,10 +1009,13 @@ export const Debug: FC = () => {
               >
                 {virtualItem => {
                   const item = visibleCollection[virtualItem.index];
+
+                  const label = item.doc.name;
+
                   return (
                     <GridListItem
                       className="group outline-none absolute top-0 left-0 select-none w-full"
-                      textValue={item.doc.name}
+                      textValue={label}
                       style={{
                         height: `${virtualItem.size}`,
                         transform: `translateY(${virtualItem.start}px)`,
@@ -958,17 +1030,17 @@ export const Debug: FC = () => {
                         <span className="group-aria-selected:bg-[--color-surprise] transition-colors top-0 left-0 absolute h-full w-[2px] bg-transparent" />
                         <Button slot="drag" className="hidden" />
                         {isRequest(item.doc) && (
-                          <span className={`w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center justify-center http-method-${item.doc.method}`}>
+                          <span className={`aria-hidden role="presentation" w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center justify-center http-method-${item.doc.method} ${item.doc.name}`}>
                             {getMethodShortHand(item.doc)}
                           </span>
                         )}
                         {isWebSocketRequest(item.doc) && (
-                          <span className="w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center info justify-center">
+                          <span className={`aria-hidden role="presentation" w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center info justify-center ${item.doc.name}`}>
                             WS
                           </span>
                         )}
                         {isGrpcRequest(item.doc) && (
-                          <span className="w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center method-grpc justify-center">
+                          <span className={`aria-hidden role="presentation" w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center method-grpc justify-center ${item.doc.name}`}>
                             gRPC
                           </span>
                         )}
@@ -978,7 +1050,7 @@ export const Debug: FC = () => {
                             icon={item.collapsed ? 'folder' : 'folder-open'}
                           />
                         )}
-                        <span className="truncate">{item.doc.name}</span>
+                        <span className="truncate">{label}</span>
                         <span className="flex-1" />
                         {isWebSocketRequest(item.doc) && <WebSocketSpinner requestId={item.doc._id} />}
                         {isEventStreamRequest(item.doc) && <EventStreamSpinner requestId={item.doc._id} />}
@@ -1005,9 +1077,22 @@ export const Debug: FC = () => {
             </div>
           </div>
 
+          <WorkspaceSyncDropdown />
+
           {isEnvironmentModalOpen && (
             <WorkspaceEnvironmentsEditModal
-              onHide={() => setEnvironmentModalOpen(false)}
+              onClose={() => setEnvironmentModalOpen(false)}
+            />
+          )}
+          {isImportModalOpen && (
+            <ImportModal
+              onHide={() => setIsImportModalOpen(false)}
+              from={{ type: 'file' }}
+              projectName={activeProject.name ?? getProductName()}
+              workspaceName={activeWorkspace.name}
+              organizationId={organizationId}
+              defaultProjectId={projectId}
+              defaultWorkspaceId={workspaceId}
             />
           )}
           {isCookieModalOpen && (

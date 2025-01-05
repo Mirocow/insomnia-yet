@@ -10,7 +10,7 @@ import type { Request } from '../models/request';
 import type { RequestGroup } from '../models/request-group';
 import type { WebSocketRequest } from '../models/websocket-request';
 import type { Workspace } from '../models/workspace';
-import type { PluginTemplateTag } from '../templating/extensions/index';
+import type { PluginTemplateTag } from '../templating/extensions';
 import { showError } from '../ui/components/modals/index';
 import type { PluginTheme } from './misc';
 import themes from './themes';
@@ -119,8 +119,8 @@ async function _traversePluginPath(
     if (!fs.existsSync(p)) {
       continue;
     }
-    const folders = (await fs.promises.readdir(p)).filter(f => f.startsWith('insomnia-plugin-'));
-    folders.length && console.log('[plugin] Loading', folders.map(f => f.replace('insomnia-plugin-', '')).join(', '));
+    // const folders = (await fs.promises.readdir(p)).filter(f => f.startsWith('insomnia-plugin-'));
+    // folders.length && console.log('[plugin] Loading', folders.map(f => f.replace('insomnia-plugin-', '')).join(', '));
     for (const filename of fs.readdirSync(p)) {
       try {
         const modulePath = path.join(p, filename);
@@ -185,7 +185,11 @@ async function _traversePluginPath(
             : { disabled: false },
           module: module,
         };
-        console.log(`[plugin] Loaded ${modulePath}`);
+
+        if (!pluginMap[pluginJson.name].config.disabled) {
+          console.log(`[plugin] Loaded ${modulePath}`);
+        }
+
       } catch (err) {
         showError({
           title: 'Plugin Error',

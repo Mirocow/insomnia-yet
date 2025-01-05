@@ -117,9 +117,9 @@ export const WorkspaceDropdown: FC = () => {
           </DropdownButton>
         }
       >
-        <DropdownItem aria-label='Duplicate'>
+        <DropdownItem aria-label='Duplicate / Move'>
           <ItemContent
-            label="Duplicate"
+            label="Duplicate / Move"
             icon="copy"
             onClick={() => setIsDuplicateModalOpen(true)}
           />

@@ -21,7 +21,8 @@ export const initializeLocalBackendProjectAndMarkForSync = async ({ vcs, workspa
   }));
   const status = await vcs.status(candidates, blankStage);
 
-  // Stage everything
+  // Stage everything  // Ыефпу умукнерштп
+
   const stage = await vcs.stage(blankStage, Object.values(status.unstaged));
 
   // Snapshot

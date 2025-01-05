@@ -21,7 +21,6 @@ export const isLinux = () => getAppPlatform() === 'linux';
 export const isWindows = () => getAppPlatform() === 'win32';
 export const getAppEnvironment = () => process.env.INSOMNIA_ENV || 'production';
 export const isDevelopment = () => getAppEnvironment() === 'development';
-export const getSegmentWriteKey = () => appConfig.segmentWriteKeys[(isDevelopment() || env.PLAYWRIGHT) ? 'development' : 'production'];
 export const getAppBuildDate = () => new Date(process.env.BUILD_DATE ?? '').toLocaleDateString();
 export type AuthType =
   | 'none'
@@ -112,22 +111,14 @@ export const displayModifierKey = (key: keyof Omit<KeyCombination, 'keyCode'>) =
   }
 };
 
-// Update
-export enum UpdateURL {
-  mac = 'https://updates.insomnia.rest/builds/check/mac',
-  windows = 'https://updates.insomnia.rest/updates/win',
-}
-
 // API
 export const getApiBaseURL = () => env.INSOMNIA_API_URL || 'https://api.insomnia.rest';
-
-export const getUpdatesBaseURL = () => env.INSOMNIA_UPDATES_URL || 'https://updates.insomnia.rest';
 
 // App website
 export const getAppWebsiteBaseURL = () => env.INSOMNIA_APP_WEBSITE_URL || 'https://app.insomnia.rest';
 
 // GitHub API
-export const getGitHubGraphQLApiURL = () => env.INSOMNIA_GITHUB_API_URL || 'https://api.github.com/graphql';
+export const getGitHubRestApiUrl = () => env.INSOMNIA_GITHUB_REST_API_URL || 'https://api.github.com';
 
 // SYNC
 export const DEFAULT_BRANCH_NAME = 'master';

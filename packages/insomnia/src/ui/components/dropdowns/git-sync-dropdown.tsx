@@ -5,16 +5,16 @@ import { useInterval } from 'react-use';
 
 import { docsGitSync } from '../../../common/documentation';
 import type { GitRepository } from '../../../models/git-repository';
-import { deleteGitRepository } from '../../../models/helpers/git-repository-operations';
 import { getOauth2FormatName } from '../../../sync/git/utils';
-import type {
-  GitFetchLoaderData,
-  GitRepoLoaderData,
-  GitStatusResult,
+import {
+  checkGitCanPush,
+  checkGitChanges,
+  type GitFetchLoaderData,
+  type GitRepoLoaderData,
+  type GitStatusResult,
   PullFromGitRemoteResult,
   PushToGitRemoteResult,
-} from '../../routes/git-actions';
-import { Button } from '../base/button';
+} from '../../actions/git-actions';
 import {
   Dropdown,
   DropdownButton,
@@ -35,10 +35,9 @@ import { Tooltip } from '../tooltip';
 interface Props {
   gitRepository: GitRepository | null;
   className?: string;
-  isInsomniaSyncEnabled: boolean;
 }
 
-export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomniaSyncEnabled }) => {
+export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
   const { organizationId, projectId, workspaceId } = useParams() as {
     organizationId: string;
     projectId: string;
@@ -46,8 +45,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
   };
   const dropdownRef = useRef<DropdownHandle>(null);
 
-  const [isGitRepoSettingsModalOpen, setIsGitRepoSettingsModalOpen] =
-    useState(false);
+  const [isGitRepoSettingsModalOpen, setIsGitRepoSettingsModalOpen] = useState(false);
   const [isGitBranchesModalOpen, setIsGitBranchesModalOpen] = useState(false);
   const [isGitLogModalOpen, setIsGitLogModalOpen] = useState(false);
   const [isGitStagingModalOpen, setIsGitStagingModalOpen] = useState(false);
@@ -72,10 +70,8 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
       !gitRepoDataFetcher.data
     ) {
       console.log('[git:fetcher] Fetching git repo data');
-      gitRepoDataFetcher.submit({}, {
-        action: `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/git/repo`,
-        method: 'post',
-      });
+      // file://./../../routes/git-actions.tsx#gitRepoLoader
+      gitRepoDataFetcher.load(`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/git/repo`);
     }
   }, [
     gitRepoDataFetcher,
@@ -92,12 +88,28 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
   useEffect(() => {
     if (shouldFetchGitRepoStatus) {
       console.log('[git:fetcher] Fetching git repo status');
+      // file://./../../routes/git-actions.tsx#gitStatusAction
       gitStatusFetcher.submit({}, {
         action: `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/git/status`,
         method: 'post',
       });
     }
   }, [gitStatusFetcher, organizationId, projectId, shouldFetchGitRepoStatus, workspaceId]);
+
+  useEffect(() => {
+    // update committed state on unmount
+    // this is a sync action which is responsible for cheaply updating a piece of state representing the existence of a diff
+    // ideally this would not be needed and a diff would be cheaper to find.
+    return () => {
+      checkGitChanges(workspaceId);
+    };
+  }, [workspaceId]);
+
+  useEffect(() => {
+    if (shouldFetchGitRepoStatus) {
+      checkGitCanPush(workspaceId);
+    }
+  }, [gitRepoDataFetcher.data, gitRepository?._id, gitRepository?.uri, workspaceId, shouldFetchGitRepoStatus]);
 
   useEffect(() => {
     const errors = [...(gitPushFetcher.data?.errors ?? [])];
@@ -144,6 +156,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
   }, [gitCheckoutFetcher.data?.errors]);
 
   async function handlePush({ force }: { force: boolean }) {
+    // file://./../../routes/git-actions.tsx#gitStatusAction
     gitPushFetcher.submit(
       {
         force: `${force}`,
@@ -194,6 +207,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
       icon: loadingPull ? 'refresh fa-spin' : 'cloud-download',
       label: 'Pull',
       onClick: async () => {
+        // file://./../../actions/git-actions.tsx#pullFromGitRemoteAction
         gitPullFetcher.submit(
           {},
           {
@@ -222,6 +236,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
       icon: loadingFetch ? 'refresh fa-spin' : 'refresh',
       label: 'Fetch',
       onClick: () => {
+        // file://./../../actions/git-actions.tsx#gitFetchAction
         gitFetchFetcher.submit(
           {},
           {
@@ -234,6 +249,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
   ];
 
   useInterval(() => {
+    // file://./../../actions/git-actions.tsx#gitFetchAction
     gitFetchFetcher.submit(
       {},
       {
@@ -357,6 +373,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
                     label={branch}
                     isDisabled={isCurrentBranch}
                     onClick={async () => {
+                      // file://./../../actions/git-actions.tsx#checkoutGitBranchAction
                       gitCheckoutFetcher.submit(
                         {
                           branch,
@@ -431,56 +448,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
             </DropdownButton>
           }
         >
-          <DropdownSection
-            items={isInsomniaSyncEnabled ? [{
-              value: 'Use Insomnia Sync',
-              id: 'use-insomnia-sync',
-            }] : []}
-          >
-            {item => (
-              <DropdownItem
-                key={item.id}
-                aria-label='Use Insomnia Sync'
-              >
-                <Button
-                  variant='contained'
-                  bg='surprise'
-                  onClick={async () => {
-                    if (gitRepository) {
-                      await deleteGitRepository(gitRepository);
-                      revalidate();
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: 'var(--padding-sm)',
-                    margin: '0 var(--padding-sm)',
-                  }}
-                >
-                  <i className="fa fa-cloud" /> Use Insomnia Sync
-                </Button>
-              </DropdownItem>
-            )}
-          </DropdownSection>
-          <DropdownSection
-            title={
-              <span>
-                Git Sync
-                <HelpTooltip>
-                  Sync and collaborate with Git{' '}
-                  <Link href={docsGitSync}>
-                    <span className="no-wrap">
-                      <br />
-                      Documentation <i className="fa fa-external-link" />
-                    </span>
-                  </Link>
-                </HelpTooltip>
-              </span>
-            }
-          >
+          <DropdownSection>
             <DropdownItem textValue="Settings">
               <ItemContent
                 icon="wrench"
@@ -520,7 +488,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
         />
       )}
       {isGitStagingModalOpen && (
-        <GitStagingModal onHide={() => setIsGitStagingModalOpen(false)} />
+        <GitStagingModal onClose={() => setIsGitStagingModalOpen(false)} />
       )}
     </Fragment>
   );

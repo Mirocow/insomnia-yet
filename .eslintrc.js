@@ -23,8 +23,11 @@ module.exports = {
     },
   },
   extends: [
+    //
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
+    // https://github.com/jsx-eslint/eslint-plugin-react
+    'eslint:recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
   ],
@@ -104,7 +107,6 @@ module.exports = {
         '?', // for Quokka
       ],
     }],
-
     'react/no-unescaped-entities': OFF(TYPESCRIPT_CONVERSION),
     'react/jsx-first-prop-new-line': [ERROR, 'multiline'],
     'react/jsx-max-props-per-line': [ERROR, { maximum: 1, when: 'multiline' }],
@@ -121,13 +123,11 @@ module.exports = {
     'react/jsx-key': [ERROR, { 'checkFragmentShorthand': true }],
     'react/no-array-index-key': WARN(UNKNOWN),
     'react/self-closing-comp': ERROR,
-
     'react-hooks/exhaustive-deps': [ERROR, {
       // From react-use https://github.com/streamich/react-use/issues/1703#issuecomment-770972824
       'additionalHooks': '^use(Async|AsyncFn|AsyncRetry|Debounce|UpdateEffect|IsomorphicLayoutEffect|DeepCompareEffect|ShallowCompareEffect)$',
     }],
     'react-hooks/rules-of-hooks': ERROR,
-
     '@typescript-eslint/array-type': [ERROR, { default: 'array', readonly: 'array' }],
     '@typescript-eslint/ban-types': OFF(UNKNOWN),
     '@typescript-eslint/brace-style': [ERROR, '1tbs'],
@@ -143,7 +143,6 @@ module.exports = {
     '@typescript-eslint/space-infix-ops': ERROR,
     '@typescript-eslint/semi': [ERROR, 'always'],
     '@typescript-eslint/quotes': [ERROR, 'single', { avoidEscape: true }],
-
     'simple-import-sort/imports': ERROR,
     'filenames/match-exported': OFF(UNKNOWN),
     camelcase: OFF(UNKNOWN),
@@ -154,5 +153,6 @@ module.exports = {
       property: 'openExternal',
       message: 'use the `window.main.openInBrowser` function instead.  see https://security.stackexchange.com/questions/225799/dangers-of-electrons-shell-openexternal-on-untrusted-content for more information.',
     }],
+    'react/display-name': OFF(UNKNOWN),
   },
 };

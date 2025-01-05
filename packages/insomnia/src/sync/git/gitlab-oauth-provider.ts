@@ -1,8 +1,6 @@
 import { createHash, randomBytes } from 'crypto';
 import { v4 as uuid } from 'uuid';
 
-import { getApiBaseURL } from '../../common/constants';
-
 const env = process['env'];
 
 // Warning: As this is a global fetch we need to handle errors, retries and caching
@@ -25,16 +23,6 @@ const getGitLabConfig = async () => {
     };
   }
 
-  // Otherwise fetch the config for the GitLab API
-  return window.main.axiosRequest({
-    url: getApiBaseURL() + '/v1/oauth/gitlab/config',
-    method: 'GET',
-  }).then(({ data }) => {
-    return {
-      clientId: data.applicationId,
-      redirectUri: data.redirectUri,
-    };
-  });
 };
 
 export const getGitLabOauthApiURL = () =>
@@ -78,13 +66,13 @@ export async function generateAuthorizationUrl() {
   const challenge = base64URLEncode(sha256(verifier));
 
   const gitlabURL = new URL(`${getGitLabOauthApiURL()}/oauth/authorize`);
-  const { clientId, redirectUri } = await getGitLabConfig();
+  // const { clientId, redirectUri } = await getGitLabConfig();
   gitlabURL.search = new URLSearchParams({
-    client_id: clientId,
+    client_id: 'client_id',
     scope,
     state,
     response_type: 'code',
-    redirect_uri: redirectUri,
+    redirect_uri: 'redirect_uri',
     code_challenge: challenge,
     code_challenge_method: 'S256',
   }).toString();
@@ -104,14 +92,14 @@ export async function exchangeCodeForGitLabToken(input: {
       'Invalid state parameter. It looks like the authorization flow was not initiated by the app.'
     );
   }
-  const { clientId, redirectUri } = await getGitLabConfig();
+  // const { clientId, redirectUri } = await getGitLabConfig();
   const url = new URL(`${getGitLabOauthApiURL()}/oauth/token`);
   url.search = new URLSearchParams({
     code,
     state,
-    client_id: clientId,
+    client_id: 'client_id',
     grant_type: 'authorization_code',
-    redirect_uri: redirectUri,
+    redirect_uri: 'redirect_uri',
     code_verifier: verifier,
   }).toString();
 
