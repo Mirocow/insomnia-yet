@@ -4,13 +4,13 @@ import { useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { getSetCookieHeaders } from '../../../common/misc';
-import type { CurlEvent } from '../../../main/network/curl';
+import type { CurlEvent } from '../../../main/ipc/curl';
+import type { WebSocketEvent } from '../../../main/ipc/websocket';
 import type { ResponseTimelineEntry } from '../../../main/network/libcurl-promise';
-import type { WebSocketEvent } from '../../../main/network/websocket';
 import type { Response } from '../../../models/response';
 import type { WebSocketResponse } from '../../../models/websocket-response';
-import type { RequestLoaderData, WebSocketRequestLoaderData } from '../../actions/request';
 import { useRealtimeConnectionEvents } from '../../hooks/use-realtime-connection-events';
+import type { RequestLoaderData, WebSocketRequestLoaderData } from '../../routes/actions/request';
 import { PanelContainer, TabItem, Tabs } from '../base/tabs';
 import { ResponseHistoryDropdown } from '../dropdowns/response-history-dropdown';
 import { ErrorBoundary } from '../error-boundary';

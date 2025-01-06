@@ -27,9 +27,9 @@
     "changelog-image": "esr ./scripts/changelog-image/changelog-image.ts",
     "download-all-npm-plugins": "esr ./scripts/download-all-npm-plugins.ts",
     "dev": "npm run start --workspace=packages/insomnia",
-    "dev-debug": "npm run start-debug --workspace=packages/insomnia",
+    "dev:debug": "npm run start-debug --workspace=packages/insomnia",
     "lint": "npm run lint --workspaces --if-present",
-    "type-check": "npm run type-check --workspaces --if-present",
+    "type:check": "npm run type-check --workspaces --if-present",
     "lint:markdown": "npx markdownlint-cli2 \"**/*.md\" \"#**/node_modules\"",
     "test": "npm run test --workspaces --if-present"
   },

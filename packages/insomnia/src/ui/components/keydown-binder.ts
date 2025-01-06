@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 import { createKeybindingsHandler as _createKeybindingsHandler, type KeyBindingHandlerOptions, type KeyBindingMap, tinykeys } from 'tinykeys';
 

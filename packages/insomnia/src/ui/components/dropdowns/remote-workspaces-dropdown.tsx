@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { strings } from '../../../common/strings';
 import type { RemoteProject } from '../../../models/project';
-import type { RemoteCollectionsLoaderData } from '../../actions/remote-collections';
+import type { RemoteCollectionsLoaderData } from '../../routes/actions/remote-collections';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { HelpTooltip } from '../help-tooltip';
 
@@ -24,6 +24,7 @@ export const RemoteWorkspacesDropdown: FC<Props> = ({ project: { remoteId } }) =
   const remoteBackendProjects = data?.remoteBackendProjects ?? [];
 
   return (
+    /* Pull button */
     <Dropdown
       aria-label='Remote Workspaces Dropdown'
       onOpen={() => load(`/organization/${organizationId}/project/${projectId}/remote-collections`)}

@@ -39,65 +39,65 @@ import {
   SORT_ORDERS,
   type SortOrder,
   sortOrderName,
-} from '../../common/constants';
-import { type ChangeBufferEvent, database as db } from '../../common/database';
-import { generateId } from '../../common/misc';
-import type { PlatformKeyCombinations } from '../../common/settings';
-import type { GrpcMethodInfo } from '../../main/ipc/grpc';
-import * as models from '../../models';
-import type { Environment } from '../../models/environment';
-import { isGrpcRequest, isGrpcRequestId } from '../../models/grpc-request';
-import { getByParentId as getGrpcRequestMetaByParentId } from '../../models/grpc-request-meta';
+} from '../../../common/constants';
+import { type ChangeBufferEvent, database as db } from '../../../common/database';
+import { generateId } from '../../../common/misc';
+import type { PlatformKeyCombinations } from '../../../common/settings';
+import type { GrpcMethodInfo } from '../../../main/ipc/grpc';
+import * as models from '../../../models';
+import type { Environment } from '../../../models/environment';
+import { isGrpcRequest, isGrpcRequestId } from '../../../models/grpc-request';
+import { getByParentId as getGrpcRequestMetaByParentId } from '../../../models/grpc-request-meta';
 import {
   isEventStreamRequest,
   isRequest,
   isRequestId,
   type Request,
-} from '../../models/request';
-import { isRequestGroup } from '../../models/request-group';
-import { getByParentId as getRequestMetaByParentId } from '../../models/request-meta';
+} from '../../../models/request';
+import { isRequestGroup } from '../../../models/request-group';
+import { getByParentId as getRequestMetaByParentId } from '../../../models/request-meta';
 import {
   isWebSocketRequest,
   isWebSocketRequestId,
-} from '../../models/websocket-request';
-import { invariant } from '../../utils/invariant';
+} from '../../../models/websocket-request';
+import { invariant } from '../../../utils/invariant';
+import { DropdownHint } from '../../components/base/dropdown/dropdown-hint';
+import { RequestActionsDropdown } from '../../components/dropdowns/request-actions-dropdown';
+import { RequestGroupActionsDropdown } from '../../components/dropdowns/request-group-actions-dropdown';
+import { WorkspaceSyncDropdown } from '../../components/dropdowns/workspace-sync-dropdown';
+import { ErrorBoundary } from '../../components/error-boundary';
+import { Icon } from '../../components/icon';
+import { useDocBodyKeyboardShortcuts } from '../../components/keydown-binder';
+import { showModal, showPrompt } from '../../components/modals';
+import { AskModal } from '../../components/modals/ask-modal';
+import { CookiesModal } from '../../components/modals/cookies-modal';
+import { GenerateCodeModal } from '../../components/modals/generate-code-modal';
+import { ImportModal } from '../../components/modals/import-modal';
+import { PasteCurlModal } from '../../components/modals/paste-curl-modal';
+import { PromptModal } from '../../components/modals/prompt-modal';
+import { RequestSettingsModal } from '../../components/modals/request-settings-modal';
+import { WorkspaceEnvironmentsEditModal } from '../../components/modals/workspace-environments-edit-modal';
+import { GrpcRequestPane } from '../../components/panes/grpc-request-pane';
+import { GrpcResponsePane } from '../../components/panes/grpc-response-pane';
+import { PlaceholderRequestPane } from '../../components/panes/placeholder-request-pane';
+import { RequestPane } from '../../components/panes/request-pane';
+import { ResponsePane } from '../../components/panes/response-pane';
+import { getMethodShortHand } from '../../components/tags/method-tag';
+import { ConnectionCircle } from '../../components/websockets/action-bar';
+import { RealtimeResponsePane } from '../../components/websockets/realtime-response-pane';
+import { WebSocketRequestPane } from '../../components/websockets/websocket-request-pane';
+import { useReadyState } from '../../hooks/use-ready-state';
+import {
+  type CreateRequestType,
+  useRequestGroupMetaPatcher,
+  useRequestMetaPatcher,
+} from '../../hooks/use-request';
 import type {
   GrpcRequestLoaderData,
   RequestLoaderData,
   WebSocketRequestLoaderData,
 } from '../actions/request';
-import { DropdownHint } from '../components/base/dropdown/dropdown-hint';
-import { RequestActionsDropdown } from '../components/dropdowns/request-actions-dropdown';
-import { RequestGroupActionsDropdown } from '../components/dropdowns/request-group-actions-dropdown';
-import { WorkspaceSyncDropdown } from '../components/dropdowns/workspace-sync-dropdown';
-import { ErrorBoundary } from '../components/error-boundary';
-import { Icon } from '../components/icon';
-import { useDocBodyKeyboardShortcuts } from '../components/keydown-binder';
-import { showModal, showPrompt } from '../components/modals';
-import { AskModal } from '../components/modals/ask-modal';
-import { CookiesModal } from '../components/modals/cookies-modal';
-import { GenerateCodeModal } from '../components/modals/generate-code-modal';
-import { ImportModal } from '../components/modals/import-modal';
-import { PasteCurlModal } from '../components/modals/paste-curl-modal';
-import { PromptModal } from '../components/modals/prompt-modal';
-import { RequestSettingsModal } from '../components/modals/request-settings-modal';
-import { WorkspaceEnvironmentsEditModal } from '../components/modals/workspace-environments-edit-modal';
-import { GrpcRequestPane } from '../components/panes/grpc-request-pane';
-import { GrpcResponsePane } from '../components/panes/grpc-response-pane';
-import { PlaceholderRequestPane } from '../components/panes/placeholder-request-pane';
-import { RequestPane } from '../components/panes/request-pane';
-import { ResponsePane } from '../components/panes/response-pane';
-import { getMethodShortHand } from '../components/tags/method-tag';
-import { ConnectionCircle } from '../components/websockets/action-bar';
-import { RealtimeResponsePane } from '../components/websockets/realtime-response-pane';
-import { WebSocketRequestPane } from '../components/websockets/websocket-request-pane';
-import { useReadyState } from '../hooks/use-ready-state';
-import {
-  type CreateRequestType,
-  useRequestGroupMetaPatcher,
-  useRequestMetaPatcher,
-} from '../hooks/use-request';
-import { useRootLoaderData } from './root';
+import { useRootLoaderData } from '../root';
 import type { WorkspaceLoaderData } from './workspace';
 
 export interface GrpcMessage {
@@ -157,7 +157,7 @@ const EventStreamSpinner = ({ requestId }: { requestId: string }) => {
   return readyState ? <ConnectionCircle data-testid="EventStreamSpinner__Connected" /> : null;
 };
 
-export const Debug: FC = () => {
+export const DebugRoute: FC = () => {
   const {
     activeWorkspace,
     activeProject,
@@ -932,24 +932,6 @@ export const Debug: FC = () => {
                       className="flex select-none outline-none group-aria-selected:text-[--color-font] relative group-hover:bg-[--hl-xs] group-focus:bg-[--hl-sm] transition-colors gap-2 px-4 items-center h-[--line-height-xs] w-full overflow-hidden text-[--hl]"
                     >
                       <span className="group-aria-selected:bg-[--color-surprise] transition-colors top-0 left-0 absolute h-full w-[2px] bg-transparent" />
-                      {/* {isRequest(item.doc) && (
-                        <span
-                          className={
-                            `w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center justify-center
-                            ${{
-                              'GET': 'text-[--color-font-surprise] bg-[rgba(var(--color-surprise-rgb),0.5)]',
-                              'POST': 'text-[--color-font-success] bg-[rgba(var(--color-success-rgb),0.5)]',
-                              'HEAD': 'text-[--color-font-info] bg-[rgba(var(--color-info-rgb),0.5)]',
-                              'OPTIONS': 'text-[--color-font-info] bg-[rgba(var(--color-info-rgb),0.5)]',
-                              'DELETE': 'text-[--color-font-danger] bg-[rgba(var(--color-danger-rgb),0.5)]',
-                              'PUT': 'text-[--color-font-warning] bg-[rgba(var(--color-warning-rgb),0.5)]',
-                              'PATCH': 'text-[--color-font-notice] bg-[rgba(var(--color-notice-rgb),0.5)]',
-                            }[item.doc.method] || 'text-[--color-font] bg-[--hl-md]'}`
-                          }
-                        >
-                          {getMethodShortHand(item.doc)}
-                        </span>
-                      )} */}
                       {isWebSocketRequest(item.doc) && (
                         <span className="w-10 flex-shrink-0 flex text-[0.65rem] rounded-sm border border-solid border-[--hl-sm] items-center justify-center text-[--color-font-notice] bg-[rgba(var(--color-notice-rgb),0.5)]">
                           WS
@@ -1171,4 +1153,4 @@ export const Debug: FC = () => {
   );
 };
 
-export default Debug;
+export default DebugRoute;

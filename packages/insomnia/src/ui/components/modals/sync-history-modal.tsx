@@ -5,7 +5,7 @@ import { useRouteLoaderData } from 'react-router-dom';
 import { database as db } from '../../../common/database';
 import type { Snapshot } from '../../../sync/types';
 import { VCS } from '../../../sync/vcs/vcs';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { PromptButton } from '../base/button';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
@@ -13,6 +13,7 @@ import { ModalHeader } from '../base/modal-header';
 import { HelpTooltip } from '../help-tooltip';
 import { TimeFromNow } from '../time-from-now';
 import { Tooltip } from '../tooltip';
+
 type Props = ModalProps & {
   vcs: VCS;
   branch: string;

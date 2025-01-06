@@ -1,9 +1,9 @@
 // Import
 import type { ActionFunction } from 'react-router-dom';
 
-import { fetchImportContentFromURI, importResourcesToProject, importResourcesToWorkspace, scanResources, type ScanResult } from '../../common/import';
-import * as models from '../../models';
-import { invariant } from '../../utils/invariant';
+import { fetchImportContentFromURI, importResourcesToProject, importResourcesToWorkspace, scanResources, type ScanResult } from '../../../common/import';
+import * as models from '../../../models';
+import { invariant } from '../../../utils/invariant';
 
 export interface ScanForResourcesActionResult extends ScanResult { }
 

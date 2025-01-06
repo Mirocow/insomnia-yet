@@ -5,7 +5,7 @@ import { useFetcher, useNavigate, useParams } from 'react-router-dom';
 import type { RequestGroup } from '../../../models/request-group';
 import { invariant } from '../../../utils/invariant';
 import { useRequestGroupPatcher } from '../../hooks/use-request';
-import { ProjectLoaderData } from '../../routes/project';
+import { ProjectLoaderData } from '../../routes/windows/project';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalHeader } from '../base/modal-header';

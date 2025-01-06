@@ -4,10 +4,10 @@ import { useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { PREVIEW_MODE_FRIENDLY, PREVIEW_MODE_RAW, PREVIEW_MODE_SOURCE, PreviewMode } from '../../../common/constants';
-import type { CurlEvent, CurlMessageEvent } from '../../../main/network/curl';
-import type { WebSocketEvent, WebSocketMessageEvent } from '../../../main/network/websocket';
+import type { CurlEvent, CurlMessageEvent } from '../../../main/ipc/curl';
+import type { WebSocketEvent, WebSocketMessageEvent } from '../../../main/ipc/websocket';
 import { requestMeta } from '../../../models';
-import type { RequestLoaderData } from '../../actions/request';
+import type { RequestLoaderData } from '../../routes/actions/request';
 import { CodeEditor } from '../codemirror/code-editor';
 import { showError } from '../modals';
 import { WebSocketPreviewModeDropdown } from './websocket-preview-dropdown';

@@ -44,7 +44,6 @@ export const start = async () => {
   });
 
   console.log('[build] Building renderer');
-
   await vite.build({
     configFile: path.join(__dirname, '..', 'vite.config.ts'),
   });

@@ -1,6 +1,6 @@
 import React, { type FunctionComponent } from 'react';
 
-import type { GrpcRequestState } from '../../routes/debug';
+import type { GrpcRequestState } from '../../routes/windows/debug';
 import { TabItem, Tabs } from '../base/tabs';
 import { CodeEditor } from '../codemirror/code-editor';
 import { GrpcStatusTag } from '../tags/grpc-status-tag';

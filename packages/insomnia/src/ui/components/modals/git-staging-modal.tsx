@@ -1,40 +1,40 @@
-import { Differ, Viewer } from 'json-diff-kit';
+//import { Differ, Viewer } from 'json-diff-kit';
 import React, { type FC, useEffect } from 'react';
 import { Button, Dialog, GridList, GridListItem, Heading, Label, Modal, ModalOverlay, TextArea, TextField, Tooltip, TooltipTrigger } from 'react-aria-components';
 import { useFetcher, useParams } from 'react-router-dom';
 
-import type { GitChangesLoaderData, GitDiffResult } from '../../actions/git-actions';
+import type { GitChangesLoaderData, GitDiffResult } from '../../routes/actions/git-actions';
 import { Icon } from '../icon';
 import { showAlert } from '.';
 
-const differ = new Differ({
-  detectCircular: true,
-  maxDepth: Infinity,
-  showModifications: true,
-  arrayDiffMethod: 'lcs',
-});
+// const differ = new Differ({
+//   detectCircular: true,
+//   maxDepth: Infinity,
+//   showModifications: true,
+//   arrayDiffMethod: 'lcs',
+// });
 
-function getDiff(previewDiffItem: {
-  before: string;
-  after: string;
-}) {
-  let prev = null;
-  let next = null;
+// function getDiff(previewDiffItem: {
+//   before: string;
+//   after: string;
+// }) {
+//   let prev = null;
+//   let next = null;
 
-  try {
-    prev = JSON.parse(previewDiffItem.before);
-  } catch (e) {
-    // Nothing to do
-  }
+//   try {
+//     prev = JSON.parse(previewDiffItem.before);
+//   } catch (e) {
+//     // Nothing to do
+//   }
 
-  try {
-    next = JSON.parse(previewDiffItem.after);
-  } catch (e) {
-    // Nothing to do
-  }
+//   try {
+//     next = JSON.parse(previewDiffItem.after);
+//   } catch (e) {
+//     // Nothing to do
+//   }
 
-  return differ.diff(prev, next);
-}
+//   return differ.diff(prev, next);
+// }
 
 function getPreviewItemName(previewDiffItem: {
   before: string;
@@ -92,7 +92,7 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
   const diffChangesFetcher = useFetcher<GitDiffResult>();
 
   function diffChanges({ path, staged }: { path: string; staged: boolean }) {
-    // file://./../../actions/git-actions.tsx#diffFileLoader
+    // file://./../../routes/actions/git-actions.tsx#diffFileLoader
     let url = `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/git/diff`;
     const params = new URLSearchParams();
     params.set('filepath', path);
@@ -102,7 +102,7 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
   }
 
   function stageChanges(paths: string[]) {
-    // file://./../../actions/git-actions.tsx#stageChangesAction
+    // file://./.././routes/actions/git-actions.tsx#stageChangesAction
     stageChangesFetcher.submit(
       {
         paths,
@@ -116,7 +116,7 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
   }
 
   function unstageChanges(paths: string[]) {
-    // file://./../../actions/git-actions.tsx#unstageChangesAction
+    // file://./../../routes/actions/git-actions.tsx#unstageChangesAction
     unstageChangesFetcher.submit(
       {
         paths,
@@ -134,7 +134,7 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
       message: 'Are you sure you want to undo your changes? This action cannot be undone and will revert all changes made since the last commit that are unstaged.',
       title: 'Undo changes',
       onConfirm: () => {
-        // file://./../../actions/git-actions.tsx#discardChangesAction
+        // file://./../../routes/actions/git-actions.tsx#discardChangesAction
         undoUnstagedChangesFetcher.submit(
           {
             paths,
@@ -152,7 +152,7 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
 
   useEffect(() => {
     if (gitChangesFetcher.state === 'idle' && !gitChangesFetcher.data) {
-      // file://./../../actions/git-actions.tsx#gitChangesLoader
+      // file://./../../routes/actions/git-actions.tsx#gitChangesLoader
       gitChangesFetcher.load(`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/git/changes`);
     }
   }, [organizationId, projectId, workspaceId, gitChangesFetcher]);
@@ -323,18 +323,18 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
                                     >
                                       Unstage change
                                     </Tooltip>
-                                    </TooltipTrigger>
-                                    <TooltipTrigger>
-                                      <Button className="cursor-default">
-                                        {'added' in item.entry ? 'U' : 'deleted' in item.entry ? 'D' : 'M'}
-                                      </Button>
-                                      <Tooltip
-                                        offset={8}
-                                        className="border select-none text-sm max-w-xs border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] text-[--color-font] px-4 py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
-                                      >
-                                        {'added' in item.entry ? 'Untracked' : 'deleted' in item.entry ? 'Deleted' : 'Modified'}
-                                      </Tooltip>
-                                    </TooltipTrigger>
+                                  </TooltipTrigger>
+                                  {/* <TooltipTrigger>
+                                    <Button className="cursor-default">
+                                      {'added' in item.entry ? 'U' : 'deleted' in item.entry ? 'D' : 'M'}
+                                    </Button>
+                                    <Tooltip
+                                      offset={8}
+                                      className="border select-none text-sm max-w-xs border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] text-[--color-font] px-4 py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
+                                    >
+                                      {'added' in item.entry ? 'Untracked' : 'deleted' in item.entry ? 'Deleted' : 'Modified'}
+                                    </Tooltip>
+                                  </TooltipTrigger> */}
                                 </div>
                               </GridListItem>
                             );
@@ -457,7 +457,7 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
                                       Stage change
                                     </Tooltip>
                                   </TooltipTrigger>
-                                  <TooltipTrigger>
+                                  {/* <TooltipTrigger>
                                     <Button className="cursor-default">
                                       {'added' in item.entry ? 'U' : 'deleted' in item.entry ? 'D' : 'M'}
                                     </Button>
@@ -467,7 +467,7 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
                                     >
                                       {'added' in item.entry ? 'Untracked' : 'deleted' in item.entry ? 'Deleted' : 'Modified'}
                                     </Tooltip>
-                                  </TooltipTrigger>
+                                  </TooltipTrigger> */}
                                 </div>
                               </GridListItem>
                             );
@@ -487,12 +487,12 @@ export const GitStagingModal: FC<{ onClose: () => void }> = ({
                     <div
                       className='bg-[--hl-xs] rounded-sm p-2 flex-1 overflow-y-auto text-[--color-font]'
                     >
-                      <Viewer
+                      {/* <Viewer
                         diff={getDiff(previewDiffItem)}
                         hideUnchangedLines
                         highlightInlineDiff
                         className='diff-viewer'
-                      />
+                      /> */}
                     </div>
                   )}
                 </div> : <div className='p-2 h-full flex flex-col gap-4 items-center justify-center'>

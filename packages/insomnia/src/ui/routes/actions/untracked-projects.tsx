@@ -1,10 +1,10 @@
 import type { LoaderFunction } from 'react-router-dom';
 
-import { database } from '../../common/database';
-import { userSession } from '../../models';
-import { DEFAULT_ORGANIZATION_ID, type Organization } from '../../models/organization';
-import type { Project } from '../../models/project';
-import type { Workspace } from '../../models/workspace';
+import { database } from '../../../common/database';
+import { userSession } from '../../../models';
+import { DEFAULT_ORGANIZATION_ID, type Organization } from '../../../models/organization';
+import type { Project } from '../../../models/project';
+import type { Workspace } from '../../../models/workspace';
 
 export interface UntrackedProjectsLoaderData {
   untrackedProjects: (Project & { workspacesCount: number })[];

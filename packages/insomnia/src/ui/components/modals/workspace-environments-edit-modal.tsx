@@ -6,7 +6,7 @@ import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 import { docsTemplateTags } from '../../../common/documentation';
 import { debounce } from '../../../common/misc';
 import { type Environment, EnvironmentType } from '../../../models/environment';
-import type { WorkspaceLoaderData } from '../../routes/workspace';
+import type { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { EditableInput } from '../editable-input';
 import { EnvironmentEditor, type EnvironmentEditorHandle, type EnvironmentInfo } from '../editors/environment-editor';
 import { Icon } from '../icon';

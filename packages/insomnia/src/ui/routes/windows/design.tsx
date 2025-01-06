@@ -14,29 +14,29 @@ import { useToggle } from 'react-use';
 import styled from 'styled-components';
 import { SwaggerUIBundle } from 'swagger-ui-dist';
 
-import { parseApiSpec } from '../../common/api-specs';
+import { parseApiSpec } from '../../../common/api-specs';
 import {
   ACTIVITY_SPEC,
   DEFAULT_SIDEBAR_SIZE,
-} from '../../common/constants';
-import { debounce } from '../../common/misc';
-import type { ApiSpec } from '../../models/api-spec';
-import * as models from '../../models/index';
-import { invariant } from '../../utils/invariant';
-import { Button } from '../components/base/button';
+} from '../../../common/constants';
+import { debounce } from '../../../common/misc';
+import type { ApiSpec } from '../../../models/api-spec';
+import * as models from '../../../models/index';
+import { invariant } from '../../../utils/invariant';
+import { Button } from '../../components/base/button';
 import {
   CodeEditor,
   type CodeEditorHandle,
-} from '../components/codemirror/code-editor';
-import { DesignEmptyState } from '../components/design-empty-state';
-import { ErrorBoundary } from '../components/error-boundary';
-import { type Notice, NoticeTable } from '../components/notice-table';
-import { SpecEditorSidebar } from '../components/spec-editor/spec-editor-sidebar';
-import { Tooltip } from '../components/tooltip';
+} from '../../components/codemirror/code-editor';
+import { DesignEmptyState } from '../../components/design-empty-state';
+import { ErrorBoundary } from '../../components/error-boundary';
+import { type Notice, NoticeTable } from '../../components/notice-table';
+import { SpecEditorSidebar } from '../../components/spec-editor/spec-editor-sidebar';
+import { Tooltip } from '../../components/tooltip';
 import {
   useActiveApiSpecSyncVCSVersion,
   useGitVCSVersion,
-} from '../hooks/use-vcs-version';
+} from '../../hooks/use-vcs-version';
 
 const EmptySpaceHelper = styled.div({
   display: 'flex',
@@ -160,7 +160,7 @@ interface LintMessage extends Notice {
   range: IRuleResult['range'];
 }
 
-const Design: FC = () => {
+const DesignRoute: FC = () => {
   const { organizationId, projectId, workspaceId } = useParams() as {
     organizationId: string;
     projectId: string;
@@ -383,4 +383,4 @@ const Design: FC = () => {
   );
 };
 
-export default Design;
+export default DesignRoute;

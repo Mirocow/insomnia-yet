@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useInterval } from 'react-use';
 
-import type { CurlEvent } from '../../main/network/curl';
-import type { WebSocketEvent } from '../../main/network/websocket';
+import type { CurlEvent } from '../../main/ipc/curl';
+import type { WebSocketEvent } from '../../main/ipc/websocket';
 
 export function useRealtimeConnectionEvents({ responseId, protocol }: { responseId: string; protocol: 'curl' | 'webSocket' }) {
   const [events, setEvents] = useState<CurlEvent[] | WebSocketEvent[]>([]);

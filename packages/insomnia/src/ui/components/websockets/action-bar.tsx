@@ -6,7 +6,7 @@ import * as models from '../../../models';
 import type { WebSocketRequest } from '../../../models/websocket-request';
 import { tryToInterpolateRequestOrShowRenderErrorModal } from '../../../utils/try-interpolate';
 import { buildQueryStringFromParams, joinUrlAndQueryString } from '../../../utils/url/querystring';
-import type { ConnectActionParams } from '../../actions/request';
+import type { ConnectActionParams } from '../../routes/actions/request';
 import { OneLineEditor, type OneLineEditorHandle } from '../codemirror/one-line-editor';
 import { createKeybindingsHandler, useDocBodyKeyboardShortcuts } from '../keydown-binder';
 import { DisconnectButton } from './disconnect-button';

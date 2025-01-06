@@ -6,10 +6,11 @@ import { strings } from '../../../common/strings';
 import { interceptAccessError } from '../../../sync/vcs/util';
 import { VCS } from '../../../sync/vcs/vcs';
 import { Button } from '../../components/base/button';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalHeader } from '../base/modal-header';
+
 type Props = ModalProps & {
   vcs: VCS;
 };

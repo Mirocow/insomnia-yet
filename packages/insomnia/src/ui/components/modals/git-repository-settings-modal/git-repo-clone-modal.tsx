@@ -47,7 +47,7 @@ export const GitRepositoryCloneModal = (props: ModalProps) => {
         ...credentials,
       },
       {
-        // file://./../../../actions/git-actions.tsx#cloneGitRepoAction
+        // file://./../../../routes/actions/git-actions.tsx#cloneGitRepoAction
         action: `/organization/${organizationId}/project/${projectId}/git/clone`,
         method: 'post',
       }

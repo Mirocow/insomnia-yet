@@ -4,8 +4,8 @@ import React, { type FC, useRef } from 'react';
 import { useMeasure } from 'react-use';
 import styled from 'styled-components';
 
-import type { CurlEvent } from '../../../main/network/curl';
-import type { WebSocketEvent } from '../../../main/network/websocket';
+import type { CurlEvent } from '../../../main/ipc/curl';
+import type { WebSocketEvent } from '../../../main/ipc/websocket';
 import { SvgIcon, SvgIconProps } from '../svg-icon';
 
 const Timestamp: FC<{ time: Date | number }> = ({ time }) => {

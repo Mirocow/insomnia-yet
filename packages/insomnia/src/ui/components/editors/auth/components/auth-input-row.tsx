@@ -3,8 +3,8 @@ import { useRouteLoaderData } from 'react-router-dom';
 import { useToggle } from 'react-use';
 
 import { toKebabCase } from '../../../../../common/misc';
-import type { RequestLoaderData } from '../../../../actions/request';
 import { useRequestPatcher } from '../../../../hooks/use-request';
+import type { RequestLoaderData } from '../../../../routes/actions/request';
 import { RootLoaderData } from '../../../../routes/root';
 import { OneLineEditor } from '../../../codemirror/one-line-editor';
 import { AuthRow } from './auth-row';

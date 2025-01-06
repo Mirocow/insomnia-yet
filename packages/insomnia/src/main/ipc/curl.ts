@@ -16,8 +16,8 @@ import { readCurlResponse } from '../../models/response';
 import { filterClientCertificates } from '../../network/certificate';
 import { addSetCookiesToToughCookieJar } from '../../network/set-cookie-util';
 import { invariant } from '../../utils/invariant';
-import { createConfiguredCurlInstance } from './libcurl-promise';
-import { parseHeaderStrings } from './parse-header-strings';
+import { createConfiguredCurlInstance } from '../network/libcurl-promise';
+import { parseHeaderStrings } from '../network/parse-header-strings';
 
 export interface CurlConnection extends Curl {
   _id: string;
@@ -93,7 +93,7 @@ interface OpenCurlRequestOptions {
   suppressUserAgent: boolean;
 }
 const openCurlConnection = async (
-  _event: Electron.IpcMainInvokeEvent,
+  _event: electron.IpcMainInvokeEvent,
   options: OpenCurlRequestOptions
 ): Promise<void> => {
   const existingConnection = CurlConnections.get(options.requestId);
@@ -317,7 +317,7 @@ const getCurlReadyState = async (
 };
 
 const closeCurlConnection = (
-  _event: Electron.IpcMainInvokeEvent,
+  _event: electron.IpcMainInvokeEvent,
   options: { requestId: string }
 ): void => {
   if (!CurlConnections.get(options.requestId)) {

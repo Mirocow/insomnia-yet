@@ -6,7 +6,7 @@ import { isRemoteProject } from '../../../models/project';
 import FileSystemDriver from '../../../sync/store/drivers/file-system-driver';
 import { MergeConflict } from '../../../sync/types';
 import { getVCS, initVCS, VCS } from '../../../sync/vcs/vcs';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { showModal } from '../modals';
 import { SyncMergeModal } from '../modals/sync-merge-modal';
 import { GitSyncDropdown } from './git-sync-dropdown';

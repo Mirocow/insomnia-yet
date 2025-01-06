@@ -12,7 +12,7 @@ import type { WorkspaceAction } from '../../../plugins';
 import { getWorkspaceActions } from '../../../plugins';
 import * as pluginContexts from '../../../plugins/context';
 import { invariant } from '../../../utils/invariant';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { Dropdown, DropdownButton, type DropdownHandle, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { showError, showPrompt } from '../modals';
 import { ExportRequestsModal } from '../modals/export-requests-modal';

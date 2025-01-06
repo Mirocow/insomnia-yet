@@ -5,7 +5,7 @@ import { useDocBodyKeyboardShortcuts } from '../components/keydown-binder';
 import { showModal } from '../components/modals';
 import { SettingsModal, TAB_INDEX_SHORTCUTS } from '../components/modals/settings-modal';
 import { RootLoaderData } from '../routes/root';
-import { WorkspaceLoaderData } from '../routes/workspace';
+import { WorkspaceLoaderData } from '../routes/windows/workspace';
 import { useSettingsPatcher, useWorkspaceMetaPatcher } from './use-request';
 export const useGlobalKeyboardShortcuts = () => {
   const workspaceData = useRouteLoaderData(':workspaceId') as WorkspaceLoaderData | undefined;

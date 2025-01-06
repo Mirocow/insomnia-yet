@@ -5,7 +5,7 @@ import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 import { fuzzyMatch } from '../../../common/misc';
 import type { Cookie, CookieJar } from '../../../models/cookie-jar';
 import { useNunjucks } from '../../context/nunjucks/use-nunjucks';
-import type { WorkspaceLoaderData } from '../../routes/workspace';
+import type { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { Modal, type ModalHandle, type ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';

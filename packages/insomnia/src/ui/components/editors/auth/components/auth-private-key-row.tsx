@@ -2,9 +2,9 @@ import React, { type FC, type ReactNode, useCallback } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import { toKebabCase } from '../../../../../common/misc';
-import { RequestLoaderData } from '../../../../actions/request';
 import { useNunjucks } from '../../../../context/nunjucks/use-nunjucks';
 import { useRequestPatcher } from '../../../../hooks/use-request';
+import { RequestLoaderData } from '../../../../routes/actions/request';
 import { showModal } from '../../../modals';
 import { CodePromptModal } from '../../../modals/code-prompt-modal';
 import { AuthRow } from './auth-row';

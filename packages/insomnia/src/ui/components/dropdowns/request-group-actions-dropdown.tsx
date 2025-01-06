@@ -14,7 +14,7 @@ import { getRequestGroupActions } from '../../../plugins';
 import * as pluginContexts from '../../../plugins/context/index';
 import { type CreateRequestType, useRequestGroupPatcher } from '../../hooks/use-request';
 import { useRootLoaderData } from '../../routes/root';
-import type { WorkspaceLoaderData } from '../../routes/workspace';
+import type { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { type DropdownHandle, type DropdownProps } from '../base/dropdown';
 import { DropdownHint } from '../base/dropdown/dropdown-hint';
 import { Icon } from '../icon';

@@ -14,16 +14,16 @@ import {
 
 import {
   DEFAULT_SIDEBAR_SIZE,
-} from '../../common/constants';
-import * as models from '../../models';
-import type { UnitTestSuite } from '../../models/unit-test-suite';
-import { invariant } from '../../utils/invariant';
-import { Button } from '../components/base/button';
-import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../components/base/dropdown';
-import { WorkspaceSyncDropdown } from '../components/dropdowns/workspace-sync-dropdown';
-import { ErrorBoundary } from '../components/error-boundary';
-import { showPrompt } from '../components/modals';
-import { TestRunStatus } from './test-results';
+} from '../../../common/constants';
+import * as models from '../../../models';
+import type { UnitTestSuite } from '../../../models/unit-test-suite';
+import { invariant } from '../../../utils/invariant';
+import { Button } from '../../components/base/button';
+import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../../components/base/dropdown';
+import { WorkspaceSyncDropdown } from '../../components/dropdowns/workspace-sync-dropdown';
+import { ErrorBoundary } from '../../components/error-boundary';
+import { showPrompt } from '../../components/modals';
+import TestRunStatus from './test-results';
 import TestSuiteRoute from './test-suite';
 
 interface TestLoaderData {

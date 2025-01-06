@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import React, { FC, Fragment, useEffect, useRef, useState } from 'react';
-import { useFetcher, useParams, useRevalidator } from 'react-router-dom';
+import { useFetcher, useParams } from 'react-router-dom';
 import { useInterval } from 'react-use';
 
 import { docsGitSync } from '../../../common/documentation';
@@ -14,7 +14,7 @@ import {
   type GitStatusResult,
   PullFromGitRemoteResult,
   PushToGitRemoteResult,
-} from '../../actions/git-actions';
+} from '../../routes/actions/git-actions';
 import {
   Dropdown,
   DropdownButton,
@@ -70,7 +70,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
       !gitRepoDataFetcher.data
     ) {
       console.log('[git:fetcher] Fetching git repo data');
-      // file://./../../routes/git-actions.tsx#gitRepoLoader
+      // file://./../../routes/actions/git-actions.tsx#gitRepoLoader
       gitRepoDataFetcher.load(`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/git/repo`);
     }
   }, [
@@ -88,7 +88,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
   useEffect(() => {
     if (shouldFetchGitRepoStatus) {
       console.log('[git:fetcher] Fetching git repo status');
-      // file://./../../routes/git-actions.tsx#gitStatusAction
+      // file://./../../routes/actions/git-actions.tsx#gitStatusAction
       gitStatusFetcher.submit({}, {
         action: `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/git/status`,
         method: 'post',
@@ -156,7 +156,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
   }, [gitCheckoutFetcher.data?.errors]);
 
   async function handlePush({ force }: { force: boolean }) {
-    // file://./../../routes/git-actions.tsx#gitStatusAction
+    // file://./../../routes/actions/git-actions.tsx#gitStatusAction
     gitPushFetcher.submit(
       {
         force: `${force}`,
@@ -192,7 +192,6 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
       : { branches: [], branch: '' };
 
   let dropdown: React.ReactNode = null;
-  const { revalidate } = useRevalidator();
 
   const currentBranchActions = [
     {
@@ -207,7 +206,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
       icon: loadingPull ? 'refresh fa-spin' : 'cloud-download',
       label: 'Pull',
       onClick: async () => {
-        // file://./../../actions/git-actions.tsx#pullFromGitRemoteAction
+        // file://./../../routes/actions/git-actions.tsx#pullFromGitRemoteAction
         gitPullFetcher.submit(
           {},
           {
@@ -236,7 +235,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
       icon: loadingFetch ? 'refresh fa-spin' : 'refresh',
       label: 'Fetch',
       onClick: () => {
-        // file://./../../actions/git-actions.tsx#gitFetchAction
+        // file://./../../routes/actions/git-actions.tsx#gitFetchAction
         gitFetchFetcher.submit(
           {},
           {
@@ -249,7 +248,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
   ];
 
   useInterval(() => {
-    // file://./../../actions/git-actions.tsx#gitFetchAction
+    // file://./../../routes/actions/git-actions.tsx#gitFetchAction
     gitFetchFetcher.submit(
       {},
       {
@@ -373,7 +372,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository }) => {
                     label={branch}
                     isDisabled={isCurrentBranch}
                     onClick={async () => {
-                      // file://./../../actions/git-actions.tsx#checkoutGitBranchAction
+                      // file://./../../routes/actions/git-actions.tsx#checkoutGitBranchAction
                       gitCheckoutFetcher.submit(
                         {
                           branch,

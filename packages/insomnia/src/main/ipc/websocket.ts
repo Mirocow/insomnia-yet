@@ -106,7 +106,7 @@ interface OpenWebSocketRequestOptions {
   isGraphqlSubscriptionRequest?: boolean;
 }
 const openWebSocketConnection = async (
-  _event: Electron.IpcMainInvokeEvent,
+  _event: electron.IpcMainInvokeEvent,
   options: OpenWebSocketRequestOptions
 ): Promise<void> => {
   const existingConnection = WebSocketConnections.get(options.requestId);

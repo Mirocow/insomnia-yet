@@ -2,7 +2,7 @@ import React, { FC, ReactNode, useState } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import { VCS } from '../../../../sync/vcs/vcs';
-import { WorkspaceLoaderData } from '../../../routes/workspace';
+import { WorkspaceLoaderData } from '../../../routes/windows/workspace';
 import { showError } from '../../modals';
 
 export interface SyncPullButtonProps {

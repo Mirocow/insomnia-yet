@@ -51,7 +51,7 @@ export const GitRepositorySettingsModal = (props: ModalProps & {
         ...credentials,
       },
       {
-        // file://./../../../actions/git-actions.tsx#updateGitRepoAction
+        // file://./../../../routes/actions/git-actions.tsx#updateGitRepoAction
         action: `/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/git/update`,
         method: 'post',
       }

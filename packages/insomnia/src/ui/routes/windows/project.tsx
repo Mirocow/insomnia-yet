@@ -28,44 +28,44 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { parseApiSpec, type ParsedApiSpec } from '../../common/api-specs';
+import { parseApiSpec, type ParsedApiSpec } from '../../../common/api-specs';
 import {
   DASHBOARD_SORT_ORDERS,
   type DashboardSortOrder,
   dashboardSortOrderName,
   DEFAULT_SIDEBAR_SIZE,
-  getProductName } from '../../common/constants';
-import { fuzzyMatchAll, isNotNullOrUndefined } from '../../common/misc';
-import { descendingNumberSort, sortMethodMap } from '../../common/sorting';
-import { strings } from '../../common/strings';
-import * as models from '../../models';
-import type { ApiSpec } from '../../models/api-spec';
-import type { CaCertificate } from '../../models/ca-certificate';
-import type { ClientCertificate } from '../../models/client-certificate';
-import { sortProjects } from '../../models/helpers/project';
+  getProductName } from '../../../common/constants';
+import { fuzzyMatchAll, isNotNullOrUndefined } from '../../../common/misc';
+import { descendingNumberSort, sortMethodMap } from '../../../common/sorting';
+import { strings } from '../../../common/strings';
+import * as models from '../../../models';
+import type { ApiSpec } from '../../../models/api-spec';
+import type { CaCertificate } from '../../../models/ca-certificate';
+import type { ClientCertificate } from '../../../models/client-certificate';
+import { sortProjects } from '../../../models/helpers/project';
 import {
   DEFAULT_ORGANIZATION_ID,
   defaultOrganization,
   type Organization,
-} from '../../models/organization';
+} from '../../../models/organization';
 import {
   DEFAULT_PROJECT_ID,
   isRemoteProject,
   type Project,
-} from '../../models/project';
-import { isDesign, type Workspace } from '../../models/workspace';
-import type { WorkspaceMeta } from '../../models/workspace-meta';
-import { invariant } from '../../utils/invariant';
-import { ProjectDropdown } from '../components/dropdowns/project-dropdown';
-import { RemoteWorkspacesDropdown } from '../components/dropdowns/remote-workspaces-dropdown';
-import { WorkspaceCardDropdown } from '../components/dropdowns/workspace-card-dropdown';
-import { ErrorBoundary } from '../components/error-boundary';
-import { Icon } from '../components/icon';
-import { showAlert, showPrompt } from '../components/modals';
-import { GitRepositoryCloneModal } from '../components/modals/git-repository-settings-modal/git-repo-clone-modal';
-import { ImportModal } from '../components/modals/import-modal';
-import { EmptyStatePane } from '../components/panes/project-empty-state-pane';
-import { TimeFromNow } from '../components/time-from-now';
+} from '../../../models/project';
+import { isDesign, type Workspace } from '../../../models/workspace';
+import type { WorkspaceMeta } from '../../../models/workspace-meta';
+import { invariant } from '../../../utils/invariant';
+import { ProjectDropdown } from '../../components/dropdowns/project-dropdown';
+import { RemoteWorkspacesDropdown } from '../../components/dropdowns/remote-workspaces-dropdown';
+import { WorkspaceCardDropdown } from '../../components/dropdowns/workspace-card-dropdown';
+import { ErrorBoundary } from '../../components/error-boundary';
+import { Icon } from '../../components/icon';
+import { showAlert, showPrompt } from '../../components/modals';
+import { GitRepositoryCloneModal } from '../../components/modals/git-repository-settings-modal/git-repo-clone-modal';
+import { ImportModal } from '../../components/modals/import-modal';
+import { EmptyStatePane } from '../../components/panes/project-empty-state-pane';
+import { TimeFromNow } from '../../components/time-from-now';
 import { useOrganizationLoaderData } from './organization';
 
 export interface WorkspaceWithMetadata {

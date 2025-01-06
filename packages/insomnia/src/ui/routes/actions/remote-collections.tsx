@@ -1,14 +1,20 @@
 import { type ActionFunction, type LoaderFunction, redirect } from 'react-router-dom';
 
-import { database } from '../../common/database';
-import { isNotNullOrUndefined } from '../../common/misc';
-import * as models from '../../models';
-import type { RemoteProject } from '../../models/project';
-import type { BackendProject } from '../../sync/types';
-import { pullBackendProject } from '../../sync/vcs/pull-backend-project';
-import { getVCS } from '../../sync/vcs/vcs';
-import { invariant } from '../../utils/invariant';
+import { database } from '../../../common/database';
+import { isNotNullOrUndefined } from '../../../common/misc';
+import * as models from '../../../models';
+import type { RemoteProject } from '../../../models/project';
+import type { BackendProject } from '../../../sync/types';
+import { pullBackendProject } from '../../../sync/vcs/pull-backend-project';
+import { getVCS } from '../../../sync/vcs/vcs';
+import { invariant } from '../../../utils/invariant';
 
+/**
+ * Pull Remote Collection
+ * @param request
+ * @param params: Array
+ * @returns string | null
+ */
 export const pullRemoteCollectionAction: ActionFunction = async ({ request, params }) => {
   const { organizationId, projectId } = params;
   const formData = await request.formData();
@@ -51,6 +57,11 @@ export interface RemoteCollectionsLoaderData {
   remoteBackendProjects: BackendProject[];
 }
 
+/**
+ * Loader remote collections
+ * @param params: Array
+ * @returns Array
+ */
 export const remoteCollectionsLoader: LoaderFunction = async ({ params }): Promise<RemoteCollectionsLoaderData> => {
   const { projectId } = params;
   invariant(typeof projectId === 'string', 'Project Id is required');

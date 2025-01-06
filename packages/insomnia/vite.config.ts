@@ -63,17 +63,14 @@ export default defineConfig(({ mode }) => {
           ...builtinModules.map(m => `node:${m}`),
         ],
       }),
-
-      react({
-        jsxRuntime: 'automatic',
-        babel: {
-          plugins: [
-            // We need to have these plugins installed in our dependencies
-            // ['@babel/plugin-proposal-class-properties', { loose: true }],
-          ],
-        },
-      }),
-
+      react(),
     ],
+    worker: {
+      plugins: () => [
+        electronNodeRequire({
+          modules: ['fs'],
+        }),
+      ],
+    },
   };
 });

@@ -11,7 +11,7 @@ export interface BaseUserSession {
   symmetricKey: JsonWebKey;
   publicKey: JsonWebKey;
   encPrivateKey: AESMessage;
-};
+}
 
 export interface HashedUserSession {
   hashedAccountId: string;

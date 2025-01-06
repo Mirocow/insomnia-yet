@@ -4,35 +4,36 @@ import path from 'path';
 import { type ActionFunction, type LoaderFunction, redirect } from 'react-router-dom';
 import YAML from 'yaml';
 
-import { ACTIVITY_SPEC } from '../../common/constants';
-import { database } from '../../common/database';
-import * as models from '../../models';
-import type { GitRepository } from '../../models/git-repository';
-import { createGitRepository } from '../../models/helpers/git-repository-operations';
+import { ACTIVITY_SPEC } from '../../../common/constants';
+import { database } from '../../../common/database';
+import * as models from '../../../models';
+import type { GitRepository } from '../../../models/git-repository';
+import { createGitRepository } from '../../../models/helpers/git-repository-operations';
 import {
   WorkspaceScopeKeys,
-} from '../../models/workspace';
-import { fsClient } from '../../sync/git/fs-client';
-import { MemClient } from '../../sync/git/mem-client';
-import { NeDBClient } from '../../sync/git/ne-db-client';
-import { routableFSClient } from '../../sync/git/routable-fs-client';
-import { shallowClone } from '../../sync/git/shallow-clone';
+} from '../../../models/workspace';
+import { fsClient } from '../../../sync/git/fs-client';
+import { MemClient } from '../../../sync/git/mem-client';
+import { NeDBClient } from '../../../sync/git/ne-db-client';
+import { routableFSClient } from '../../../sync/git/routable-fs-client';
+import { shallowClone } from '../../../sync/git/shallow-clone';
 import {
   getOauth2FormatName,
-} from '../../sync/git/utils';
-import GitVCS, {
+} from '../../../sync/git/utils';
+import {
   GIT_CLONE_DIR,
   GIT_INSOMNIA_DIR,
   GIT_INSOMNIA_DIR_NAME,
   GIT_INTERNAL_DIR,
-  type GitLogEntry,
-} from '../../sync/git/vcs';
-import type { MergeConflict } from '../../sync/types';
-import { invariant } from '../../utils/invariant';
+  GitLogEntry,
+  GitVCS,
+} from '../../../sync/git/vcs';
+import type { MergeConflict } from '../../../sync/types';
+import { invariant } from '../../../utils/invariant';
 import {
   SegmentEvent,
   vcsSegmentEventProperties,
-} from '../analytics';
+} from '../../analytics';
 
 // Loaders
 export type GitRepoLoaderData =
@@ -95,8 +96,9 @@ export const gitRepoLoader: ActionFunction = async ({
       [GIT_INTERNAL_DIR]: gitDataClient,
     });
 
-    // Init VCS
-    const { credentials, uri } = gitRepository;
+    // Configure basic info
+    const { credentials, uri, author } = gitRepository;
+
     if (gitRepository.needsFullClone) {
       await GitVCS.initFromClone({
         repoId: gitRepository._id,
@@ -121,10 +123,8 @@ export const gitRepoLoader: ActionFunction = async ({
       });
     }
 
-    // Configure basic info
-    const { author, uri: gitUri } = gitRepository;
     await GitVCS.setAuthor(author.name, author.email);
-    await GitVCS.addRemote(gitUri);
+    await GitVCS.addRemote(uri);
 
     return {
       branch: await GitVCS.getCurrentBranch(),
@@ -460,6 +460,7 @@ export const cloneGitRepoAction: ActionFunction = async ({
     event: SegmentEvent.vcsSyncStart,
     properties: vcsSegmentEventProperties('git', 'clone'),
   });
+
   repoSettingsPatch.needsFullClone = true;
 
   const inMemoryFsClient = MemClient.createClient();
@@ -576,9 +577,9 @@ export const cloneGitRepoAction: ActionFunction = async ({
     const workspace = YAML.parse(workspaceJson.toString());
     workspaceId = workspace._id;
     scope = (workspace.scope === WorkspaceScopeKeys.collection) ? WorkspaceScopeKeys.collection : WorkspaceScopeKeys.design;
+
     // Check if the workspace already exists
     const existingWorkspace = await models.workspace.getById(workspace._id);
-
     if (existingWorkspace) {
       const project = await models.project.getById(existingWorkspace.parentId);
       if (!project) {

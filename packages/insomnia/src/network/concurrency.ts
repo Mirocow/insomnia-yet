@@ -26,7 +26,7 @@ export interface ExecuteScriptContext {
     globals?: object;
     cookieJar: CookieJar;
     requestTestResults?: RequestTestResult[];
-};
+}
 
 export interface TransformedExecuteScriptContext {
     error?: string;
@@ -44,7 +44,7 @@ export interface TransformedExecuteScriptContext {
 interface Task {
     script: string;
     context: RequestContext;
-};
+}
 
 const q: queueAsPromised<Task> = fastq.promise(asyncWorker, 1);
 

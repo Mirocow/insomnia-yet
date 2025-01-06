@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { invariant } from '../../../utils/invariant';
 import type { ModalProps } from '../base/modal';
 import { AlertModal, type AlertModalOptions } from './alert-modal';

@@ -1,8 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+import type { CurlBridgeAPI } from './main/ipc/curl';
 import type { gRPCBridgeAPI } from './main/ipc/grpc';
-import type { CurlBridgeAPI } from './main/network/curl';
-import type { WebSocketBridgeAPI } from './main/network/websocket';
+import type { WebSocketBridgeAPI } from './main/ipc/websocket';
 
 const webSocket: WebSocketBridgeAPI = {
   open: options => ipcRenderer.invoke('webSocket.open', options),

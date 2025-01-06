@@ -25,7 +25,8 @@
     "build:app": "esr --cache ./scripts/build.ts --noErrorTruncation",
     "build:main.min.js": "cross-env NODE_ENV=development esr esbuild.main.ts",
     "lint": "eslint . --ext .js,.ts,.tsx --cache",
-    "lint-fix": "eslint . --ext .js,.ts,.tsx --cache --fix",
+    "lint:fix": "eslint . --ext .js,.ts,.tsx --cache --fix",
+    "lint:dump": "eslint --print-config ./.eslintrc.json",
     "package": "npm run build:app && cross-env USE_HARD_LINKS=false electron-builder build --config electron-builder.config.js",
     "package:windows:unpacked": "npm run build:app && cross-env USE_HARD_LINKS=false electron-builder build --config electron-builder.config.js --dir",
     "package:windows:dist": "cross-env USE_HARD_LINKS=false electron-builder build --config electron-builder.config.js --win squirrel --prepackaged ./dist/win-unpacked",
@@ -39,8 +40,8 @@
     "test:script": "jest $1",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc --noEmit --project tsconfig.json",
-    "type-check:watch": "npm run type-check -- --watch",
+    "type:check": "tsc --noEmit --project tsconfig.json",
+    "type:check:watch": "npm run type-check -- --watch",
     "convert-svg": "npm_config_yes=true npx @svgr/cli@6.4.0 --no-index --config-file svgr.config.js --out-dir src/ui/components/assets/svgr src/ui/components/assets/"
   },
   "dependencies": {
@@ -86,7 +87,6 @@
     "js-yaml": "^3.14.1",
     "jsdom": "^25.0.1",
     "jshint": "^2.13.6",
-    "json-diff-kit": "^1.0.30",
     "jsonlint-mod-fixed": "1.7.7",
     "jsonpath-plus": "^6.0.1",
     "marked": "^5.1.1",
@@ -105,7 +105,6 @@
     "yaml-source-map": "^2.1.1"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@develohpanda/fluent-builder": "^2.1.2",
     "@faker-js/faker": "9.0.3",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",

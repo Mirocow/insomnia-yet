@@ -14,7 +14,7 @@ import {
   AUTH_OAUTH_1,
   AUTH_OAUTH_2,
 } from '../../../../common/constants';
-import { RequestLoaderData } from '../../../actions/request';
+import { RequestLoaderData } from '../../../routes/actions/request';
 import { ApiKeyAuth } from './api-key-auth';
 import { AsapAuth } from './asap-auth';
 import { AWSAuth } from './aws-auth';

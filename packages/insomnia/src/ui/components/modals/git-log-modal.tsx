@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useFetcher, useParams } from 'react-router-dom';
 
-import { GitLogLoaderData } from '../../actions/git-actions';
+import { GitLogLoaderData } from '../../routes/actions/git-actions';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';

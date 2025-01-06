@@ -33,7 +33,7 @@ start: ## Запуск приложения в режиме окна
 	npm run dev
 
 start-debug: ## Запуск приложения в режиме окна (With debug mode)
-	npm run dev-debug
+	npm run dev:debug
 
 watch: ## Запуск приложения на порту 3334
 	npm run watch:app
@@ -42,7 +42,10 @@ check: ## Проверка проекта на наличие ошибок
 	cd packages/insomnia && npm run lint && cd ../..
 
 check-fix: ## Проверка проекта на наличие ошибок с исправлениями
-	cd packages/insomnia && npm run lint-fix && cd ../..
+	cd packages/insomnia && npm run lint:fix && cd ../..
+
+check-dump: ## Проверка проекта на наличие ошибок с исправлениями
+	cd packages/insomnia && npm run lint:dump && cd ../..
 
 require: ## Установка указанного пакета
 	cd packages/insomnia &&	npm install $(args) && cd ../..

@@ -2,8 +2,8 @@ import React, { ChangeEvent, FC, ReactNode, useCallback } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import { toKebabCase } from '../../../../../common/misc';
-import { RequestLoaderData } from '../../../../actions/request';
 import { useRequestPatcher } from '../../../../hooks/use-request';
+import { RequestLoaderData } from '../../../../routes/actions/request';
 import { AuthRow } from './auth-row';
 
 interface Props {

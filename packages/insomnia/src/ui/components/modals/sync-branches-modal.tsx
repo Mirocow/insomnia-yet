@@ -6,7 +6,7 @@ import { useRouteLoaderData } from 'react-router-dom';
 import { database as db, Operation } from '../../../common/database';
 import { interceptAccessError } from '../../../sync/vcs/util';
 import { VCS } from '../../../sync/vcs/vcs';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { PromptButton, SyncPullButton } from '../base/button';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';

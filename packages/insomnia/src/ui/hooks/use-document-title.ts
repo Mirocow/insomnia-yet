@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import { getProductName } from '../../common/constants';
-import type { RequestLoaderData } from '../actions/request';
-import type { WorkspaceLoaderData } from '../routes/workspace';
+import type { RequestLoaderData } from '../routes/actions/request';
+import type { WorkspaceLoaderData } from '../routes/windows/workspace';
 export const useDocumentTitle = () => {
   const {
     activeWorkspace,

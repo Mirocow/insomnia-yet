@@ -8,7 +8,7 @@ import { BaseModel } from '../../../models';
 import type { DocumentKey, Stage, StageEntry, Status } from '../../../sync/types';
 import { describeChanges } from '../../../sync/vcs/util';
 import { VCS } from '../../../sync/vcs/vcs';
-import { WorkspaceLoaderData } from '../../routes/workspace';
+import { WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { IndeterminateCheckbox } from '../base/indeterminate-checkbox';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';

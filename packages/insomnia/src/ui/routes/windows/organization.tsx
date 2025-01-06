@@ -1,8 +1,8 @@
 import { type LoaderFunction, type ShouldRevalidateFunction, useRouteLoaderData } from 'react-router-dom';
 
-import { project } from '../../models';
-import { defaultOrganization, type Organization } from '../../models/organization';
-import { isRemoteProject } from '../../models/project';
+import { project } from '../../../models';
+import { defaultOrganization, type Organization } from '../../../models/organization';
+import { isRemoteProject } from '../../../models/project';
 
 export interface LoaderData {
   organizations: Organization[];
@@ -28,7 +28,7 @@ export const useOrganizationLoaderData = () => {
   return useRouteLoaderData('/organization') as LoaderData;
 };
 
-export const shouldOrganizationsRevalidate: ShouldRevalidateFunction = ({
+export const OrganizationShouldRevalidate: ShouldRevalidateFunction = ({
   currentParams,
   nextParams,
   nextUrl,

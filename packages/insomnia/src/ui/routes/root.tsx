@@ -43,8 +43,8 @@ import {
 import { AppHooks } from '../containers/app-hooks';
 import { NunjucksEnabledProvider } from '../context/nunjucks/nunjucks-enabled-context';
 import { useSettingsPatcher } from '../hooks/use-request';
-import Modals from './modals';
-import type { WorkspaceLoaderData } from './workspace';
+import Modals from './windows/modals';
+import type { WorkspaceLoaderData } from './windows/workspace';
 
 export interface RootLoaderData {
   settings: Settings;
@@ -60,7 +60,7 @@ export const loader: LoaderFunction = async (): Promise<RootLoaderData> => {
   };
 };
 
-const Root = () => {
+export const Root = () => {
   const { settings } = useLoaderData() as RootLoaderData;
   const workspaceData = useRouteLoaderData(
     ':workspaceId'
@@ -328,5 +328,3 @@ const Root = () => {
       </NunjucksEnabledProvider>
   );
 };
-
-export default Root;

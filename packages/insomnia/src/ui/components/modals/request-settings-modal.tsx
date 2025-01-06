@@ -8,7 +8,7 @@ import { isRequest, Request } from '../../../models/request';
 import { isWebSocketRequest, WebSocketRequest } from '../../../models/websocket-request';
 import { invariant } from '../../../utils/invariant';
 import { useRequestPatcher } from '../../hooks/use-request';
-import { ProjectLoaderData } from '../../routes/project';
+import { ProjectLoaderData } from '../../routes/windows/project';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalHeader } from '../base/modal-header';

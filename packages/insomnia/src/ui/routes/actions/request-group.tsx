@@ -1,10 +1,10 @@
 import { type ActionFunction, type LoaderFunction, redirect } from 'react-router-dom';
 
-import * as models from '../../models';
-import { EnvironmentType } from '../../models/environment';
-import type { RequestGroup } from '../../models/request-group';
-import type { RequestGroupMeta } from '../../models/request-group-meta';
-import { invariant } from '../../utils/invariant';
+import * as models from '../../../models';
+import { EnvironmentType } from '../../../models/environment';
+import type { RequestGroup } from '../../../models/request-group';
+import type { RequestGroupMeta } from '../../../models/request-group-meta';
+import { invariant } from '../../../utils/invariant';
 
 export interface RequestGroupLoaderData {
   activeRequestGroup: RequestGroup;

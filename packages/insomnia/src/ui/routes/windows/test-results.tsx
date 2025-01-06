@@ -1,11 +1,11 @@
 import React, { type FC } from 'react';
 import { type LoaderFunction, redirect, useRouteLoaderData } from 'react-router-dom';
 
-import { database } from '../../common/database';
-import * as models from '../../models';
-import type { UnitTestResult } from '../../models/unit-test-result';
-import { invariant } from '../../utils/invariant';
-import { ListGroup, UnitTestResultItem } from '../components/list-group';
+import { database } from '../../../common/database';
+import * as models from '../../../models';
+import type { UnitTestResult } from '../../../models/unit-test-result';
+import { invariant } from '../../../utils/invariant';
+import { ListGroup, UnitTestResultItem } from '../../components/list-group';
 
 interface TestResultsData {
   testResult: UnitTestResult;
@@ -40,7 +40,7 @@ export const indexLoader: LoaderFunction = async ({ params }) => {
   return null;
 };
 
-export const TestRunStatus: FC = () => {
+const TestRunStatus: FC = () => {
   const { testResult } = useRouteLoaderData(':testResultId') as TestResultsData;
 
   const { stats, tests } = testResult.results;
@@ -69,3 +69,5 @@ export const TestRunStatus: FC = () => {
     </div>
   );
 };
+
+export default TestRunStatus;

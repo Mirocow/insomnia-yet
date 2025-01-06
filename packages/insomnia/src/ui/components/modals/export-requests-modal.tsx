@@ -9,7 +9,7 @@ import { isRequest, Request } from '../../../models/request';
 import { RequestGroup } from '../../../models/request-group';
 import { isWebSocketRequest, WebSocketRequest } from '../../../models/websocket-request';
 import { Workspace } from '../../../models/workspace';
-import { Child, WorkspaceLoaderData } from '../../routes/workspace';
+import { Child, WorkspaceLoaderData } from '../../routes/windows/workspace';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
