@@ -214,4 +214,4 @@ npm run app-package
 # TODO
 
 * [ ] sync / git
-* [ ] hint (extension autocomplete)
+* [x] hint (extension autocomplete)
