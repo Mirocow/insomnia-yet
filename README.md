@@ -3,6 +3,17 @@
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 
+Insomnia is an open-source, cross-platform API client for GraphQL, REST, WebSockets, Server-sent events (SSE), gRPC and any other HTTP compatible protocol.
+
+With Insomnia you can:
+
+- **Debug APIs** using the most popular protocols and formats.
+- **Design APIs** using the native OpenAPI editor and visual preview.
+- **Test APIs** using native test suites and collection runner.
+- **Build CI/CD pipelines** using the native Insomnia CLI for linting and testing.
+- **Collaborate with others** using the many collaboration features.
+- **And more** including the ability to use 3rd party plugins.
+
 ![Insomnia API Client](https://raw.githubusercontent.com/Mirocow/insomnia-yet/2024.0.0-dev/screenshots/debug.png)
 
 ```bash
